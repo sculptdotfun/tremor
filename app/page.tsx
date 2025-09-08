@@ -159,21 +159,21 @@ export default function Home() {
                           <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">BIGGEST SHIFT</div>
                           <div className="flex items-center gap-2">
                             {filteredMovements[0].category && (
-                              <span className="text-[9px] uppercase tracking-wider text-zinc-400">
+                              <span className="px-2 py-0.5 bg-zinc-800/50 border border-zinc-700/50 rounded text-[9px] uppercase tracking-wider text-zinc-400">
                                 {filteredMovements[0].category}
                               </span>
                             )}
                             {filteredMovements[0].seismoScore >= 7.5 && (
-                              <div className="flex items-center gap-1">
+                              <span className="px-2 py-0.5 bg-seismo-extreme/10 border border-seismo-extreme/50 rounded flex items-center gap-1">
                                 <div className="w-1.5 h-1.5 bg-seismo-extreme rounded-full animate-pulse"></div>
                                 <span className="text-[9px] text-seismo-extreme uppercase tracking-wider font-bold">EXTREME</span>
-                              </div>
+                              </span>
                             )}
                             {filteredMovements[0].seismoScore >= 5 && filteredMovements[0].seismoScore < 7.5 && (
-                              <div className="flex items-center gap-1">
+                              <span className="px-2 py-0.5 bg-seismo-high/10 border border-seismo-high/50 rounded flex items-center gap-1">
                                 <div className="w-1.5 h-1.5 bg-seismo-high rounded-full animate-pulse"></div>
                                 <span className="text-[9px] text-seismo-high uppercase tracking-wider font-bold">HIGH</span>
-                              </div>
+                              </span>
                             )}
                           </div>
                         </div>
