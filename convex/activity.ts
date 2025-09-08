@@ -60,14 +60,14 @@ export const getRecentActivity = query({
     // Check for new events added
     const recentEvents = await ctx.db
       .query("events")
-      .filter((q) => q.gte(q.field("createdAt"), cutoff))
+      .filter((q) => q.gte(q.field("updatedAt"), cutoff))
       .take(5);
     
     for (const event of recentEvents) {
       activities.push({
         type: "new_event",
         message: event.title,
-        timestamp: event.createdAt,
+        timestamp: event.updatedAt,
         marketCount: event.marketCount,
         volume: event.volume,
         direction: 'neutral',
