@@ -1,12 +1,10 @@
 'use client';
 
-import { useEffect, useState, memo, useMemo } from 'react';
-import { useQuery } from 'convex/react';
-import { api } from '@/convex/_generated/api';
+import { useEffect, useState, memo } from 'react';
 
 export const Header = memo(function Header() {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [isLive, setIsLive] = useState(true);
+  const [isLive] = useState(true);
   const [showAbout, setShowAbout] = useState(false);
 
   useEffect(() => {
@@ -38,7 +36,7 @@ export const Header = memo(function Header() {
           </div>
           <div className="hidden lg:flex items-center gap-2 text-xs">
             <span className="text-zinc-600">•</span>
-            <span className="text-zinc-400">WORLD'S FASTEST NEWS SOURCE</span>
+            <span className="text-zinc-400">WORLD&apos;S FASTEST NEWS SOURCE</span>
             <span className="text-zinc-600">•</span>
             <span className="text-[10px] text-zinc-500 tracking-wide">MARKETS KNOW FIRST</span>
           </div>
@@ -98,7 +96,7 @@ export const Header = memo(function Header() {
                 <p className="text-zinc-400 leading-relaxed">
                   Prediction markets aggregate real-time information from thousands of traders who have skin in the game. 
                   When big news is about to break, insiders and informed traders move first — causing sudden probability shifts 
-                  that appear as "tremors" in our system.
+                  that appear as &quot;tremors&quot; in our system.
                 </p>
               </div>
               
@@ -127,12 +125,12 @@ export const Header = memo(function Header() {
                   <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                   </svg>
-                  Why It's Powerful
+                  Why It&apos;s Powerful
                 </h3>
                 <p className="text-zinc-400 leading-relaxed">
                   Traditional news has a pipeline: event → reporter → editor → publication. Markets have no pipeline — 
-                  they react instantly. Trump's 2024 victory was priced at 95% probability hours before any network called it. 
-                  Biden's dropout leaked through betting odds before his own campaign knew.
+                  they react instantly. Trump&apos;s 2024 victory was priced at 95% probability hours before any network called it. 
+                  Biden&apos;s dropout leaked through betting odds before his own campaign knew.
                 </p>
               </div>
               
@@ -154,7 +152,7 @@ export const Header = memo(function Header() {
               <div className="pt-4 border-t border-zinc-800/30">
                 <p className="text-xs text-zinc-500 leading-relaxed">
                   SEISMO.ONE monitors 500+ prediction markets in real-time, surfacing only the most significant movements. 
-                  We're not predicting the future — we're showing you where smart money thinks it's heading.
+                  We&apos;re not predicting the future — we&apos;re showing you where smart money thinks it&apos;s heading.
                 </p>
               </div>
             </div>

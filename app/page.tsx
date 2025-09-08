@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 export default function Home() {
   const [windowSel, setWindowSel] = useState<'5m' | '60m' | '1440m'>('60m');
   const [intensityFilter, setIntensityFilter] = useState<'all' | 'extreme' | 'high' | 'moderate' | 'low'>('all');
-  const [selectedMovement, setSelectedMovement] = useState<any>(null);
+  const [selectedMovement, setSelectedMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isChangingWindow, setIsChangingWindow] = useState(false);
   const { movements, suddenMoves, loading } = useSeismoData(windowSel);
@@ -62,7 +62,7 @@ export default function Home() {
     return { label: 'LOW', color: 'text-seismo-low', bg: 'bg-seismo-low' };
   };
   
-  const activity = getActivityLevel();
+  // const activity = getActivityLevel();
   
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -237,8 +237,8 @@ export default function Home() {
                     <div className="flex-1 p-4 md:p-6 lg:p-8 flex items-center">
                       <div className="space-y-3 md:space-y-4">
                         <p className="text-sm md:text-base text-zinc-200 leading-relaxed">
-                          <span className="text-white font-semibold text-base md:text-lg">Markets beat newsrooms every time.</span> Trump's 
-                          victory was priced in hours before networks called it. Biden's dropout leaked through 
+                          <span className="text-white font-semibold text-base md:text-lg">Markets beat newsrooms every time.</span> Trump&apos;s 
+                          victory was priced in hours before networks called it. Biden&apos;s dropout leaked through 
                           betting odds before his staff knew. When smart money moves, probabilities shift — fast.
                         </p>
                         <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
