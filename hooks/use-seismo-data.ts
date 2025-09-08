@@ -2,7 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { MarketMovement, SuddenMove, MarketCategory } from '@/lib/types';
+import { MarketMovement, SuddenMove, MarketCategory, MarketSource } from '@/lib/types';
 
 export function useSeismoData(window: '5m' | '60m' | '1440m' = '60m') {
   // Get top tremors from Convex
@@ -39,7 +39,7 @@ export function useSeismoData(window: '5m' | '60m' | '1440m' = '60m') {
       id: tremor.eventId,
       title: tremor.event?.title || "Unknown Event",
       category: categorizeMarket(tremor.event?.category || tremor.event?.title || tremor.topMarketQuestion || "") as MarketCategory,
-      source: 'Polymarket',
+      source: 'Polymarket' as MarketSource,
       previousValue: Math.round(previousPrice * 100),
       currentValue: Math.round(currentPrice * 100),
       change: priceChangePercent,
