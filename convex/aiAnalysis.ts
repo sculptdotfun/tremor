@@ -1,9 +1,9 @@
 import { v } from 'convex/values';
 import { mutation, query, action } from './_generated/server';
-import { api } from './_generated/api';
+import { api, internal } from './_generated/api';
 
 // Public action to request AI analysis (called when user clicks Intelligence button)
-export const requestAnalysis = action({
+export const requestAnalysis: any = action({
   args: {
     movementId: v.string(),
     eventId: v.string(),
@@ -37,8 +37,8 @@ export const requestAnalysis = action({
       };
     }
 
-    // Generate new analysis using the action
-    const result = await ctx.runAction(api.aiActions.generateAnalysis, args);
+    // Generate new analysis using the internal action
+    const result = await ctx.runAction((internal.aiActions as any).generateAnalysis, args);
 
     return result;
   },

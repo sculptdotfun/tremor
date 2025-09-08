@@ -238,15 +238,12 @@ export default function Home() {
                           </div>
 
                           {/* Market Question - THIS is what the percentage refers to */}
-                          {(filteredMovements[0].marketQuestion ||
-                            (filteredMovements[0].marketMovements &&
-                              filteredMovements[0].marketMovements[0])) && (
-                            <div className="mb-3 text-sm font-medium text-zinc-100">
-                              {filteredMovements[0].marketQuestion ||
-                                filteredMovements[0].marketMovements[0]
-                                  .question}
-                            </div>
-                          )}
+                          {filteredMovements[0].marketMovements &&
+                            filteredMovements[0].marketMovements[0] && (
+                              <div className="mb-3 text-sm font-medium text-zinc-100">
+                                {filteredMovements[0].marketMovements[0].question}
+                              </div>
+                            )}
 
                           {/* Movement and Score Box */}
                           <div className="rounded border border-zinc-800/50 bg-zinc-900/50 p-3">

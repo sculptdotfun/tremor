@@ -106,17 +106,14 @@ export const SeismoCard = memo(
             {/* Movement info - clear and prominent */}
             <div className="mb-3 rounded border border-zinc-800/50 bg-zinc-900/50 p-2">
               {/* Show market question - THIS is what the percentage refers to */}
-              {(movement.marketQuestion ||
-                (movement.marketMovements && movement.marketMovements[0])) && (
+              {movement.marketMovements && movement.marketMovements[0] && (
                 <div className="mb-2 text-xs font-medium leading-tight text-zinc-100">
-                  {movement.marketQuestion ||
-                    movement.marketMovements[0].question}
-                  {movement.marketMovements &&
-                    movement.marketMovements.length > 1 && (
-                      <span className="ml-2 text-[9px] uppercase text-zinc-500">
-                        (1 of {movement.marketMovements.length})
-                      </span>
-                    )}
+                  {movement.marketMovements[0].question}
+                  {movement.marketMovements.length > 1 && (
+                    <span className="ml-2 text-[9px] uppercase text-zinc-500">
+                      (1 of {movement.marketMovements.length})
+                    </span>
+                  )}
                 </div>
               )}
               <div className="flex items-center justify-between">

@@ -66,20 +66,18 @@ export function SeismoDetailPanel({
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   {/* Title and close button */}
-                  <div className="mb-2 flex items-start justify-between">
+                  <div className="mb-3 flex items-start justify-between">
                     <div className="flex-1 pr-2">
-                      <h2 className="text-sm font-semibold leading-tight text-zinc-100 md:text-base">
+                      <h2 className="text-lg font-bold leading-tight text-white md:text-xl">
                         {movement?.title}
                       </h2>
                       {/* Show the main market question */}
-                      {(movement?.marketQuestion ||
-                        (movement?.marketMovements &&
-                          movement.marketMovements[0])) && (
-                        <p className="mt-1 text-xs leading-tight text-zinc-100">
-                          {movement.marketQuestion ||
-                            movement.marketMovements[0].question}
-                        </p>
-                      )}
+                      {movement?.marketMovements &&
+                        movement.marketMovements[0] && (
+                          <p className="mt-2 text-sm font-medium leading-snug text-zinc-200 md:text-base">
+                            {movement.marketMovements[0].question}
+                          </p>
+                        )}
                     </div>
                     <button
                       className="-mt-1 text-xl text-zinc-500 transition-colors hover:text-zinc-300"

@@ -13,8 +13,8 @@ export const getRecentHighImpact = query({
         q
           .eq('window', '60m')
           .gte('seismoScore', 2.5)
-          .gte('timestampMs', oneDayAgo)
       )
+      .filter((q) => q.gte(q.field('timestampMs'), oneDayAgo))
       .order('desc')
       .take(100);
 

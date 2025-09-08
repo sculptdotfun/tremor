@@ -7,7 +7,8 @@ import { useEffect, useState } from 'react';
 export function MarketSummary() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const summary = useQuery(api.marketSummary.getSummary);
-  const refreshSummary = useAction(api.marketSummary.refreshIfNeeded);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const refreshSummary = useAction((api.marketSummary as any).refreshIfNeeded);
 
   // Auto-refresh on mount and every hour
   useEffect(() => {

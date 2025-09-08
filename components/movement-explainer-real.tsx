@@ -13,7 +13,14 @@ interface MovementExplainerProps {
     currentValue: number;
     previousValue: number;
     category?: string;
-    marketQuestion?: string;
+    marketMovements?: Array<{
+      conditionId: string;
+      question: string;
+      prevPrice: number;
+      currPrice: number;
+      change: number;
+      volume: number;
+    }>;
   };
 }
 
@@ -30,7 +37,8 @@ export function MovementExplainer({ movement }: MovementExplainerProps) {
   });
 
   // Action to request new analysis
-  const requestAnalysis = useAction(api.aiAnalysis.requestAnalysis);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const requestAnalysis = useAction((api.aiAnalysis as any).requestAnalysis);
 
   // Auto-request analysis on mount if needed
   useEffect(() => {
@@ -54,7 +62,7 @@ export function MovementExplainer({ movement }: MovementExplainerProps) {
             currentValue: movement.currentValue,
             previousValue: movement.previousValue,
             seismoScore: movement.seismoScore,
-            marketQuestion: movement.marketQuestion,
+            marketQuestion: movement.marketMovements?.[0]?.question || '',
           });
 
           if (!result.success) {
@@ -72,6 +80,7 @@ export function MovementExplainer({ movement }: MovementExplainerProps) {
     };
 
     requestIfNeeded();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movementId]); // Only depend on movementId to prevent re-runs
 
   // Don't show for low-impact movements
@@ -181,7 +190,7 @@ export function MovementExplainer({ movement }: MovementExplainerProps) {
                   )}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {analysis.sources.map((source, i) => {
+                  {analysis.sources.map((source: string, i: number) => {
                     // Extract username from X/Twitter URLs
                     const isX =
                       source.includes('x.com') ||

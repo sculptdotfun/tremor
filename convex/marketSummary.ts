@@ -30,7 +30,7 @@ export const getSummary = query({
 });
 
 // Action to generate market summary
-export const generateSummary = action({
+export const generateSummary: any = action({
   args: {},
   handler: async (ctx) => {
     const apiKey = process.env.XAI_API_KEY;
@@ -56,7 +56,7 @@ export const generateSummary = action({
       const movementsContext = recentMovements
         .slice(0, 10) // Top 10 movements
         .map(
-          (m) =>
+          (m: any) =>
             `- ${m.title}: ${m.previousValue}% → ${m.currentValue}% (${m.seismoScore?.toFixed(1)} intensity)`
         )
         .join('\n');
@@ -119,11 +119,11 @@ Summary:`;
               'Market activity is showing mixed signals across political and economic sectors. Traders are closely monitoring upcoming elections and policy decisions.',
             totalMovements: recentMovements.length,
             extremeMovements: recentMovements.filter(
-              (m) => m.seismoScore && m.seismoScore >= 7.5
+              (m: any) => m.seismoScore && m.seismoScore >= 7.5
             ).length,
             topCategories: [
               ...new Set(
-                recentMovements.map((m) => m.category).filter(Boolean)
+                recentMovements.map((m: any) => m.category).filter(Boolean)
               ),
             ].slice(0, 3),
             generatedAt: Date.now(),
@@ -134,10 +134,10 @@ Summary:`;
       // Calculate some stats
       const totalMovements = recentMovements.length;
       const extremeMovements = recentMovements.filter(
-        (m) => m.seismoScore && m.seismoScore >= 7.5
+        (m: any) => m.seismoScore && m.seismoScore >= 7.5
       ).length;
       const categories = [
-        ...new Set(recentMovements.map((m) => m.category).filter(Boolean)),
+        ...new Set(recentMovements.map((m: any) => m.category).filter(Boolean)),
       ];
 
       // Store the summary
@@ -185,14 +185,14 @@ export const storeSummary = mutation({
 });
 
 // Action to refresh summary if needed
-export const refreshIfNeeded = action({
+export const refreshIfNeeded: any = action({
   args: {},
   handler: async (ctx) => {
     const current = await ctx.runQuery(api.marketSummary.getSummary);
 
     // Generate if no summary exists or if it's stale
     if (!current || current.isStale) {
-      return await ctx.runAction(api.marketSummary.generateSummary);
+      return await ctx.runAction((api.marketSummary as any).generateSummary);
     }
 
     return { success: true, cached: true, summary: current };

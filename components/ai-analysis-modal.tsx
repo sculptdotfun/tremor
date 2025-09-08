@@ -53,16 +53,13 @@ export function AIAnalysisModal({ movement, onClose }: AIAnalysisModalProps) {
           <div className="border-b border-zinc-800/50 px-5 py-4">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h2 className="mb-1 text-lg font-bold text-white">
+                <h2 className="mb-2 text-xl font-bold text-white">
                   {movement.title}
                 </h2>
                 {/* Show market question - what the percentage refers to */}
-                {(movement.marketQuestion ||
-                  (movement.marketMovements &&
-                    movement.marketMovements[0])) && (
-                  <p className="mb-3 text-sm leading-tight text-zinc-100">
-                    {movement.marketQuestion ||
-                      movement.marketMovements[0].question}
+                {movement.marketMovements && movement.marketMovements[0] && (
+                  <p className="mb-3 text-base font-medium leading-snug text-zinc-200">
+                    {movement.marketMovements[0].question}
                   </p>
                 )}
                 {/* Key metrics in a clean grid */}
@@ -136,7 +133,7 @@ export function AIAnalysisModal({ movement, onClose }: AIAnalysisModalProps) {
                 currentValue: movement.currentValue,
                 previousValue: movement.previousValue,
                 category: movement.category,
-                marketQuestion: movement.marketMovements?.[0]?.question,
+                marketMovements: movement.marketMovements,
               }}
             />
           </div>

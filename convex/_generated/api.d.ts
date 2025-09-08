@@ -12,23 +12,23 @@ import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
-} from 'convex/server';
-import type * as actions from '../actions.js';
-import type * as activity from '../activity.js';
-import type * as aiActions from '../aiActions.js';
-import type * as aiAnalysis from '../aiAnalysis.js';
-import type * as aiService from '../aiService.js';
-import type * as cleanup from '../cleanup.js';
-import type * as crons from '../crons.js';
-import type * as events from '../events.js';
-import type * as http from '../http.js';
-import type * as marketSummary from '../marketSummary.js';
-import type * as markets from '../markets.js';
-import type * as migrate from '../migrate.js';
-import type * as movements from '../movements.js';
-import type * as prioritization from '../prioritization.js';
-import type * as scoring from '../scoring.js';
-import type * as trades from '../trades.js';
+} from "convex/server";
+import type * as actions from "../actions.js";
+import type * as activity from "../activity.js";
+import type * as aiActions from "../aiActions.js";
+import type * as aiAnalysis from "../aiAnalysis.js";
+import type * as aiService from "../aiService.js";
+import type * as cleanup from "../cleanup.js";
+import type * as crons from "../crons.js";
+import type * as events from "../events.js";
+import type * as http from "../http.js";
+import type * as marketSummary from "../marketSummary.js";
+import type * as markets from "../markets.js";
+import type * as migrate from "../migrate.js";
+import type * as movements from "../movements.js";
+import type * as prioritization from "../prioritization.js";
+import type * as scoring from "../scoring.js";
+import type * as trades from "../trades.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -58,9 +58,9 @@ declare const fullApi: ApiFromModules<{
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
-  FunctionReference<any, 'public'>
+  FunctionReference<any, "public">
 >;
 export declare const internal: FilterApi<
   typeof fullApi,
-  FunctionReference<any, 'internal'>
+  FunctionReference<any, "internal">
 >;

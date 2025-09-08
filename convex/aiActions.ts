@@ -1,6 +1,6 @@
 import { v } from 'convex/values';
-import { action } from './_generated/server';
-import { api } from './_generated/api';
+import { internalAction, internalQuery, internalMutation } from './_generated/server';
+import { internal } from './_generated/api';
 
 // xAI Grok API configuration
 const GROK_API_URL = 'https://api.x.ai/v1/chat/completions';
@@ -32,8 +32,28 @@ interface GrokResponse {
   citations?: string[];
 }
 
-// Action to generate AI analysis (can use fetch)
-export const generateAnalysis = action({
+// Internal query to check for cached analysis
+export const getCachedAnalysis = internalQuery({
+  args: {
+    movementId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    const analysis = await ctx.db
+      .query('aiAnalysis')
+      .withIndex('by_movement', (q) => q.eq('movementId', args.movementId))
+      .order('desc')
+      .first();
+    
+    if (!analysis) return null;
+    
+    const isValid = analysis.expiresAt > now;
+    return isValid ? analysis : null;
+  },
+});
+
+// Internal action to generate AI analysis (can use fetch)
+export const generateAnalysis: any = internalAction({
   args: {
     movementId: v.string(),
     eventId: v.string(),
@@ -53,11 +73,11 @@ export const generateAnalysis = action({
 
     try {
       // Check if we already have a valid cached analysis
-      const existingAnalysis = await ctx.runQuery(api.aiAnalysis.getAnalysis, {
+      const existingAnalysis = await ctx.runQuery(internal.aiActions.getCachedAnalysis, {
         movementId: args.movementId,
       });
 
-      if (existingAnalysis && existingAnalysis.isValid) {
+      if (existingAnalysis) {
         console.log(`Using cached analysis for movement ${args.movementId}`);
         return { success: true, cached: true, analysis: existingAnalysis };
       }
@@ -128,7 +148,7 @@ export const generateAnalysis = action({
       const now = Date.now();
       const ONE_HOUR = 60 * 60 * 1000;
 
-      await ctx.runMutation(api.aiService.storeAnalysis, {
+      await ctx.runMutation(internal.aiService.storeAnalysis, {
         movementId: args.movementId,
         eventId: args.eventId,
         explanation: response.content,
