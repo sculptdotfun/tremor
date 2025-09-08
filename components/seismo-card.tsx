@@ -113,8 +113,8 @@ export const SeismoCard = memo(function SeismoCard({ movement, isSelected = fals
                   {movement.marketMovements && movement.marketMovements.length > 1 && movement.marketMovements[0] ? (
                     <div>
                       <div className="text-[9px] text-zinc-500 mb-0.5 truncate">
-                        {movement.marketMovements[0].question.length > 35
-                          ? movement.marketMovements[0].question.substring(0, 35) + '...'
+                        {movement.marketMovements[0].question.length > 50
+                          ? movement.marketMovements[0].question.substring(0, 50) + '...'
                           : movement.marketMovements[0].question}
                       </div>
                       <div className="flex items-baseline gap-1">

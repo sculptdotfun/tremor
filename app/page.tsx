@@ -142,37 +142,40 @@ export default function Home() {
                   <div className="flex flex-col lg:flex-row">
                     {/* Live Event Section - Left on desktop, top on mobile */}
                     {filteredMovements.length > 0 && filteredMovements[0] && (
-                      <div className={`w-full lg:w-80 border-b lg:border-b-0 lg:border-r p-4 md:p-6 relative ${
+                      <div className={`w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-zinc-800/50 p-4 md:p-6 relative ${
                         filteredMovements[0].seismoScore >= 7.5 
-                          ? 'bg-gradient-to-br from-seismo-extreme/10 to-zinc-900/20 border-seismo-extreme/30' 
-                          : filteredMovements[0].seismoScore >= 5
-                          ? 'bg-gradient-to-br from-seismo-high/10 to-zinc-900/20 border-seismo-high/30'
-                          : 'border-zinc-800/50 bg-zinc-900/20'
+                          ? 'bg-zinc-900/30' 
+                          : 'bg-zinc-900/20'
                       }`}>
-                        {/* Intensity indicator for high scores */}
+                        {/* Top accent for high intensity */}
                         {filteredMovements[0].seismoScore >= 5 && (
-                          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent" 
-                            style={{
-                              backgroundImage: filteredMovements[0].seismoScore >= 7.5 
-                                ? 'linear-gradient(to right, transparent, rgb(239 68 68), transparent)'
-                                : 'linear-gradient(to right, transparent, rgb(251 146 60), transparent)'
-                            }}
-                          />
+                          <div className={`absolute top-0 left-0 right-0 h-0.5 ${
+                            filteredMovements[0].seismoScore >= 7.5 
+                              ? 'bg-seismo-extreme'
+                              : 'bg-seismo-high'
+                          }`} />
                         )}
-                        <div className="flex items-center gap-2 mb-3 md:mb-4">
+                        <div className="flex items-center justify-between mb-3 md:mb-4">
                           <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">BIGGEST SHIFT</div>
-                          {filteredMovements[0].seismoScore >= 7.5 && (
-                            <div className="flex items-center gap-1">
-                              <div className="w-1.5 h-1.5 bg-seismo-extreme rounded-full animate-pulse"></div>
-                              <span className="text-[9px] text-seismo-extreme uppercase tracking-wider font-bold">EXTREME</span>
-                            </div>
-                          )}
-                          {filteredMovements[0].seismoScore >= 5 && filteredMovements[0].seismoScore < 7.5 && (
-                            <div className="flex items-center gap-1">
-                              <div className="w-1.5 h-1.5 bg-seismo-high rounded-full animate-pulse"></div>
-                              <span className="text-[9px] text-seismo-high uppercase tracking-wider font-bold">HIGH</span>
-                            </div>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {filteredMovements[0].category && (
+                              <span className="text-[9px] uppercase tracking-wider text-zinc-400">
+                                {filteredMovements[0].category}
+                              </span>
+                            )}
+                            {filteredMovements[0].seismoScore >= 7.5 && (
+                              <div className="flex items-center gap-1">
+                                <div className="w-1.5 h-1.5 bg-seismo-extreme rounded-full animate-pulse"></div>
+                                <span className="text-[9px] text-seismo-extreme uppercase tracking-wider font-bold">EXTREME</span>
+                              </div>
+                            )}
+                            {filteredMovements[0].seismoScore >= 5 && filteredMovements[0].seismoScore < 7.5 && (
+                              <div className="flex items-center gap-1">
+                                <div className="w-1.5 h-1.5 bg-seismo-high rounded-full animate-pulse"></div>
+                                <span className="text-[9px] text-seismo-high uppercase tracking-wider font-bold">HIGH</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div className="space-y-4">
                           <div className="flex items-start gap-3">
@@ -184,28 +187,23 @@ export default function Home() {
                               />
                             )}
                             <div className="flex-1">
-                              <div className="text-sm font-semibold text-zinc-100 leading-snug mb-2">
-                                {filteredMovements[0].title.length > 80 
-                                  ? filteredMovements[0].title.substring(0, 80) + '...' 
+                              <div className="text-sm font-semibold text-zinc-100 leading-snug">
+                                {filteredMovements[0].title.length > 90 
+                                  ? filteredMovements[0].title.substring(0, 90) + '...' 
                                   : filteredMovements[0].title}
-                              </div>
-                              <div className="flex items-center gap-3 text-xs text-zinc-500">
-                                <span>{filteredMovements[0].currentValue}%</span>
-                                <span>•</span>
-                                <span className="uppercase">{filteredMovements[0].category || 'GENERAL'}</span>
                               </div>
                             </div>
                           </div>
                           <div className="pt-3 border-t border-zinc-800/30">
-                            <div className="flex items-end justify-between">
-                              <div className="flex-1">
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="col-span-2">
                                 <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Movement</div>
                                 {/* Show specific market movement if multi-market */}
                                 {filteredMovements[0].marketMovements && filteredMovements[0].marketMovements.length > 1 ? (
                                   <div>
                                     <div className="text-[9px] text-zinc-400 mb-1">
-                                      {filteredMovements[0].marketMovements[0].question.length > 40 
-                                        ? filteredMovements[0].marketMovements[0].question.substring(0, 40) + '...'
+                                      {filteredMovements[0].marketMovements[0].question.length > 60 
+                                        ? filteredMovements[0].marketMovements[0].question.substring(0, 60) + '...'
                                         : filteredMovements[0].marketMovements[0].question}
                                     </div>
                                     <div className="flex items-baseline gap-1">
@@ -233,8 +231,8 @@ export default function Home() {
                                 )}
                               </div>
                               <div className="text-right">
-                                <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Intensity</div>
-                                <div className={`text-2xl font-bold ${
+                                <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Score</div>
+                                <div className={`text-xl font-bold ${
                                   filteredMovements[0].seismoScore && filteredMovements[0].seismoScore >= 7.5 
                                     ? 'text-seismo-extreme' 
                                     : filteredMovements[0].seismoScore && filteredMovements[0].seismoScore >= 5 
@@ -244,12 +242,6 @@ export default function Home() {
                                     : 'text-zinc-600'
                                 }`}>
                                   {filteredMovements[0].seismoScore?.toFixed(1) || '0.0'}
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Window</div>
-                                <div className="text-sm font-semibold text-zinc-400">
-                                  {getWindowLabel()}
                                 </div>
                               </div>
                             </div>
