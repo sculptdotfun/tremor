@@ -50,56 +50,65 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
           <div className="bg-zinc-950 border border-zinc-800/50 flex flex-col" 
             style={{ maxHeight: '90vh', boxShadow: '0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 50px rgba(0,0,0,0.8)' }}>
           {/* Clean header */}
-          <div className="px-4 md:px-6 py-3 md:py-4 border-b border-zinc-800/30">
-            <div className="flex items-start justify-between">
+          <div className="px-6 py-4 border-b border-zinc-800/30">
+            <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
-                <div className="flex items-start gap-3 md:gap-4 mb-3">
+                {/* Title with image */}
+                <div className="flex items-start gap-4 mb-4">
                   {movement?.image && (
                     <img 
                       src={movement.image} 
                       alt="" 
-                      className="w-10 h-10 md:w-12 md:h-12 object-cover opacity-80"
+                      className="w-16 h-16 object-cover opacity-80 border border-zinc-800"
                       loading="lazy"
                     />
                   )}
-                  <h2 className="text-base md:text-lg font-semibold text-zinc-100 flex-1">{movement?.title}</h2>
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold text-zinc-100 leading-tight mb-2">{movement?.title}</h2>
+                    <div className="flex items-center gap-2 text-xs text-zinc-500">
+                      <span className="uppercase tracking-wider">{movement.category || 'GENERAL'}</span>
+                      <span>•</span>
+                      <span>{movement.window === '5m' ? '5 minutes' : movement.window === '60m' ? '1 hour' : '24 hours'}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 md:gap-6">
-                  {/* Price change */}
-                  {movement?.change && Math.abs(movement.change) >= 0.1 ? (
-                    movement?.marketMovements && movement.marketMovements.length > 1 ? (
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-2xl md:text-3xl font-bold text-zinc-100">{Math.abs(movement.change).toFixed(1)}%</span>
-                        <span className="text-xs md:text-sm text-zinc-500">max shift</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-2xl md:text-3xl font-bold text-zinc-100">{Math.abs(movement.change).toFixed(1)}%</span>
-                        <span className="text-xs md:text-sm text-zinc-500">shift</span>
-                      </div>
-                    )
-                  ) : (
-                    <div className="text-2xl md:text-3xl font-bold text-zinc-600">—</div>
-                  )}
+                
+                {/* Key metrics row */}
+                <div className="grid grid-cols-4 gap-6">
+                  {/* Max Change */}
+                  <div>
+                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">
+                      {movement?.marketMovements && movement.marketMovements.length > 1 ? 'Max Shift' : 'Shift'}
+                    </div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-2xl font-bold text-zinc-100">
+                        {Math.abs(movement?.change || 0).toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
                   
-                  {/* Current state - show appropriate text based on market type */}
-                  <div className="text-sm text-zinc-400">
-                    {movement?.marketMovements && movement.marketMovements.length > 1 ? (
-                      <>
-                        <div className="font-semibold text-zinc-300">Top market {movement?.currentValue}%</div>
-                        <div className="text-xs">Was {movement?.previousValue}%</div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="font-semibold text-zinc-300">Now {movement?.currentValue}%</div>
-                        <div className="text-xs">Was {movement?.previousValue}%</div>
-                      </>
-                    )}
+                  {/* Price Movement */}
+                  <div>
+                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Price Movement</div>
+                    <div className="text-sm">
+                      <span className="text-zinc-400">{movement?.previousValue}%</span>
+                      <span className="text-zinc-500 mx-1">→</span>
+                      <span className="text-zinc-100 font-medium">{movement?.currentValue}%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Volume */}
+                  <div>
+                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Volume</div>
+                    <div className="text-xl font-bold text-zinc-100">
+                      {movement.totalVolume || movement.volume ? formatVolume(movement.totalVolume || movement.volume || 0) : '—'}
+                    </div>
                   </div>
                   
                   {/* Intensity */}
-                  <div className="ml-auto">
-                    <div className={`text-xl md:text-2xl font-bold ${
+                  <div>
+                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Intensity</div>
+                    <div className={`text-2xl font-bold ${
                       movement?.seismoScore && movement.seismoScore >= 7.5 
                         ? 'text-seismo-extreme' 
                         : movement?.seismoScore && movement.seismoScore >= 5 
@@ -110,12 +119,12 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
                     }`}>
                       {movement?.seismoScore?.toFixed(1) || '0.0'}
                     </div>
-                    <div className="text-[10px] md:text-xs text-zinc-500">intensity</div>
                   </div>
                 </div>
               </div>
+              
               <button
-                className="text-xl text-muted-foreground hover:text-foreground transition-colors px-2 ml-4"
+                className="text-2xl text-zinc-500 hover:text-zinc-300 transition-colors p-1"
                 onClick={onClose}
               >
                 ×

@@ -111,13 +111,13 @@ export const SeismoCard = memo(function SeismoCard({ movement, isSelected = fals
                 <div className="space-y-1">
                   <div className="flex items-baseline gap-2">
                     <span className="text-xl font-bold text-zinc-100">
-                      {movement.change > 0 ? '+' : ''}{movement.change.toFixed(1)}%
+                      {Math.abs(movement.change).toFixed(1)}%
                     </span>
                     <span className="text-xs text-zinc-500">
                       {movement.previousValue && movement.currentValue 
                         ? `${movement.previousValue}% → ${movement.currentValue}%`
                         : movement.marketMovements && movement.marketMovements.length > 1
-                        ? `across ${movement.marketMovements.length} markets`
+                        ? `max of ${movement.marketMovements.length} markets`
                         : 'price shift'}
                     </span>
                   </div>
