@@ -1,54 +1,13 @@
 'use client';
 
-import { useQuery, useAction } from 'convex/react';
+import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { useEffect, useState } from 'react';
 
 export function MarketSummary() {
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  // Simply read the cached summary - cron job handles generation
   const summary = useQuery(api.marketSummary.getSummary);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const refreshSummary = useAction((api.marketSummary as any).refreshIfNeeded);
 
-  // Auto-refresh on mount and every hour
-  useEffect(() => {
-    let mounted = true;
-    let hasRefreshed = false; // Prevent double refresh in StrictMode
-
-    const refresh = async () => {
-      if (!mounted || isRefreshing || hasRefreshed) return;
-      hasRefreshed = true;
-      setIsRefreshing(true);
-      try {
-        await refreshSummary();
-      } catch (error) {
-        console.error('Failed to refresh market summary:', error);
-      } finally {
-        if (mounted) {
-          setIsRefreshing(false);
-        }
-      }
-    };
-
-    // Initial refresh
-    refresh();
-
-    // Set up hourly refresh
-    const interval = setInterval(
-      () => {
-        hasRefreshed = false; // Reset for next refresh
-        refresh();
-      },
-      60 * 60 * 1000
-    ); // 1 hour
-
-    return () => {
-      mounted = false;
-      clearInterval(interval);
-    };
-  }, []);
-
-  if (!summary && !isRefreshing) {
+  if (!summary) {
     return null;
   }
 
@@ -68,13 +27,7 @@ export function MarketSummary() {
         }}
       >
         <div className="p-3">
-          {isRefreshing && !summary ? (
-            <div className="space-y-2">
-              <div className="h-2 w-full animate-pulse rounded bg-zinc-800/30" />
-              <div className="h-2 w-4/5 animate-pulse rounded bg-zinc-800/30" />
-              <div className="h-2 w-3/4 animate-pulse rounded bg-zinc-800/30" />
-            </div>
-          ) : summary ? (
+          {summary ? (
             <>
               {/* Summary content */}
               <div className="mb-2 text-[10px] leading-relaxed text-zinc-400">
@@ -106,7 +59,7 @@ export function MarketSummary() {
 
                 {/* Update status */}
                 <div className="text-[10px] text-zinc-500">
-                  {summary.minutesAgo < 1 ? 'now' : `${summary.minutesAgo}m`}
+                  {summary.minutesAgo < 1 ? 'now' : summary.minutesAgo < 60 ? `${summary.minutesAgo}m ago` : 'old'}
                 </div>
               </div>
             </>

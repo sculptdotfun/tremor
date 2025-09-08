@@ -1,6 +1,6 @@
 import { v } from 'convex/values';
-import { query, action, mutation } from './_generated/server';
-import { api } from './_generated/api';
+import { query, action, mutation, internalAction } from './_generated/server';
+import { api, internal } from './_generated/api';
 
 // Query to get cached market summary
 export const getSummary = query({
@@ -29,8 +29,8 @@ export const getSummary = query({
   },
 });
 
-// Action to generate market summary
-export const generateSummary: any = action({
+// Internal action to generate market summary
+export const generateSummary: any = internalAction({
   args: {},
   handler: async (ctx) => {
     const apiKey = process.env.XAI_API_KEY;
@@ -184,14 +184,28 @@ export const storeSummary = mutation({
   },
 });
 
-// Action to refresh summary if needed
+// Internal action for cron job - generates summary unconditionally
+export const generateSummaryCron: any = internalAction({
+  args: {},
+  handler: async (ctx) => {
+    console.log('[Cron] Generating market summary...');
+    const result = await ctx.runAction((internal.marketSummary as any).generateSummary);
+    console.log('[Cron] Market summary generation result:', result.success ? 'success' : 'failed');
+    return result;
+  },
+});
+
+// Action to refresh summary if needed (kept for backward compatibility)
 export const refreshIfNeeded: any = action({
   args: {},
   handler: async (ctx) => {
     const current = await ctx.runQuery(api.marketSummary.getSummary);
 
-    // Generate if no summary exists or if it's stale
-    if (!current || current.isStale) {
+    // Generate if no summary exists or if it's stale (> 30 minutes old)
+    const THIRTY_MINUTES = 30 * 60 * 1000;
+    const now = Date.now();
+    
+    if (!current || (now - current.generatedAt > THIRTY_MINUTES)) {
       return await ctx.runAction((api.marketSummary as any).generateSummary);
     }
 

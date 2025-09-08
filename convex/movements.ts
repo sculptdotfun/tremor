@@ -12,7 +12,7 @@ export const getRecentHighImpact = query({
       .withIndex('by_window_score', (q) =>
         q
           .eq('window', '60m')
-          .gte('seismoScore', 2.5)
+          .gte('seismoScore', 1.0)  // Lowered threshold for more data
       )
       .filter((q) => q.gte(q.field('timestampMs'), oneDayAgo))
       .order('desc')
@@ -48,6 +48,10 @@ export const getRecentHighImpact = query({
     );
 
     // Sort by seismo score and return top unique movements
-    return movements.sort((a, b) => b.seismoScore - a.seismoScore).slice(0, 15); // Reduced to 15 unique events
+    // Return at least something even if no high scores
+    const sorted = movements.sort((a, b) => b.seismoScore - a.seismoScore).slice(0, 15);
+    
+    // If no movements found, return empty array
+    return sorted.length > 0 ? sorted : [];
   },
 });

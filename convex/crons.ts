@@ -45,4 +45,11 @@ crons.daily(
   internal.cleanup.cleanupOldData
 );
 
+// Generate market summary every 30 minutes
+crons.interval(
+  "generate market summary",
+  { minutes: 30 },
+  internal.marketSummary.generateSummaryCron
+);
+
 export default crons;
