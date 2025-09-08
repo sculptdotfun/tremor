@@ -11,7 +11,7 @@ interface TremorDetailPanelProps {
 export function TremorDetailPanel({
   movement,
   onClose,
-}: SeismoDetailPanelProps) {
+}: TremorDetailPanelProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [showAll, setShowAll] = useState(false);
 

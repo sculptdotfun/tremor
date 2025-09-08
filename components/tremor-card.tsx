@@ -11,12 +11,12 @@ interface TremorCardProps {
 }
 
 export const TremorCard = memo(
-  function SeismoCard({
+  function TremorCard({
     movement,
     isSelected = false,
     onClick,
     onAIAnalysis,
-  }: SeismoCardProps) {
+  }: TremorCardProps) {
     const formatTime = (date: Date) => {
       const now = new Date();
       const diff = now.getTime() - date.getTime();
