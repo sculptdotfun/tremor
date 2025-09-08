@@ -10,19 +10,6 @@ interface SeismoCardProps {
 }
 
 export const SeismoCard = memo(function SeismoCard({ movement, isSelected = false, onClick }: SeismoCardProps) {
-  // const getSeismoColor = (score: number) => {
-  //   if (score >= 7.5) return 'border-seismo-extreme text-seismo-extreme';
-  //   if (score >= 5) return 'border-seismo-high text-seismo-high';
-  //   if (score >= 2.5) return 'border-seismo-moderate text-seismo-moderate';
-  //   return 'border-border text-muted-foreground';
-  // };
-  
-  // const getSeismoBg = (score: number) => {
-  //   if (score >= 7.5) return 'bg-seismo-extreme/5';
-  //   if (score >= 5) return 'bg-seismo-high/5';
-  //   if (score >= 2.5) return 'bg-seismo-moderate/5';
-  //   return '';
-  // };
   
   const formatTime = (date: Date) => {
     const now = new Date();
@@ -42,31 +29,30 @@ export const SeismoCard = memo(function SeismoCard({ movement, isSelected = fals
     return `$${vol.toFixed(0)}`;
   };
   
-  // Visual magnitude bar with segments - commented out unused function
-  // const renderMagnitudeBar = () => {
-  //   const magnitude = movement.seismoScore || 0;
-  //   const segments = 20;
-  //   const filled = Math.round((magnitude / 10) * segments);
-  //   
-  //   return (
-  //     <div className="flex gap-px h-1.5">
-  //       {Array.from({ length: segments }).map((_, i) => (
-  //         <div
-  //           key={i}
-  //           className={`flex-1 transition-all duration-300 ${
-  //             i < filled 
-  //               ? magnitude >= 7.5 ? 'bg-seismo-extreme' 
-  //               : magnitude >= 5 ? 'bg-seismo-high'
-  //               : magnitude >= 2.5 ? 'bg-seismo-moderate'
-  //               : 'bg-muted-foreground/30'
-  //             : 'bg-muted-foreground/10'
-  //           }`}
-  //           style={{ transitionDelay: `${i * 20}ms` }}
-  //         />
-  //       ))}
-  //     </div>
-  //   );
-  // };
+  const renderMagnitudeBar = () => {
+    const magnitude = movement.seismoScore || 0;
+    const segments = 20;
+    const filled = Math.round((magnitude / 10) * segments);
+    
+    return (
+      <div className="flex gap-px h-1.5">
+        {Array.from({ length: segments }).map((_, i) => (
+          <div
+            key={i}
+            className={`flex-1 transition-all duration-300 ${
+              i < filled 
+                ? magnitude >= 7.5 ? 'bg-seismo-extreme' 
+                : magnitude >= 5 ? 'bg-seismo-high'
+                : magnitude >= 2.5 ? 'bg-seismo-moderate'
+                : 'bg-muted-foreground/30'
+              : 'bg-muted-foreground/10'
+            }`}
+            style={{ transitionDelay: `${i * 20}ms` }}
+          />
+        ))}
+      </div>
+    );
+  };
   
   return (
     <div
@@ -143,6 +129,11 @@ export const SeismoCard = memo(function SeismoCard({ movement, isSelected = fals
               </div>
               <div className="text-[9px] text-zinc-600 uppercase">intensity</div>
             </div>
+          </div>
+          
+          {/* Intensity Bar */}
+          <div className="mt-2 mb-2">
+            {renderMagnitudeBar()}
           </div>
           
           {/* Bottom row - metadata */}
