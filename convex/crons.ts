@@ -49,7 +49,7 @@ crons.daily(
 crons.interval(
   "generate market summary",
   { minutes: 30 },
-  internal.marketSummary.generateSummaryCron
+  (internal as any).marketSummary.generateSummaryCron
 );
 
 export default crons;
