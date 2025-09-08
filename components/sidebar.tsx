@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { MarketSummary } from './market-summary';
 
 interface SidebarProps {
   selectedWindow: '5m' | '60m' | '1440m';
@@ -189,21 +190,32 @@ export function Sidebar({
         </div>
       </div>
 
-      {/* Powered by Polymarket */}
+      {/* Market Summary - in the normal flow */}
+      <MarketSummary />
+
+      {/* Powered by - pushed to bottom */}
       <div className="mt-auto border-t border-zinc-800/50 p-5">
-        <a
-          href="https://polymarket.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center justify-center gap-2"
-        >
-          <span className="text-xs uppercase tracking-wider text-zinc-500 transition-colors group-hover:text-zinc-300">
-            Powered by
-          </span>
-          <span className="text-xs font-semibold text-zinc-400 transition-colors group-hover:text-zinc-200">
+        <div className="mb-1 text-center text-[9px] uppercase tracking-wider text-zinc-600">
+          Powered by
+        </div>
+        <div className="flex flex-col items-center gap-0.5">
+          <a
+            href="https://polymarket.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-zinc-400 transition-colors hover:text-zinc-200"
+          >
             Polymarket
-          </span>
-        </a>
+          </a>
+          <a
+            href="https://x.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-zinc-400 transition-colors hover:text-zinc-200"
+          >
+            Grok AI
+          </a>
+        </div>
       </div>
     </aside>
   );

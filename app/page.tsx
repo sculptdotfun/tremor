@@ -4,6 +4,7 @@ import { Header } from '@/components/header';
 import { Sidebar } from '@/components/sidebar';
 import { SeismoCard } from '@/components/seismo-card';
 import { SeismoDetailPanel } from '@/components/seismo-detail-panel';
+import { AIAnalysisModal } from '@/components/ai-analysis-modal';
 import { useSeismoData } from '@/hooks/use-seismo-data';
 import { useState, useEffect } from 'react';
 
@@ -13,6 +14,7 @@ export default function Home() {
     'all' | 'extreme' | 'high' | 'moderate' | 'low'
   >('all');
   const [selectedMovement, setSelectedMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [aiAnalysisMovement, setAIAnalysisMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isChangingWindow, setIsChangingWindow] = useState(false);
   const { movements, loading } = useSeismoData(windowSel);
@@ -33,6 +35,7 @@ export default function Home() {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setSelectedMovement(null);
+        setAIAnalysisMovement(null);
       }
     };
     window.addEventListener('keydown', handleEsc);
@@ -166,7 +169,7 @@ export default function Home() {
                     {/* Live Event Section - Left on desktop, top on mobile */}
                     {filteredMovements.length > 0 && filteredMovements[0] && (
                       <div
-                        className={`relative w-full overflow-hidden border-b bg-zinc-950 lg:w-80 lg:border-b-0 lg:border-r-0`}
+                        className={`relative w-full overflow-hidden border-b bg-zinc-950 lg:w-[450px] lg:border-b-0 lg:border-r-0`}
                         style={{
                           backgroundImage: filteredMovements[0].image
                             ? `url(${filteredMovements[0].image})`
@@ -194,135 +197,98 @@ export default function Home() {
 
                         {/* Content */}
                         <div className="relative z-10 p-4 md:p-6">
-                          <div className="mb-3 flex items-center justify-between md:mb-4">
-                            <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                              BIGGEST SHIFT
+                          {/* Header with category and intensity */}
+                          <div className="mb-3 flex items-center justify-between">
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                              Biggest Shift
                             </div>
                             <div className="flex items-center gap-2">
                               {filteredMovements[0].category && (
-                                <span className="rounded border border-zinc-700/50 bg-zinc-800/50 px-2 py-0.5 text-[9px] uppercase tracking-wider text-zinc-400">
+                                <span className="text-[9px] uppercase text-zinc-600">
                                   {filteredMovements[0].category}
                                 </span>
                               )}
                               {filteredMovements[0]?.seismoScore &&
                                 filteredMovements[0].seismoScore >= 7.5 && (
-                                  <span className="flex items-center gap-1 rounded border border-seismo-extreme/50 bg-seismo-extreme/10 px-2 py-0.5">
-                                    <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-seismo-extreme"></div>
-                                    <span className="text-[9px] font-bold uppercase tracking-wider text-seismo-extreme">
+                                  <div className="flex items-center gap-1">
+                                    <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-seismo-extreme" />
+                                    <span className="text-[9px] font-bold uppercase text-seismo-extreme">
                                       EXTREME
                                     </span>
-                                  </span>
+                                  </div>
                                 )}
                               {filteredMovements[0]?.seismoScore &&
                                 filteredMovements[0].seismoScore >= 5 &&
                                 filteredMovements[0].seismoScore < 7.5 && (
-                                  <span className="flex items-center gap-1 rounded border border-seismo-high/50 bg-seismo-high/10 px-2 py-0.5">
-                                    <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-seismo-high"></div>
-                                    <span className="text-[9px] font-bold uppercase tracking-wider text-seismo-high">
+                                  <div className="flex items-center gap-1">
+                                    <div className="h-1.5 w-1.5 rounded-full bg-seismo-high" />
+                                    <span className="text-[9px] font-bold uppercase text-seismo-high">
                                       HIGH
                                     </span>
-                                  </span>
+                                  </div>
                                 )}
                             </div>
                           </div>
-                          <div className="space-y-4">
-                            <div>
-                              <div className="text-base font-bold leading-snug text-white drop-shadow-lg">
-                                {filteredMovements[0].title.length > 90
-                                  ? filteredMovements[0].title.substring(
-                                      0,
-                                      90
-                                    ) + '...'
-                                  : filteredMovements[0].title}
-                              </div>
+
+                          {/* Title - Event name */}
+                          <div className="mb-1">
+                            <h3 className="text-lg font-bold leading-tight text-white">
+                              {filteredMovements[0].title}
+                            </h3>
+                          </div>
+
+                          {/* Market Question - THIS is what the percentage refers to */}
+                          {(filteredMovements[0].marketQuestion ||
+                            (filteredMovements[0].marketMovements &&
+                              filteredMovements[0].marketMovements[0])) && (
+                            <div className="mb-3 text-sm font-medium text-zinc-100">
+                              {filteredMovements[0].marketQuestion ||
+                                filteredMovements[0].marketMovements[0]
+                                  .question}
                             </div>
-                            <div className="border-t border-zinc-800/30 pt-3">
-                              <div className="grid grid-cols-3 gap-3">
-                                <div className="col-span-2">
-                                  <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-300">
-                                    Movement
-                                  </div>
-                                  {/* Show specific market movement if multi-market */}
-                                  {filteredMovements[0].marketMovements &&
-                                  filteredMovements[0].marketMovements.length >
-                                    1 ? (
-                                    <div>
-                                      <div className="mb-1 text-[9px] text-zinc-300">
-                                        {filteredMovements[0].marketMovements[0]
-                                          .question.length > 60
-                                          ? filteredMovements[0].marketMovements[0].question.substring(
-                                              0,
-                                              60
-                                            ) + '...'
-                                          : filteredMovements[0]
-                                              .marketMovements[0].question}
-                                      </div>
-                                      <div className="flex items-baseline gap-1">
-                                        <span className="text-sm font-medium text-zinc-300">
-                                          {(
-                                            filteredMovements[0]
-                                              .marketMovements[0].prevPrice *
-                                            100
-                                          ).toFixed(0)}
-                                          %
-                                        </span>
-                                        <span className="text-zinc-400">→</span>
-                                        <span className="text-2xl font-bold text-white drop-shadow-lg">
-                                          {(
-                                            filteredMovements[0]
-                                              .marketMovements[0].currPrice *
-                                            100
-                                          ).toFixed(0)}
-                                          %
-                                        </span>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    /* Single market - show YES price movement */
-                                    <div className="flex items-baseline gap-1">
-                                      <span className="text-sm font-medium text-zinc-300">
-                                        {filteredMovements[0].previousValue.toFixed(
-                                          0
-                                        )}
-                                        %
-                                      </span>
-                                      <span className="text-zinc-400">→</span>
-                                      <span className="text-2xl font-bold text-white drop-shadow-lg">
-                                        {filteredMovements[0].currentValue.toFixed(
-                                          0
-                                        )}
-                                        %
-                                      </span>
-                                      <span className="ml-1 text-[10px] font-semibold text-zinc-300">
-                                        YES
-                                      </span>
-                                    </div>
+                          )}
+
+                          {/* Movement and Score Box */}
+                          <div className="rounded border border-zinc-800/50 bg-zinc-900/50 p-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-sm text-zinc-400">
+                                  {filteredMovements[0].previousValue.toFixed(
+                                    0
                                   )}
-                                </div>
-                                <div className="text-right">
-                                  <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-300">
-                                    Score
-                                  </div>
-                                  <div
-                                    className={`text-2xl font-bold drop-shadow-lg ${
-                                      filteredMovements[0].seismoScore &&
-                                      filteredMovements[0].seismoScore >= 7.5
-                                        ? 'text-seismo-extreme'
+                                  %
+                                </span>
+                                <span className="text-zinc-500">→</span>
+                                <span className="text-2xl font-bold text-white">
+                                  {filteredMovements[0].currentValue.toFixed(0)}
+                                  %
+                                </span>
+                                <span className="text-xs font-medium text-zinc-300">
+                                  YES
+                                </span>
+                              </div>
+                              <div className="text-right">
+                                <div
+                                  className={`text-2xl font-bold ${
+                                    filteredMovements[0].seismoScore &&
+                                    filteredMovements[0].seismoScore >= 7.5
+                                      ? 'text-seismo-extreme'
+                                      : filteredMovements[0].seismoScore &&
+                                          filteredMovements[0].seismoScore >= 5
+                                        ? 'text-seismo-high'
                                         : filteredMovements[0].seismoScore &&
                                             filteredMovements[0].seismoScore >=
-                                              5
-                                          ? 'text-seismo-high'
-                                          : filteredMovements[0].seismoScore &&
-                                              filteredMovements[0]
-                                                .seismoScore >= 2.5
-                                            ? 'text-seismo-moderate'
-                                            : 'text-zinc-300'
-                                    }`}
-                                  >
-                                    {filteredMovements[0].seismoScore?.toFixed(
-                                      1
-                                    ) || '0.0'}
-                                  </div>
+                                              2.5
+                                          ? 'text-seismo-moderate'
+                                          : 'text-zinc-300'
+                                  }`}
+                                >
+                                  {filteredMovements[0].seismoScore?.toFixed(
+                                    1
+                                  ) || '0.0'}
+                                </div>
+                                <div className="text-[9px] uppercase text-zinc-500">
+                                  Score
                                 </div>
                               </div>
                             </div>
@@ -336,12 +302,13 @@ export default function Home() {
                       <div className="space-y-3 md:space-y-4">
                         <p className="text-sm leading-relaxed text-zinc-200 md:text-base">
                           <span className="text-base font-semibold text-white md:text-lg">
-                            Markets beat newsrooms every time.
+                            Money talks before headlines drop.
                           </span>{' '}
-                          Trump&apos;s victory was priced in hours before
-                          networks called it. Biden&apos;s dropout leaked
-                          through betting odds before his staff knew. When smart
-                          money moves, probabilities shift — fast.
+                          Polymarket gave Trump 58% odds while polls showed a
+                          coin flip. Smart money moved days before the networks
+                          caught up. When millions flow into positions, the
+                          probability shifts happen in real-time — not after the
+                          fact.
                         </p>
                         <p className="text-sm leading-relaxed text-zinc-400 md:text-base">
                           This dashboard monitors all active market movements in
@@ -428,6 +395,9 @@ export default function Home() {
                           selectedMovement?.id === move.id ? null : move
                         );
                       }}
+                      onAIAnalysis={(movement) => {
+                        setAIAnalysisMovement(movement);
+                      }}
                     />
                   ))}
                 </div>
@@ -461,6 +431,12 @@ export default function Home() {
       <SeismoDetailPanel
         movement={selectedMovement}
         onClose={() => setSelectedMovement(null)}
+      />
+
+      {/* AI Analysis Modal */}
+      <AIAnalysisModal
+        movement={aiAnalysisMovement}
+        onClose={() => setAIAnalysisMovement(null)}
       />
     </div>
   );
