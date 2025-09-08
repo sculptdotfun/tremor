@@ -9,12 +9,12 @@
     --border: 220 220 220;
     --muted: 115 115 115;
     --muted-foreground: 100 100 100;
-    /* Seismo scale: red/orange for extreme, yellow for warning, blue for normal */
-    --seismo-extreme: 255 59 48;  /* Bright red-orange for extreme movements */
-    --seismo-high: 255 149 0;     /* Orange for high activity */
-    --seismo-moderate: 255 204 0; /* Yellow for moderate */
-    --seismo-low: 52 199 89;      /* Green for stable/low */
-    --seismo-pulse: 0 122 255;    /* Blue for live pulse/activity */
+    /* Tremor scale: red/orange for extreme, yellow for warning, blue for normal */
+    --tremor-extreme: 255 59 48;  /* Bright red-orange for extreme movements */
+    --tremor-high: 255 149 0;     /* Orange for high activity */
+    --tremor-moderate: 255 204 0; /* Yellow for moderate */
+    --tremor-low: 52 199 89;      /* Green for stable/low */
+    --tremor-pulse: 0 122 255;    /* Blue for live pulse/activity */
     /* Direction indicators */
     --trend-up: 52 199 89;        /* Green for upward */
     --trend-down: 255 59 48;      /* Red for downward */
@@ -32,12 +32,12 @@
     --border: 35 35 35;
     --muted: 100 100 100;
     --muted-foreground: 160 160 160;
-    /* Seismo scale - more vibrant in dark mode */
-    --seismo-extreme: 255 69 58;  /* Brighter red-orange */
-    --seismo-high: 255 159 10;    /* Brighter orange */
-    --seismo-moderate: 255 214 10;/* Brighter yellow */
-    --seismo-low: 48 209 88;      /* Brighter green */
-    --seismo-pulse: 10 132 255;   /* Brighter blue */
+    /* Tremor scale - more vibrant in dark mode */
+    --tremor-extreme: 255 69 58;  /* Brighter red-orange */
+    --tremor-high: 255 159 10;    /* Brighter orange */
+    --tremor-moderate: 255 214 10;/* Brighter yellow */
+    --tremor-low: 48 209 88;      /* Brighter green */
+    --tremor-pulse: 10 132 255;   /* Brighter blue */
     /* Direction indicators */
     --trend-up: 48 209 88;
     --trend-down: 255 69 58;

@@ -16,29 +16,29 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Seismo One - Where Money Knows First',
+  title: 'Tremor - Where Money Talks First',
   description:
-    'Track sudden market movements before news breaks. Real-time prediction market seismograph monitoring 500+ events on Polymarket. When smart money moves, probabilities shift — fast.',
+    'Track sudden market movements before news breaks. Real-time prediction market monitoring 500+ events on Polymarket. When smart money moves, probabilities shift — fast.',
   keywords:
-    'prediction markets, polymarket, market movements, probability shifts, seismograph, real-time tracking, breaking news, smart money, betting markets, event probabilities',
-  authors: [{ name: 'Seismo One' }],
-  creator: 'Seismo One',
-  publisher: 'Seismo One',
+    'prediction markets, polymarket, market movements, probability shifts, tremor, real-time tracking, breaking news, smart money, betting markets, event probabilities, live markets',
+  authors: [{ name: 'Tremor' }],
+  creator: 'Tremor',
+  publisher: 'Tremor',
   openGraph: {
-    title: 'Seismo One - Where Money Knows First',
+    title: 'Tremor - Where Money Talks First',
     description:
-      'Track sudden market movements before news breaks. Real-time prediction market seismograph.',
-    url: 'https://seismo.one',
-    siteName: 'Seismo One',
+      'Track sudden market movements before news breaks. Real-time prediction market tremors.',
+    url: 'https://tremor.live',
+    siteName: 'Tremor',
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Seismo One - Where Money Knows First',
+    title: 'Tremor - Where Money Talks First',
     description:
-      'Track sudden market movements before news breaks. Real-time prediction market seismograph.',
-    site: '@seismoone',
+      'Track sudden market movements before news breaks. Real-time prediction market tremors.',
+    site: '@tremorlive',
   },
   robots: {
     index: true,
@@ -52,9 +52,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/seismo-icon.svg',
-    shortcut: '/seismo-icon.svg',
-    apple: '/seismo-icon.svg',
+    icon: '/tremor-icon.svg',
+    shortcut: '/tremor-icon.svg',
+    apple: '/tremor-icon.svg',
   },
 };
 

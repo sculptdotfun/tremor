@@ -56,7 +56,7 @@ export function MarketSummary() {
     <div className="mt-6 px-5">
       {/* Header - exactly matching other sections */}
       <h3 className="mb-4 text-xs font-bold tracking-wider text-zinc-600">
-        SEISMO REPORT
+        TREMOR REPORT
       </h3>
 
       {/* Content box - matching the style of time window / intensity boxes */}
@@ -94,7 +94,7 @@ export function MarketSummary() {
                   </div>
                   {summary.extremeMovements > 0 && (
                     <div>
-                      <span className="text-sm font-bold text-seismo-extreme">
+                      <span className="text-sm font-bold text-tremor-extreme">
                         {summary.extremeMovements}
                       </span>
                       <span className="ml-1 text-[10px] text-zinc-500">

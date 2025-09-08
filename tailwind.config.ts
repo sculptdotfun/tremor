@@ -27,12 +27,12 @@ const config: Config = {
           yellow: 'rgb(var(--accent-yellow) / <alpha-value>)',
           blue: 'rgb(var(--accent-blue) / <alpha-value>)',
         },
-        seismo: {
-          extreme: 'rgb(var(--seismo-extreme) / <alpha-value>)',
-          high: 'rgb(var(--seismo-high) / <alpha-value>)',
-          moderate: 'rgb(var(--seismo-moderate) / <alpha-value>)',
-          low: 'rgb(var(--seismo-low) / <alpha-value>)',
-          pulse: 'rgb(var(--seismo-pulse) / <alpha-value>)',
+        tremor: {
+          extreme: 'rgb(var(--tremor-extreme) / <alpha-value>)',
+          high: 'rgb(var(--tremor-high) / <alpha-value>)',
+          moderate: 'rgb(var(--tremor-moderate) / <alpha-value>)',
+          low: 'rgb(var(--tremor-low) / <alpha-value>)',
+          pulse: 'rgb(var(--tremor-pulse) / <alpha-value>)',
         },
         trend: {
           up: 'rgb(var(--trend-up) / <alpha-value>)',

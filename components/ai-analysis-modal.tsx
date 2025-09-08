@@ -85,12 +85,12 @@ export function AIAnalysisModal({ movement, onClose }: AIAnalysisModalProps) {
                     <div
                       className={`text-lg font-bold ${
                         movement.seismoScore && movement.seismoScore >= 7.5
-                          ? 'text-seismo-extreme'
+                          ? 'text-tremor-extreme'
                           : movement.seismoScore && movement.seismoScore >= 5
-                            ? 'text-seismo-high'
+                            ? 'text-tremor-high'
                             : movement.seismoScore &&
                                 movement.seismoScore >= 2.5
-                              ? 'text-seismo-moderate'
+                              ? 'text-tremor-moderate'
                               : 'text-zinc-300'
                       }`}
                     >
@@ -146,7 +146,7 @@ export function AIAnalysisModal({ movement, onClose }: AIAnalysisModalProps) {
                 href={movement.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-medium text-zinc-400 transition-colors hover:text-seismo-pulse"
+                className="text-xs font-medium text-zinc-400 transition-colors hover:text-tremor-pulse"
               >
                 View on Polymarket →
               </a>

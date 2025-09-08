@@ -3,12 +3,12 @@
 import { MarketMovement } from '@/lib/types';
 import { useEffect, useState } from 'react';
 
-interface SeismoDetailPanelProps {
+interface TremorDetailPanelProps {
   movement: MarketMovement | null;
   onClose: () => void;
 }
 
-export function SeismoDetailPanel({
+export function TremorDetailPanel({
   movement,
   onClose,
 }: SeismoDetailPanelProps) {
@@ -110,12 +110,12 @@ export function SeismoDetailPanel({
                       <div
                         className={`text-base font-bold ${
                           movement?.seismoScore && movement.seismoScore >= 7.5
-                            ? 'text-seismo-extreme'
+                            ? 'text-tremor-extreme'
                             : movement?.seismoScore && movement.seismoScore >= 5
-                              ? 'text-seismo-high'
+                              ? 'text-tremor-high'
                               : movement?.seismoScore &&
                                   movement.seismoScore >= 2.5
-                                ? 'text-seismo-moderate'
+                                ? 'text-tremor-moderate'
                                 : 'text-zinc-300'
                         }`}
                       >
@@ -306,7 +306,7 @@ export function SeismoDetailPanel({
                   href={movement.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs font-medium text-foreground transition-colors hover:text-seismo-pulse md:text-sm"
+                  className="text-xs font-medium text-foreground transition-colors hover:text-tremor-pulse md:text-sm"
                 >
                   <span className="hidden sm:inline">View on Polymarket →</span>
                   <span className="sm:hidden">View →</span>

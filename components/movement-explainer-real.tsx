@@ -143,7 +143,7 @@ export function MovementExplainer({ movement }: MovementExplainerProps) {
                 {[...Array(3)].map((_, i) => (
                   <div
                     key={i}
-                    className="h-2 w-2 animate-pulse rounded-full bg-seismo-pulse/60"
+                    className="h-2 w-2 animate-pulse rounded-full bg-tremor-pulse/60"
                     style={{ animationDelay: `${i * 0.15}s` }}
                   />
                 ))}

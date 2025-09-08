@@ -3,14 +3,14 @@
 import { MarketMovement } from '@/lib/types';
 import { memo } from 'react';
 
-interface SeismoCardProps {
+interface TremorCardProps {
   movement: MarketMovement;
   isSelected?: boolean;
   onClick?: () => void;
   onAIAnalysis?: (movement: MarketMovement) => void;
 }
 
-export const SeismoCard = memo(
+export const TremorCard = memo(
   function SeismoCard({
     movement,
     isSelected = false,
@@ -48,11 +48,11 @@ export const SeismoCard = memo(
               className={`flex-1 transition-all duration-300 ${
                 i < filled
                   ? magnitude >= 7.5
-                    ? 'bg-seismo-extreme'
+                    ? 'bg-tremor-extreme'
                     : magnitude >= 5
-                      ? 'bg-seismo-high'
+                      ? 'bg-tremor-high'
                       : magnitude >= 2.5
-                        ? 'bg-seismo-moderate'
+                        ? 'bg-tremor-moderate'
                         : 'bg-muted-foreground/30'
                   : 'bg-muted-foreground/10'
               }`}
@@ -76,8 +76,8 @@ export const SeismoCard = memo(
           <div
             className={`absolute left-0 right-0 top-0 h-0.5 ${
               movement.seismoScore >= 7.5
-                ? 'bg-seismo-extreme'
-                : 'bg-seismo-high'
+                ? 'bg-tremor-extreme'
+                : 'bg-tremor-high'
             }`}
           />
         ) : null}
@@ -130,11 +130,11 @@ export const SeismoCard = memo(
                 <div
                   className={`text-xl font-bold ${
                     movement.seismoScore && movement.seismoScore >= 7.5
-                      ? 'text-seismo-extreme'
+                      ? 'text-tremor-extreme'
                       : movement.seismoScore && movement.seismoScore >= 5
-                        ? 'text-seismo-high'
+                        ? 'text-tremor-high'
                         : movement.seismoScore && movement.seismoScore >= 2.5
-                          ? 'text-seismo-moderate'
+                          ? 'text-tremor-moderate'
                           : 'text-white'
                   }`}
                 >
@@ -198,7 +198,7 @@ export const SeismoCard = memo(
                         e.stopPropagation();
                         onAIAnalysis(movement);
                       }}
-                      className="flex items-center gap-1.5 rounded border border-seismo-pulse/30 bg-seismo-pulse/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-seismo-pulse transition-all hover:border-seismo-pulse/50 hover:bg-seismo-pulse/10"
+                      className="flex items-center gap-1.5 rounded border border-tremor-pulse/30 bg-tremor-pulse/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-tremor-pulse transition-all hover:border-tremor-pulse/50 hover:bg-tremor-pulse/10"
                     >
                       <svg
                         width="10"

@@ -2,10 +2,10 @@
 
 import { Header } from '@/components/header';
 import { Sidebar } from '@/components/sidebar';
-import { SeismoCard } from '@/components/seismo-card';
-import { SeismoDetailPanel } from '@/components/seismo-detail-panel';
+import { TremorCard } from '@/components/tremor-card';
+import { TremorDetailPanel } from '@/components/tremor-detail-panel';
 import { AIAnalysisModal } from '@/components/ai-analysis-modal';
-import { useSeismoData } from '@/hooks/use-seismo-data';
+import { useTremorData } from '@/hooks/use-tremor-data';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
   const [aiAnalysisMovement, setAIAnalysisMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isChangingWindow, setIsChangingWindow] = useState(false);
-  const { movements, loading } = useSeismoData(windowSel);
+  const { movements, loading } = useTremorData(windowSel);
 
   // Filter movements based on intensity
   const filteredMovements = movements.filter((m) => {
@@ -140,7 +140,7 @@ export default function Home() {
                     {[...Array(3)].map((_, i) => (
                       <div
                         key={i}
-                        className="h-6 w-1 animate-pulse rounded-full bg-seismo-pulse/60"
+                        className="h-6 w-1 animate-pulse rounded-full bg-tremor-pulse/60"
                         style={{ animationDelay: `${i * 0.15}s` }}
                       />
                     ))}
@@ -189,8 +189,8 @@ export default function Home() {
                             <div
                               className={`absolute left-0 right-0 top-0 z-10 h-0.5 ${
                                 filteredMovements[0].seismoScore >= 7.5
-                                  ? 'bg-seismo-extreme'
-                                  : 'bg-seismo-high'
+                                  ? 'bg-tremor-extreme'
+                                  : 'bg-tremor-high'
                               }`}
                             />
                           )}
@@ -211,8 +211,8 @@ export default function Home() {
                               {filteredMovements[0]?.seismoScore &&
                                 filteredMovements[0].seismoScore >= 7.5 && (
                                   <div className="flex items-center gap-1">
-                                    <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-seismo-extreme" />
-                                    <span className="text-[9px] font-bold uppercase text-seismo-extreme">
+                                    <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-tremor-extreme" />
+                                    <span className="text-[9px] font-bold uppercase text-tremor-extreme">
                                       EXTREME
                                     </span>
                                   </div>
@@ -221,8 +221,8 @@ export default function Home() {
                                 filteredMovements[0].seismoScore >= 5 &&
                                 filteredMovements[0].seismoScore < 7.5 && (
                                   <div className="flex items-center gap-1">
-                                    <div className="h-1.5 w-1.5 rounded-full bg-seismo-high" />
-                                    <span className="text-[9px] font-bold uppercase text-seismo-high">
+                                    <div className="h-1.5 w-1.5 rounded-full bg-tremor-high" />
+                                    <span className="text-[9px] font-bold uppercase text-tremor-high">
                                       HIGH
                                     </span>
                                   </div>
@@ -269,14 +269,14 @@ export default function Home() {
                                   className={`text-2xl font-bold ${
                                     filteredMovements[0].seismoScore &&
                                     filteredMovements[0].seismoScore >= 7.5
-                                      ? 'text-seismo-extreme'
+                                      ? 'text-tremor-extreme'
                                       : filteredMovements[0].seismoScore &&
                                           filteredMovements[0].seismoScore >= 5
-                                        ? 'text-seismo-high'
+                                        ? 'text-tremor-high'
                                         : filteredMovements[0].seismoScore &&
                                             filteredMovements[0].seismoScore >=
                                               2.5
-                                          ? 'text-seismo-moderate'
+                                          ? 'text-tremor-moderate'
                                           : 'text-zinc-300'
                                   }`}
                                 >
@@ -371,7 +371,7 @@ export default function Home() {
                       {[...Array(3)].map((_, i) => (
                         <div
                           key={i}
-                          className="h-6 w-1 animate-pulse rounded-full bg-seismo-pulse/60"
+                          className="h-6 w-1 animate-pulse rounded-full bg-tremor-pulse/60"
                           style={{ animationDelay: `${i * 0.15}s` }}
                         />
                       ))}
@@ -382,7 +382,7 @@ export default function Home() {
                 {/* Card Grid */}
                 <div className="grid grid-cols-1 gap-3 transition-all duration-300 ease-in-out md:grid-cols-2 md:gap-4">
                   {filteredMovements.map((move) => (
-                    <SeismoCard
+                    <TremorCard
                       key={move.id}
                       movement={move}
                       isSelected={selectedMovement?.id === move.id}
@@ -425,7 +425,7 @@ export default function Home() {
       </div>
 
       {/* Bottom HUD Panel */}
-      <SeismoDetailPanel
+      <TremorDetailPanel
         movement={selectedMovement}
         onClose={() => setSelectedMovement(null)}
       />

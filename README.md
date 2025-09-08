@@ -1,15 +1,15 @@
-# SEISMO.ONE
+# TREMOR.LIVE
 
-Real-time prediction market seismic monitoring dashboard that tracks and visualizes market movements with intensity scoring.
+Real-time prediction market tremor monitoring dashboard that tracks and visualizes market movements with intensity scoring.
 
 ## Overview
 
-SEISMO.ONE monitors prediction markets from Polymarket in real-time, calculating "seismic intensity" scores based on price movements, volume, and market volatility. The dashboard provides instant insights into significant market shifts and emerging trends.
+TREMOR.LIVE monitors prediction markets from Polymarket in real-time, calculating "tremor intensity" scores based on price movements, volume, and market volatility. The dashboard provides instant insights into significant market shifts and emerging trends.
 
 ## Features
 
 - **Real-time Market Monitoring** - Tracks prediction markets every 15-60 seconds
-- **Seismo Intensity Scoring** - 0-10 scale quantifying market movement significance
+- **Tremor Intensity Scoring** - 0-10 scale quantifying market movement significance
 - **Multi-timeframe Analysis** - 5-minute, 1-hour, and 24-hour windows
 - **Smart Data Prioritization** - Hot/warm/cold market classification for efficient syncing
 - **Intensity Filtering** - Filter movements by intensity levels (Extreme, High, Moderate, Low)

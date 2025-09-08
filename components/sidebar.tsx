@@ -35,14 +35,14 @@ export function Sidebar({
       id: 'extreme',
       label: 'EXTREME',
       range: '7.5+',
-      color: 'bg-seismo-extreme',
+      color: 'bg-tremor-extreme',
     },
-    { id: 'high', label: 'HIGH', range: '5.0-7.5', color: 'bg-seismo-high' },
+    { id: 'high', label: 'HIGH', range: '5.0-7.5', color: 'bg-tremor-high' },
     {
       id: 'moderate',
       label: 'MODERATE',
       range: '2.5-5.0',
-      color: 'bg-seismo-moderate',
+      color: 'bg-tremor-moderate',
     },
     { id: 'low', label: 'LOW', range: '<2.5', color: 'bg-zinc-700' },
   ];
@@ -95,8 +95,8 @@ export function Sidebar({
                 <div className="flex items-center gap-3">
                   {filter.id === 'all' ? (
                     <img
-                      src="/seismo-icon.svg"
-                      alt="Seismo logo"
+                      src="/tremor-icon.svg"
+                      alt="Tremor logo"
                       className="h-8 w-8"
                     />
                   ) : (

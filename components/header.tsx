@@ -46,12 +46,12 @@ export const Header = memo(function Header() {
               />
             </svg>
             <h1 className="text-xs font-bold tracking-[0.15em] md:text-sm md:tracking-[0.2em]">
-              SEISMO.ONE
+              TREMOR.LIVE
             </h1>
           </div>
           <div className="hidden items-center gap-2 text-xs lg:flex">
             <span className="text-zinc-600">•</span>
-            <span className="text-zinc-400">WHERE MONEY KNOWS FIRST</span>
+            <span className="text-zinc-400">WHERE MONEY TALKS FIRST</span>
           </div>
         </div>
 
@@ -63,9 +63,9 @@ export const Header = memo(function Header() {
             How
           </button>
           {isLive && (
-            <span className="flex items-center gap-1 rounded border border-seismo-pulse/50 bg-seismo-pulse/10 px-2 py-0.5">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-seismo-pulse"></span>
-              <span className="text-[9px] font-bold uppercase tracking-wider text-seismo-pulse">
+            <span className="flex items-center gap-1 rounded border border-tremor-pulse/50 bg-tremor-pulse/10 px-2 py-0.5">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-tremor-pulse"></span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-tremor-pulse">
                 LIVE
               </span>
             </span>
@@ -91,7 +91,7 @@ export const Header = memo(function Header() {
               {/* Header - fixed */}
               <div className="flex items-start justify-between border-b border-zinc-800/30 p-4 md:p-6">
                 <h2 className="text-base font-bold text-zinc-100 md:text-lg">
-                  How SEISMO.ONE Works
+                  How TREMOR Works
                 </h2>
                 <button
                   onClick={() => setShowAbout(false)}
@@ -145,7 +145,7 @@ export const Header = memo(function Header() {
                       >
                         <path d="M3 12h18M12 3v18M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07" />
                       </svg>
-                      The Seismo Score (0-10)
+                      The Tremor Score (0-10)
                     </h3>
                     <p className="leading-relaxed text-zinc-400">
                       Our logarithmic scoring algorithm detects market
@@ -223,21 +223,21 @@ export const Header = memo(function Header() {
                     <ul className="ml-4 list-none space-y-1 text-zinc-400">
                       <li>
                         •{' '}
-                        <span className="font-semibold text-seismo-extreme">
+                        <span className="font-semibold text-tremor-extreme">
                           Extreme (7.5+)
                         </span>{' '}
                         — Major event unfolding now
                       </li>
                       <li>
                         •{' '}
-                        <span className="font-semibold text-seismo-high">
+                        <span className="font-semibold text-tremor-high">
                           High (5-7.5)
                         </span>{' '}
                         — Significant news likely incoming
                       </li>
                       <li>
                         •{' '}
-                        <span className="font-semibold text-seismo-moderate">
+                        <span className="font-semibold text-tremor-moderate">
                           Moderate (2.5-5)
                         </span>{' '}
                         — Notable shifts worth monitoring
@@ -247,7 +247,7 @@ export const Header = memo(function Header() {
 
                   <div className="border-t border-zinc-800/30 pt-4">
                     <p className="text-xs leading-relaxed text-zinc-500">
-                      SEISMO.ONE monitors 500+ prediction markets in real-time,
+                      TREMOR monitors 500+ prediction markets in real-time,
                       surfacing only the most significant movements. We&apos;re
                       not predicting the future — we&apos;re showing you where
                       smart money thinks it&apos;s heading.
