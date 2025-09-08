@@ -68,7 +68,6 @@ export const getRecentActivity = query({
         type: "new_event",
         message: event.title,
         timestamp: event.updatedAt,
-        marketCount: event.marketCount,
         volume: event.volume,
         direction: 'neutral',
         severity: 'low',
