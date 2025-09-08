@@ -32,7 +32,7 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
   return (
     <>
       {/* Centered Modal */}
-      <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 transition-all duration-300 ${
+      <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}>
         {/* Backdrop */}
@@ -43,12 +43,12 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
           onClick={onClose}
         />
         
-        {/* Modal Content */}
+        {/* Modal Content - fixed height on mobile */}
         <div className={`relative w-full max-w-5xl transition-all duration-300 transform ${
           isVisible ? 'scale-100' : 'scale-95'
         }`}>
-          <div className="bg-zinc-950 border border-zinc-800/50 flex flex-col" 
-            style={{ maxHeight: '90vh', boxShadow: '0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 50px rgba(0,0,0,0.8)' }}>
+          <div className="bg-zinc-950 border border-zinc-800/50 flex flex-col h-[70vh] md:h-auto md:max-h-[85vh]" 
+            style={{ boxShadow: '0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 50px rgba(0,0,0,0.8)' }}>
           {/* Compact header */}
           <div className="px-4 py-3 border-b border-zinc-800/30">
             <div className="flex items-start justify-between gap-3">
@@ -115,7 +115,7 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
             </div>
           </div>
           
-          <div className="px-4 md:px-6 py-4 md:py-6 overflow-y-auto flex-1">
+          <div className="px-4 py-3 md:py-4 overflow-y-auto flex-1">
             {/* Individual Market Movements */}
             {movement.marketMovements && movement.marketMovements.length > 0 ? (
               <div>
@@ -131,19 +131,19 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
                         {displayMarkets.map((market, idx) => {
                           return (
                             <div key={market.conditionId} className="group">
-                              <div className="flex items-start justify-between mb-2">
-                                <h4 className="text-sm font-medium flex-1 pr-4 text-zinc-300 leading-relaxed">{market.question}</h4>
+                              <div className="flex items-start justify-between mb-1">
+                                <h4 className="text-xs md:text-sm font-medium flex-1 pr-3 text-zinc-300 leading-relaxed">{market.question}</h4>
                                 {Math.abs(market.change) >= 0.1 && (
                                   <div className={`flex items-baseline gap-1 ${
                                     market.change > 0 ? 'text-trend-up' : 'text-trend-down'
                                   }`}>
                                     <span className="text-xs">{market.change > 0 ? '↑' : '↓'}</span>
-                                    <span className="text-lg font-bold">{Math.abs(market.change).toFixed(1)}</span>
+                                    <span className="text-base md:text-lg font-bold">{Math.abs(market.change).toFixed(1)}</span>
                                     <span className="text-xs text-zinc-500">%</span>
                                   </div>
                                 )}
                               </div>
-                              <div className="flex items-center gap-4 text-xs mb-4 text-zinc-500">
+                              <div className="flex items-center gap-3 text-xs mb-3 text-zinc-500">
                                 <span>Now {Math.round(market.currPrice * 100)}%</span>
                                 <span>•</span>
                                 <span>Was {Math.round(market.prevPrice * 100)}%</span>
@@ -155,7 +155,7 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
                                 )}
                               </div>
                               {idx < displayMarkets.length - 1 && (
-                                <div className="border-b border-zinc-800/30 mb-4" />
+                                <div className="border-b border-zinc-800/30 mb-3" />
                               )}
                             </div>
                           );

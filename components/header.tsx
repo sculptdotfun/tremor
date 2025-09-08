@@ -70,10 +70,11 @@ export const Header = memo(function Header() {
           onClick={() => setShowAbout(false)}
         />
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl p-4">
-          <div className="bg-zinc-950 border border-zinc-800/50 p-6 md:p-8"
+          <div className="bg-zinc-950 border border-zinc-800/50 flex flex-col max-h-[80vh] md:max-h-[85vh]"
             style={{boxShadow: '0 0 0 1px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.8)'}}>
-            <div className="flex items-start justify-between mb-6">
-              <h2 className="text-lg font-bold text-zinc-100">How SEISMO.ONE Works</h2>
+            {/* Header - fixed */}
+            <div className="flex items-start justify-between p-4 md:p-6 border-b border-zinc-800/30">
+              <h2 className="text-base md:text-lg font-bold text-zinc-100">How SEISMO.ONE Works</h2>
               <button
                 onClick={() => setShowAbout(false)}
                 className="text-zinc-400 hover:text-zinc-200 transition-colors"
@@ -84,7 +85,9 @@ export const Header = memo(function Header() {
               </button>
             </div>
             
-            <div className="space-y-4 text-sm">
+            {/* Content - scrollable */}
+            <div className="overflow-y-auto flex-1 p-4 md:p-6">
+            <div className="space-y-4 text-xs md:text-sm">
               <div>
                 <h3 className="font-semibold text-zinc-200 mb-2 uppercase text-xs tracking-wider flex items-center gap-2">
                   <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -155,6 +158,7 @@ export const Header = memo(function Header() {
                   We&apos;re not predicting the future — we&apos;re showing you where smart money thinks it&apos;s heading.
                 </p>
               </div>
+            </div>
             </div>
           </div>
         </div>
