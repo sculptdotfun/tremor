@@ -85,79 +85,81 @@ export const SeismoCard = memo(function SeismoCard({ movement, isSelected = fals
           </div>
         )}
         
-        <div className="flex-1 p-5">
-          {/* Title */}
-          <h3 className="text-sm font-semibold leading-relaxed line-clamp-2 mb-3 text-zinc-100">
-            {movement.title}
-          </h3>
-          
-          {/* Main metrics row */}
-          <div className="flex items-center justify-between mb-3">
-            {/* Price change - primary metric */}
-            <div className="flex items-baseline gap-3">
-              {movement.change && Math.abs(movement.change) >= 0.1 ? (
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-zinc-100">{Math.abs(movement.change).toFixed(1)}%</span>
-                  <span className="text-xs text-zinc-500">
-                    {movement.marketMovements && movement.marketMovements.length > 1 ? 'max shift' : 'shift'}
-                  </span>
-                </div>
-              ) : (
-                <div className="text-2xl font-bold text-zinc-600">—</div>
-              )}
-              
-              {/* Current probability */}
-              <div className="text-sm text-zinc-400">
-                {movement.marketMovements && movement.marketMovements.length > 1 
-                  ? `${movement.marketMovements.length} markets`
-                  : `Now ${movement.currentValue}%`}
-              </div>
-            </div>
-            
-            {/* Magnitude score with label */}
-            <div className="text-right">
-              <div className={`text-lg font-bold ${
-                movement.seismoScore && movement.seismoScore >= 7.5 
-                  ? 'text-seismo-extreme' 
-                  : movement.seismoScore && movement.seismoScore >= 5 
-                  ? 'text-seismo-high'
-                  : movement.seismoScore && movement.seismoScore >= 2.5
-                  ? 'text-seismo-moderate'
-                  : 'text-zinc-600'
-              }`}>
-                {movement.seismoScore?.toFixed(1) || '0.0'}
-              </div>
-              <div className="text-[9px] text-zinc-600 uppercase">intensity</div>
-            </div>
+        <div className="flex-1 p-4">
+          {/* Header row with title and time */}
+          <div className="flex items-start justify-between mb-3 gap-2">
+            <h3 className="text-sm font-semibold leading-relaxed line-clamp-2 text-zinc-100 flex-1">
+              {movement.title}
+            </h3>
+            <span className={`text-xs whitespace-nowrap ${
+              formatTime(movement.timestamp) === 'NOW' ? 'text-zinc-300 font-medium' : 'text-zinc-500'
+            }`}>
+              {formatTime(movement.timestamp)}
+            </span>
           </div>
           
           {/* Intensity Bar */}
-          <div className="mt-2 mb-2">
+          <div className="mb-3">
             {renderMagnitudeBar()}
           </div>
           
-          {/* Bottom row - metadata */}
-          <div className="flex items-center justify-between text-xs text-zinc-500">
-            <div className="flex items-center gap-3">
-              <span className={`${
-                formatTime(movement.timestamp) === 'NOW' ? 'text-zinc-300' : 'text-zinc-500'
-              }`}>
-                {formatTime(movement.timestamp)}
-              </span>
+          {/* Metrics row */}
+          <div className="flex items-end justify-between gap-3">
+            {/* Left side - price movement */}
+            <div className="flex-1">
+              {movement.change && Math.abs(movement.change) >= 0.1 ? (
+                <div className="space-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xl font-bold text-zinc-100">
+                      {movement.change > 0 ? '+' : ''}{movement.change.toFixed(1)}%
+                    </span>
+                    <span className="text-xs text-zinc-500">
+                      {movement.previousValue && movement.currentValue 
+                        ? `${movement.previousValue}% → ${movement.currentValue}%`
+                        : movement.marketMovements && movement.marketMovements.length > 1
+                        ? `across ${movement.marketMovements.length} markets`
+                        : 'price shift'}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-sm text-zinc-600">No significant movement</div>
+              )}
+            </div>
+            
+            {/* Right side - intensity and volume */}
+            <div className="text-right space-y-1">
+              <div className="flex items-baseline gap-2 justify-end">
+                <div className={`text-lg font-bold ${
+                  movement.seismoScore && movement.seismoScore >= 7.5 
+                    ? 'text-seismo-extreme' 
+                    : movement.seismoScore && movement.seismoScore >= 5 
+                    ? 'text-seismo-high'
+                    : movement.seismoScore && movement.seismoScore >= 2.5
+                    ? 'text-seismo-moderate'
+                    : 'text-zinc-600'
+                }`}>
+                  {movement.seismoScore?.toFixed(1) || '0.0'}
+                </div>
+                <span className="text-[9px] text-zinc-600 uppercase">intensity</span>
+              </div>
               {(() => {
                 const vol = formatVolume(movement.totalVolume || movement.volume || 0);
                 return vol ? (
-                  <>
-                    <span className="text-zinc-700">•</span>
-                    <span>{vol} vol</span>
-                  </>
+                  <div className="text-xs text-zinc-500">{vol} vol</div>
                 ) : null;
               })()}
             </div>
-            <span className="uppercase text-[10px] tracking-wider">
-              {movement.category || 'GENERAL'}
-            </span>
           </div>
+          
+          {/* Category tag */}
+          {movement.category && (
+            <div className="mt-3 pt-2 border-t border-zinc-800/50">
+              <span className="inline-block px-2 py-0.5 bg-zinc-900 text-[10px] uppercase tracking-wider text-zinc-500">
+                {movement.category}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
