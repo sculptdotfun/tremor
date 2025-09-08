@@ -181,15 +181,16 @@ export default function Home() {
                         <div className="absolute bottom-0 right-0 top-0 z-10 w-8 bg-gradient-to-l from-zinc-950 to-transparent" />
 
                         {/* Top accent for high intensity */}
-                        {filteredMovements[0].seismoScore >= 5 && (
-                          <div
-                            className={`absolute left-0 right-0 top-0 z-10 h-0.5 ${
-                              filteredMovements[0].seismoScore >= 7.5
-                                ? 'bg-seismo-extreme'
-                                : 'bg-seismo-high'
-                            }`}
-                          />
-                        )}
+                        {filteredMovements[0]?.seismoScore &&
+                          filteredMovements[0].seismoScore >= 5 && (
+                            <div
+                              className={`absolute left-0 right-0 top-0 z-10 h-0.5 ${
+                                filteredMovements[0].seismoScore >= 7.5
+                                  ? 'bg-seismo-extreme'
+                                  : 'bg-seismo-high'
+                              }`}
+                            />
+                          )}
 
                         {/* Content */}
                         <div className="relative z-10 p-4 md:p-6">
