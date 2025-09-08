@@ -189,7 +189,7 @@ export const generateSummaryCron: any = internalAction({
   args: {},
   handler: async (ctx) => {
     console.log('[Cron] Generating market summary...');
-    const result = await ctx.runAction((internal.marketSummary as any).generateSummary);
+    const result = await ctx.runAction((internal as any).marketSummary.generateSummary);
     console.log('[Cron] Market summary generation result:', result.success ? 'success' : 'failed');
     return result;
   },
