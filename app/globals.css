@@ -1,26 +1,129 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 255 255 255;
+    --foreground: 15 15 15;
+    --border: 220 220 220;
+    --muted: 115 115 115;
+    --muted-foreground: 100 100 100;
+    /* Seismo scale: red/orange for extreme, yellow for warning, blue for normal */
+    --seismo-extreme: 255 59 48;  /* Bright red-orange for extreme movements */
+    --seismo-high: 255 149 0;     /* Orange for high activity */
+    --seismo-moderate: 255 204 0; /* Yellow for moderate */
+    --seismo-low: 52 199 89;      /* Green for stable/low */
+    --seismo-pulse: 0 122 255;    /* Blue for live pulse/activity */
+    /* Direction indicators */
+    --trend-up: 52 199 89;        /* Green for upward */
+    --trend-down: 255 59 48;      /* Red for downward */
+    /* Original accents kept for compatibility */
+    --accent-green: 52 199 89;
+    --accent-red: 255 59 48;
+    --accent-yellow: 255 204 0;
+    --accent-blue: 0 122 255;
+    --card: 255 255 255;
+  }
+
+  .dark {
+    --background: 5 5 5;
+    --foreground: 245 245 245;
+    --border: 35 35 35;
+    --muted: 100 100 100;
+    --muted-foreground: 160 160 160;
+    /* Seismo scale - more vibrant in dark mode */
+    --seismo-extreme: 255 69 58;  /* Brighter red-orange */
+    --seismo-high: 255 159 10;    /* Brighter orange */
+    --seismo-moderate: 255 214 10;/* Brighter yellow */
+    --seismo-low: 48 209 88;      /* Brighter green */
+    --seismo-pulse: 10 132 255;   /* Brighter blue */
+    /* Direction indicators */
+    --trend-up: 48 209 88;
+    --trend-down: 255 69 58;
+    /* Original accents */
+    --accent-green: 48 209 88;
+    --accent-red: 255 69 58;
+    --accent-yellow: 255 214 10;
+    --accent-blue: 10 132 255;
+    --card: 15 15 15;
   }
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-feature-settings: "tnum" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+::selection {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* Scrolling ticker animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 25s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Vertical scrolling for activity feed */
+@keyframes scroll-vertical {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-scroll-vertical {
+  animation: scroll-vertical 20s linear infinite;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040;
+  border: 1px solid #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #808080;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
