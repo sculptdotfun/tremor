@@ -108,18 +108,21 @@ export const Header = memo(function Header() {
                   <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M3 12h18M12 3v18M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/>
                   </svg>
-                  The Intensity Score
+                  The Seismo Score (0-10)
                 </h3>
                 <p className="text-zinc-400 leading-relaxed">
-                  We calculate an intensity score (0-10) for every market movement based on:
+                  Our logarithmic scoring algorithm detects market earthquakes:
                 </p>
                 <ul className="list-none text-zinc-400 mt-2 space-y-1 ml-4">
-                  <li>• Magnitude — percentage point change (15pp = score 10)</li>
-                  <li>• Liquidity — trading volume as validation ($5K+ for full score)</li>
-                  <li>• Time window — changes tracked over 5min, 1hr, or 24hr periods</li>
+                  <li>• <span className="text-zinc-200">Price Movement</span> — Percentage point changes in probability</li>
+                  <li className="ml-4 text-xs">1pp → 1.0 | 2pp → 2.5 | 5pp → 5.0 | 10pp → 7.5 | 20pp+ → 10.0</li>
+                  <li>• <span className="text-zinc-200">USD Volume</span> — Real money validates the movement</li>
+                  <li className="ml-4 text-xs">&lt;$1K → No score | $1-10K → Gradual | $10K+ → Full multiplier</li>
+                  <li>• <span className="text-zinc-200">Time Windows</span> — 5 min (flash), 1 hour (active), 24 hour (daily)</li>
+                  <li>• <span className="text-zinc-200">Reversals</span> — Extra weight when crossing 50% probability</li>
                 </ul>
                 <p className="text-xs text-zinc-500 mt-2">
-                  Higher shifts with real money behind them score higher. A 10pp move with volume scores ~7, while 15pp+ hits the maximum.
+                  The algorithm aggregates all markets within an event, finding the biggest mover.
                 </p>
               </div>
               

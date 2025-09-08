@@ -29,16 +29,25 @@ export const upsertMarkets = internalMutation({
         .withIndex("by_condition", (q) => q.eq("conditionId", market.conditionId))
         .first();
 
+      // Calculate spread for liquidity assessment
+      const spread = market.bestAsk && market.bestBid ? 
+        market.bestAsk - market.bestBid : undefined;
+      
+      // Estimate USD volume (assuming average price ~0.5)
+      const volumeUsd24hr = market.volume24hr * (market.lastTradePrice || 0.5);
+      
       const marketData = {
         conditionId: market.conditionId,
-        eventId: market.eventId || existing?.eventId || market.conditionId, // Use eventId if provided
+        eventId: market.eventId || existing?.eventId || market.conditionId,
         question: market.question,
         active: market.active,
         closed: market.closed,
         lastTradePrice: market.lastTradePrice,
         bestBid: market.bestBid,
         bestAsk: market.bestAsk,
+        spread,
         volume24hr: market.volume24hr,
+        volumeUsd24hr,
         updatedAt: now,
       };
 
@@ -49,12 +58,18 @@ export const upsertMarkets = internalMutation({
         // Insert new market
         await ctx.db.insert("markets", marketData);
         
-        // Initialize sync state for new market
+        // Initialize sync state with smarter prioritization
+        const volumeUsd = market.volume24hr * (market.lastTradePrice || 0.5);
+        let priority: "hot" | "warm" | "cold";
+        
+        if (volumeUsd > 50000) priority = "hot";      // >$50k daily = hot
+        else if (volumeUsd > 5000) priority = "warm";  // >$5k daily = warm
+        else priority = "cold";                        // <$5k = cold
+        
         await ctx.db.insert("marketSyncState", {
           conditionId: market.conditionId,
           lastTradeFetchMs: 0,
-          priority: market.volume24hr > 100000 ? "hot" : 
-                   market.volume24hr > 10000 ? "warm" : "cold",
+          priority,
         });
       }
     }
@@ -73,7 +88,7 @@ export const getActiveMarkets = query({
     
     const markets = await ctx.db
       .query("markets")
-      .withIndex("by_active", (q) => q.eq("active", true))
+      .withIndex("by_active_volume", (q) => q.eq("active", true))
       .order("desc")
       .take(limit);
     

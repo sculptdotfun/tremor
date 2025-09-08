@@ -98,9 +98,9 @@ export const syncHotTrades = internalAction({
       for (const market of markets) {
         if (!market.market) continue;
         
-        // Fetch trades - always get last 2 hours to ensure we have enough data for scoring
-        // This ensures we have price history for detecting changes
-        const since = Math.floor((Date.now() - 2 * 60 * 60 * 1000) / 1000); // 2 hours ago
+        // Fetch trades - get last 25 hours for 24h scoring window
+        // Plus 1 hour buffer to ensure we have baseline price
+        const since = Math.floor((Date.now() - 25 * 60 * 60 * 1000) / 1000); // 25 hours ago
         
         const params = new URLSearchParams({
           market: market.conditionId,
@@ -125,10 +125,12 @@ export const syncHotTrades = internalAction({
             const transformed = trades
               .filter((t: any) => t.price && t.size && t.timestamp) // Validate required fields
               .map((t: any) => {
-                // Normalize all prices to YES outcome
-                // If it's a NO trade, convert: yes_price = 1 - no_price
+                // CRITICAL FIX: Normalize all prices to YES outcome
+                // Polymarket returns price for the outcome being traded
+                // For NO trades: YES price = 1 - NO price
                 const rawPrice = parseFloat(t.price || "0");
-                const normalizedPrice = t.outcome === "No" ? 1 - rawPrice : rawPrice;
+                const outcome = (t.outcome || t.filler?.outcome || "Yes").toLowerCase();
+                const normalizedPrice = outcome === "no" ? 1 - rawPrice : rawPrice;
                 
                 return {
                   conditionId: market.conditionId,
@@ -177,8 +179,8 @@ export const syncWarmTrades = internalAction({
       for (const market of markets) {
         if (!market.market) continue;
         
-        // Always get last 2 hours of trades for price history
-        const since = Math.floor((Date.now() - 2 * 60 * 60 * 1000) / 1000);
+        // Get last 25 hours for complete 24h window + buffer
+        const since = Math.floor((Date.now() - 25 * 60 * 60 * 1000) / 1000);
         
         const params = new URLSearchParams({
           market: market.conditionId,
@@ -204,7 +206,8 @@ export const syncWarmTrades = internalAction({
               .map((t: any) => {
                 // Normalize all prices to YES outcome
                 const rawPrice = parseFloat(t.price || "0");
-                const normalizedPrice = t.outcome === "No" ? 1 - rawPrice : rawPrice;
+                const outcome = (t.outcome || t.filler?.outcome || "Yes").toLowerCase();
+                const normalizedPrice = outcome === "no" ? 1 - rawPrice : rawPrice;
                 
                 return {
                   conditionId: market.conditionId,

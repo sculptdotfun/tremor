@@ -99,9 +99,9 @@ export const insertTrades = internalMutation({
       }
     }
     
-    // Clean up old snapshots (keep only what we need for scoring)
-    // We score on 5m, 60m windows, so keep 90 minutes of data
-    const cutoff = Date.now() - 90 * 60 * 1000;
+    // Clean up old snapshots (keep 26 hours for 24h scoring + buffer)
+    // We score on 5m, 60m, and 24h (1440m) windows
+    const cutoff = Date.now() - 26 * 60 * 60 * 1000; // 26 hours
     const oldSnapshots = await ctx.db
       .query("priceSnapshots")
       .filter((q) => q.lt(q.field("timestampMs"), cutoff))

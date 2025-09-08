@@ -16,13 +16,12 @@ import type {
 import type * as actions from "../actions.js";
 import type * as activity from "../activity.js";
 import type * as cleanup from "../cleanup.js";
-import type * as clearAllData from "../clearAllData.js";
-import type * as clearData from "../clearData.js";
-import type * as clearSingleTable from "../clearSingleTable.js";
 import type * as crons from "../crons.js";
 import type * as events from "../events.js";
 import type * as http from "../http.js";
 import type * as markets from "../markets.js";
+import type * as migrate from "../migrate.js";
+import type * as prioritization from "../prioritization.js";
 import type * as scoring from "../scoring.js";
 import type * as trades from "../trades.js";
 
@@ -38,13 +37,12 @@ declare const fullApi: ApiFromModules<{
   actions: typeof actions;
   activity: typeof activity;
   cleanup: typeof cleanup;
-  clearAllData: typeof clearAllData;
-  clearData: typeof clearData;
-  clearSingleTable: typeof clearSingleTable;
   crons: typeof crons;
   events: typeof events;
   http: typeof http;
   markets: typeof markets;
+  migrate: typeof migrate;
+  prioritization: typeof prioritization;
   scoring: typeof scoring;
   trades: typeof trades;
 }>;

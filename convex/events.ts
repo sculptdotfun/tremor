@@ -49,7 +49,7 @@ export const getActiveEvents = query({
     
     const events = await ctx.db
       .query("events")
-      .withIndex("by_active", (q) => q.eq("active", true))
+      .withIndex("by_active_volume", (q) => q.eq("active", true))
       .order("desc")
       .take(limit);
     
@@ -69,7 +69,7 @@ export const getEventsToSync = query({
     // Get events sorted by volume
     const events = await ctx.db
       .query("events")
-      .withIndex("by_active", (q) => q.eq("active", true))
+      .withIndex("by_active_volume", (q) => q.eq("active", true))
       .order("desc")
       .take(limit);
     

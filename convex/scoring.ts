@@ -153,9 +153,13 @@ export const computeEventScore = internalMutation({
       const prev = first.price01;
       const curr = last.price01;
       
-      // Use absolute probability change (in percentage points)
-      const absoluteChange = (curr - prev) * 100; // Keep sign for direction
+      // Calculate probability change in percentage points
+      // Also track if this is a reversal (more significant)
+      const absoluteChange = (curr - prev) * 100; // Signed change in pp
       const absoluteChangeMagnitude = Math.abs(absoluteChange);
+      
+      // Check if this is a reversal (crossing 0.5)
+      const isReversal = (prev < 0.5 && curr > 0.5) || (prev > 0.5 && curr < 0.5);
       
       // Sum volume across all snapshots
       const marketVolume = mSnapshots.reduce((sum, s) => sum + (s.volumeSince || 0), 0);
@@ -192,18 +196,40 @@ export const computeEventScore = internalMutation({
     // Sort movements by absolute change magnitude
     allMovements.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
 
-    // Score based on absolute probability change in percentage points
-    // 2pp change = small (score ~2)
-    // 5pp change = moderate (score ~5)  
-    // 10pp change = large (score ~7.5)
-    // 15pp+ change = extreme (score 10)
+    // IMPROVED SCORING ALGORITHM
+    // Use logarithmic scale for more intuitive scores
+    // Also consider USD volume, not just shares
     
-    const volumeThreshold = 5000; // Need decent volume for full score
-    const liquidityMultiplier = Math.min(1, Math.sqrt(topMarketVolume / volumeThreshold));
+    // Convert share volume to approximate USD (assume avg price ~0.5)
+    const avgPrice = 0.5; // Could be improved with actual price data
+    const usdVolume = topMarketVolume * avgPrice;
     
-    // Scale: 15 percentage points = max score of 10
-    const raw = (Math.abs(maxChange) / 15) * 10 * liquidityMultiplier;
-    const seismoScore = Math.max(0, Math.min(10, Math.round(raw * 10) / 10));
+    // Volume thresholds in USD
+    const minVolume = 1000;  // $1k minimum for any score
+    const fullVolume = 10000; // $10k for full score
+    
+    // Volume multiplier (0 to 1)
+    const volumeMultiplier = usdVolume < minVolume ? 0 : 
+      Math.min(1, Math.sqrt((usdVolume - minVolume) / (fullVolume - minVolume)));
+    
+    // Logarithmic scoring for price changes (more intuitive)
+    // 1pp = 1.0, 2pp = 2.5, 5pp = 5.0, 10pp = 7.5, 20pp+ = 10
+    let baseScore: number;
+    const absChange = Math.abs(maxChange);
+    
+    if (absChange < 1) {
+      baseScore = absChange; // Linear for small changes
+    } else if (absChange < 5) {
+      baseScore = 1 + (absChange - 1) * 0.875; // Gradual increase
+    } else if (absChange < 10) {
+      baseScore = 4.5 + (absChange - 5) * 0.5; // Slower increase
+    } else if (absChange < 20) {
+      baseScore = 7 + (absChange - 10) * 0.3; // Asymptotic approach
+    } else {
+      baseScore = 10; // Max score
+    }
+    
+    const seismoScore = Math.max(0, Math.min(10, Math.round(baseScore * volumeMultiplier * 10) / 10));
     
     // Store the score with ALL market movements
     const windowStr = `${args.windowMinutes}m`;

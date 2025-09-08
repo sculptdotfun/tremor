@@ -60,7 +60,15 @@ export function Sidebar({ selectedWindow, onChangeWindow, selectedIntensity, onC
             >
               <div className="p-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 ${filter.color} rounded`} />
+                  {filter.id === 'all' ? (
+                    <img
+                      src="/seismo-icon.svg"
+                      alt="Seismo logo"
+                      className="w-8 h-8"
+                    />
+                  ) : (
+                    <div className={`w-8 h-8 ${filter.color} rounded`} />
+                  )}
                   <div className="flex-1">
                     <div className="flex items-baseline gap-2">
                       {filter.range !== 'Show all' && (
