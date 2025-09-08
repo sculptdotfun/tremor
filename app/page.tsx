@@ -52,15 +52,15 @@ export default function Home() {
     }
   };
   
-  const getActivityLevel = () => {
-    const extremeCount = movements.filter(m => m.seismoScore && m.seismoScore >= 7.5).length;
-    const highCount = movements.filter(m => m.seismoScore && m.seismoScore >= 5).length;
-    
-    if (extremeCount > 0) return { label: 'EXTREME', color: 'text-seismo-extreme', bg: 'bg-seismo-extreme' };
-    if (highCount > 2) return { label: 'HIGH', color: 'text-seismo-high', bg: 'bg-seismo-high' };
-    if (movements.length > 5) return { label: 'MODERATE', color: 'text-seismo-moderate', bg: 'bg-seismo-moderate' };
-    return { label: 'LOW', color: 'text-seismo-low', bg: 'bg-seismo-low' };
-  };
+  // const getActivityLevel = () => {
+  //   const extremeCount = movements.filter(m => m.seismoScore && m.seismoScore >= 7.5).length;
+  //   const highCount = movements.filter(m => m.seismoScore && m.seismoScore >= 5).length;
+  //   
+  //   if (extremeCount > 0) return { label: 'EXTREME', color: 'text-seismo-extreme', bg: 'bg-seismo-extreme' };
+  //   if (highCount > 2) return { label: 'HIGH', color: 'text-seismo-high', bg: 'bg-seismo-high' };
+  //   if (movements.length > 5) return { label: 'MODERATE', color: 'text-seismo-moderate', bg: 'bg-seismo-moderate' };
+  //   return { label: 'LOW', color: 'text-seismo-low', bg: 'bg-seismo-low' };
+  // };
   
   // const activity = getActivityLevel();
   

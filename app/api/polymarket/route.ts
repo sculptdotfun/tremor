@@ -21,14 +21,14 @@ export async function GET(request: Request) {
       
       // Filter and transform markets
       const activeMarkets = markets
-        .filter((market: any) => {
+        .filter((market: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
           // Only include active markets with recent activity
           const hasValidPrice = market.price && parseFloat(market.price) > 0.01 && parseFloat(market.price) < 0.99;
           const isActive = market.active !== false;
           const hasVolume = parseFloat(market.volume || '0') > 0;
           return hasValidPrice && isActive && hasVolume;
         })
-        .map((market: any) => {
+        .map((market: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
           const price = parseFloat(market.price || '0.5');
           return {
             id: market.condition_id || market.token_id || market.id,
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
             liquidity: parseFloat(market.liquidity || '0')
           };
         })
-        .sort((a: any, b: any) => b.volume24hr - a.volume24hr);
+        .sort((a: any, b: any) => b.volume24hr - a.volume24hr); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       console.log('Active markets found:', activeMarkets.length);
       return NextResponse.json(activeMarkets);
@@ -71,15 +71,15 @@ export async function GET(request: Request) {
       const events = await gammaResponse.json();
       console.log('Gamma API returned:', events.length, 'events');
       
-      const allMarkets: any[] = [];
-      events.forEach((event: any) => {
+      const allMarkets: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
+      events.forEach((event: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
         if (event.markets && Array.isArray(event.markets)) {
-          event.markets.forEach((market: any) => {
+          event.markets.forEach((market: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
             let yesPrice = 0;
             try {
               const prices = JSON.parse(market.outcomePrices || '[]');
               yesPrice = parseFloat(prices[0] || '0');
-            } catch (e) {
+            } catch {
               // Skip markets with invalid prices
             }
             

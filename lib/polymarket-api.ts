@@ -82,7 +82,7 @@ class PolymarketAPI {
     }
   }
 
-  connectWebSocket(onMessage: (data: any) => void, onConnect?: () => void) {
+  connectWebSocket(onMessage: (data: any) => void, onConnect?: () => void) { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (this.ws) {
       console.log('WebSocket already connected');
       return;
