@@ -84,12 +84,19 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
                       <span className="text-2xl font-bold text-zinc-100">
                         {Math.abs(movement?.change || 0).toFixed(1)}%
                       </span>
+                      {movement?.marketMovements && movement.marketMovements.length > 1 && (
+                        <span className="text-xs text-zinc-500">
+                          of {movement.marketMovements.length}
+                        </span>
+                      )}
                     </div>
                   </div>
                   
                   {/* Price Movement */}
                   <div>
-                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Price Movement</div>
+                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">
+                      {movement?.marketMovements && movement.marketMovements.length > 1 ? 'Top Market' : 'Price'}
+                    </div>
                     <div className="text-sm">
                       <span className="text-zinc-400">{movement?.previousValue}%</span>
                       <span className="text-zinc-500 mx-1">→</span>
@@ -133,37 +140,6 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
           </div>
           
           <div className="px-4 md:px-6 py-4 md:py-6 overflow-y-auto flex-1">
-            {/* Multi-market summary */}
-            {movement.multiMarketStats && (
-              <div className="bg-zinc-900/30 border border-zinc-800/30 p-4 mb-6">
-                <div className="grid grid-cols-3 gap-6">
-                  <div>
-                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Markets Affected</div>
-                    <div className="text-2xl font-bold text-zinc-100">{movement.multiMarketStats.totalMarkets}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Direction</div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xs text-trend-up">↑</span>
-                        <span className="text-xl font-bold text-zinc-100">{movement.multiMarketStats.marketsUp}</span>
-                      </div>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xs text-trend-down">↓</span>
-                        <span className="text-xl font-bold text-zinc-100">{movement.multiMarketStats.marketsDown}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Volume</div>
-                    <div className="text-2xl font-bold text-zinc-100">
-                      {movement.totalVolume || movement.volume ? formatVolume(movement.totalVolume || movement.volume || 0) : '—'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
             {/* Individual Market Movements */}
             {movement.marketMovements && movement.marketMovements.length > 0 ? (
               <div>
