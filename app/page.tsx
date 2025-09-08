@@ -392,7 +392,7 @@ export default function Home() {
                           selectedMovement?.id === move.id ? null : move
                         );
                       }}
-                      onAIAnalysis={(movement) => {
+                      onAIAnalysis={(movement: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
                         setAIAnalysisMovement(movement);
                       }}
                     />
