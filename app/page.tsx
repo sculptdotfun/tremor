@@ -15,7 +15,7 @@ export default function Home() {
   const [selectedMovement, setSelectedMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isChangingWindow, setIsChangingWindow] = useState(false);
-  const { movements, suddenMoves, loading } = useSeismoData(windowSel);
+  const { movements, loading } = useSeismoData(windowSel);
 
   // Filter movements based on intensity
   const filteredMovements = movements.filter((m) => {
@@ -204,15 +204,17 @@ export default function Home() {
                                   {filteredMovements[0].category}
                                 </span>
                               )}
-                              {filteredMovements[0].seismoScore >= 7.5 && (
-                                <span className="flex items-center gap-1 rounded border border-seismo-extreme/50 bg-seismo-extreme/10 px-2 py-0.5">
-                                  <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-seismo-extreme"></div>
-                                  <span className="text-[9px] font-bold uppercase tracking-wider text-seismo-extreme">
-                                    EXTREME
+                              {filteredMovements[0]?.seismoScore &&
+                                filteredMovements[0].seismoScore >= 7.5 && (
+                                  <span className="flex items-center gap-1 rounded border border-seismo-extreme/50 bg-seismo-extreme/10 px-2 py-0.5">
+                                    <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-seismo-extreme"></div>
+                                    <span className="text-[9px] font-bold uppercase tracking-wider text-seismo-extreme">
+                                      EXTREME
+                                    </span>
                                   </span>
-                                </span>
-                              )}
-                              {filteredMovements[0].seismoScore >= 5 &&
+                                )}
+                              {filteredMovements[0]?.seismoScore &&
+                                filteredMovements[0].seismoScore >= 5 &&
                                 filteredMovements[0].seismoScore < 7.5 && (
                                   <span className="flex items-center gap-1 rounded border border-seismo-high/50 bg-seismo-high/10 px-2 py-0.5">
                                     <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-seismo-high"></div>
