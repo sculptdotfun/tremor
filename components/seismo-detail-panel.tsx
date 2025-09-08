@@ -133,28 +133,33 @@ export function SeismoDetailPanel({ movement, onClose }: SeismoDetailPanelProps)
           </div>
           
           <div className="px-4 md:px-6 py-4 md:py-6 overflow-y-auto flex-1">
-            {/* Simplified stats */}
+            {/* Multi-market summary */}
             {movement.multiMarketStats && (
-              <div className="flex items-center gap-6 mb-6 pb-4 border-b border-zinc-800/30">
-                <div>
-                  <div className="text-2xl font-bold">{movement.multiMarketStats.totalMarkets}</div>
-                  <div className="text-xs text-zinc-500">Total Markets</div>
-                </div>
-                <div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-bold text-trend-up">↑{movement.multiMarketStats.marketsUp}</span>
-                    <span className="text-xl font-bold text-trend-down">↓{movement.multiMarketStats.marketsDown}</span>
+              <div className="bg-zinc-900/30 border border-zinc-800/30 p-4 mb-6">
+                <div className="grid grid-cols-3 gap-6">
+                  <div>
+                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Markets Affected</div>
+                    <div className="text-2xl font-bold text-zinc-100">{movement.multiMarketStats.totalMarkets}</div>
                   </div>
-                  <div className="text-xs text-zinc-500">Movement</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">
-                    {movement.totalVolume || movement.volume ? formatVolume(movement.totalVolume || movement.volume || 0) : '—'}
+                  <div>
+                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Direction</div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xs text-trend-up">↑</span>
+                        <span className="text-xl font-bold text-zinc-100">{movement.multiMarketStats.marketsUp}</span>
+                      </div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xs text-trend-down">↓</span>
+                        <span className="text-xl font-bold text-zinc-100">{movement.multiMarketStats.marketsDown}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-xs text-zinc-500">Volume</div>
-                </div>
-                <div className="ml-auto text-xs text-zinc-500 uppercase">
-                  {movement.category || 'GENERAL'}
+                  <div>
+                    <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Volume</div>
+                    <div className="text-2xl font-bold text-zinc-100">
+                      {movement.totalVolume || movement.volume ? formatVolume(movement.totalVolume || movement.volume || 0) : '—'}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
