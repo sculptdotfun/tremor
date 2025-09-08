@@ -15,6 +15,8 @@ import type {
 } from "convex/server";
 import type * as actions from "../actions.js";
 import type * as activity from "../activity.js";
+import type * as cleanup from "../cleanup.js";
+import type * as clearAllData from "../clearAllData.js";
 import type * as clearData from "../clearData.js";
 import type * as clearSingleTable from "../clearSingleTable.js";
 import type * as crons from "../crons.js";
@@ -35,6 +37,8 @@ import type * as trades from "../trades.js";
 declare const fullApi: ApiFromModules<{
   actions: typeof actions;
   activity: typeof activity;
+  cleanup: typeof cleanup;
+  clearAllData: typeof clearAllData;
   clearData: typeof clearData;
   clearSingleTable: typeof clearSingleTable;
   crons: typeof crons;

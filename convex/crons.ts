@@ -38,4 +38,11 @@ crons.daily(
   internal.actions.computeAllBaselines
 );
 
+// Clean up old data daily at 3 AM UTC
+crons.daily(
+  "cleanup old data",
+  { hourUTC: 3, minuteUTC: 0 },
+  internal.cleanup.cleanupOldData
+);
+
 export default crons;
