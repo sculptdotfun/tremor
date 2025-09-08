@@ -8,7 +8,7 @@ import { useSeismoData } from '@/hooks/use-seismo-data';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [windowSel, setWindowSel] = useState<'5m' | '60m' | '1440m'>('60m');
+  const [windowSel, setWindowSel] = useState<'5m' | '60m' | '1440m'>('1440m'); // Default to daily
   const [intensityFilter, setIntensityFilter] = useState<'all' | 'extreme' | 'high' | 'moderate' | 'low'>('all');
   const [selectedMovement, setSelectedMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -132,26 +132,7 @@ export default function Home() {
             <>
               {/* Sticky Header Section */}
               <div className="flex-shrink-0 px-4 md:px-6 pt-4 md:pt-6 pb-4 bg-background">
-                {/* Extreme Activity Alert - updated design */}
-                {suddenMoves.length > 0 && (
-                  <div className="mb-6 bg-gradient-to-r from-seismo-extreme/5 to-transparent border-l-4 border-seismo-extreme p-4">
-                    <div className="flex items-start gap-4">
-                      <div className="w-2 h-2 bg-seismo-extreme rounded-full animate-pulse mt-1.5"></div>
-                      <div className="flex-1">
-                        <h2 className="text-xs font-semibold text-seismo-extreme uppercase tracking-wider mb-1">
-                          Alert • Intensity {suddenMoves[0].seismoScore?.toFixed(1)}
-                        </h2>
-                        <div className="text-base font-semibold text-foreground">
-                          {suddenMoves[0].title}
-                        </div>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          {Math.abs(suddenMoves[0].change).toFixed(1)}% shift • 
-                          {suddenMoves[0].volume && ` $${(suddenMoves[0].volume / 1000).toFixed(0)}K volume`}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {/* Removed separate alert - highlighting biggest shift in hero instead */}
                 
                 {/* Hero Banner - Narrative */}
                 <div className="bg-zinc-950 border border-zinc-800/50 mb-6"
@@ -161,8 +142,38 @@ export default function Home() {
                   <div className="flex flex-col lg:flex-row">
                     {/* Live Event Section - Left on desktop, top on mobile */}
                     {filteredMovements.length > 0 && filteredMovements[0] && (
-                      <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-zinc-800/50 p-4 md:p-6 bg-zinc-900/20">
-                        <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-3 md:mb-4 font-semibold">BIGGEST SHIFT</div>
+                      <div className={`w-full lg:w-80 border-b lg:border-b-0 lg:border-r p-4 md:p-6 relative ${
+                        filteredMovements[0].seismoScore >= 7.5 
+                          ? 'bg-gradient-to-br from-seismo-extreme/10 to-zinc-900/20 border-seismo-extreme/30' 
+                          : filteredMovements[0].seismoScore >= 5
+                          ? 'bg-gradient-to-br from-seismo-high/10 to-zinc-900/20 border-seismo-high/30'
+                          : 'border-zinc-800/50 bg-zinc-900/20'
+                      }`}>
+                        {/* Intensity indicator for high scores */}
+                        {filteredMovements[0].seismoScore >= 5 && (
+                          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent" 
+                            style={{
+                              backgroundImage: filteredMovements[0].seismoScore >= 7.5 
+                                ? 'linear-gradient(to right, transparent, rgb(239 68 68), transparent)'
+                                : 'linear-gradient(to right, transparent, rgb(251 146 60), transparent)'
+                            }}
+                          />
+                        )}
+                        <div className="flex items-center gap-2 mb-3 md:mb-4">
+                          <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">BIGGEST SHIFT</div>
+                          {filteredMovements[0].seismoScore >= 7.5 && (
+                            <div className="flex items-center gap-1">
+                              <div className="w-1.5 h-1.5 bg-seismo-extreme rounded-full animate-pulse"></div>
+                              <span className="text-[9px] text-seismo-extreme uppercase tracking-wider font-bold">EXTREME</span>
+                            </div>
+                          )}
+                          {filteredMovements[0].seismoScore >= 5 && filteredMovements[0].seismoScore < 7.5 && (
+                            <div className="flex items-center gap-1">
+                              <div className="w-1.5 h-1.5 bg-seismo-high rounded-full animate-pulse"></div>
+                              <span className="text-[9px] text-seismo-high uppercase tracking-wider font-bold">HIGH</span>
+                            </div>
+                          )}
+                        </div>
                         <div className="space-y-4">
                           <div className="flex items-start gap-3">
                             {filteredMovements[0].image && (
@@ -187,14 +198,39 @@ export default function Home() {
                           </div>
                           <div className="pt-3 border-t border-zinc-800/30">
                             <div className="flex items-end justify-between">
-                              <div>
+                              <div className="flex-1">
                                 <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Movement</div>
-                                <div className="flex items-baseline gap-1">
-                                  <span className="text-3xl font-bold text-zinc-100">
-                                    {Math.abs(filteredMovements[0].change).toFixed(1)}
-                                  </span>
-                                  <span className="text-xl text-zinc-400">%</span>
-                                </div>
+                                {/* Show specific market movement if multi-market */}
+                                {filteredMovements[0].marketMovements && filteredMovements[0].marketMovements.length > 1 ? (
+                                  <div>
+                                    <div className="text-[9px] text-zinc-400 mb-1">
+                                      {filteredMovements[0].marketMovements[0].question.length > 40 
+                                        ? filteredMovements[0].marketMovements[0].question.substring(0, 40) + '...'
+                                        : filteredMovements[0].marketMovements[0].question}
+                                    </div>
+                                    <div className="flex items-baseline gap-1">
+                                      <span className="text-sm text-zinc-400">
+                                        {(filteredMovements[0].marketMovements[0].prevPrice * 100).toFixed(0)}%
+                                      </span>
+                                      <span className="text-zinc-600">→</span>
+                                      <span className="text-xl font-bold text-zinc-100">
+                                        {(filteredMovements[0].marketMovements[0].currPrice * 100).toFixed(0)}%
+                                      </span>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  /* Single market - show YES price movement */
+                                  <div className="flex items-baseline gap-1">
+                                    <span className="text-sm text-zinc-400">
+                                      {filteredMovements[0].previousValue.toFixed(0)}%
+                                    </span>
+                                    <span className="text-zinc-600">→</span>
+                                    <span className="text-xl font-bold text-zinc-100">
+                                      {filteredMovements[0].currentValue.toFixed(0)}%
+                                    </span>
+                                    <span className="text-[10px] text-zinc-500 ml-1">YES</span>
+                                  </div>
+                                )}
                               </div>
                               <div className="text-right">
                                 <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Intensity</div>

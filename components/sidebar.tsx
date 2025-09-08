@@ -14,9 +14,9 @@ export function Sidebar({ selectedWindow, onChangeWindow, selectedIntensity, onC
   const [internalIntensity, setInternalIntensity] = useState(selectedIntensity || 'all');
   
   const windows = [
-    { id: '5m', label: '5 MIN', desc: 'Flash moves' },
-    { id: '60m', label: '1 HOUR', desc: 'Active shifts' },
     { id: '1440m', label: '24 HOUR', desc: 'Daily trends' },
+    { id: '60m', label: '1 HOUR', desc: 'Active shifts' },
+    { id: '5m', label: '5 MIN', desc: 'Flash moves' },
   ];
 
   const intensityFilters = [

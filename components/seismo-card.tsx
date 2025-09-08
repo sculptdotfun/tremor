@@ -109,18 +109,37 @@ export const SeismoCard = memo(function SeismoCard({ movement, isSelected = fals
             <div className="flex-1">
               {movement.change && Math.abs(movement.change) >= 0.1 ? (
                 <div className="space-y-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-bold text-zinc-100">
-                      {Math.abs(movement.change).toFixed(1)}%
-                    </span>
-                    <span className="text-xs text-zinc-500">
-                      {movement.previousValue && movement.currentValue 
-                        ? `${movement.previousValue}% → ${movement.currentValue}%`
-                        : movement.marketMovements && movement.marketMovements.length > 1
-                        ? `max of ${movement.marketMovements.length} markets`
-                        : 'price shift'}
-                    </span>
-                  </div>
+                  {/* Multi-market: show which market moved */}
+                  {movement.marketMovements && movement.marketMovements.length > 1 && movement.marketMovements[0] ? (
+                    <div>
+                      <div className="text-[9px] text-zinc-500 mb-0.5 truncate">
+                        {movement.marketMovements[0].question.length > 35
+                          ? movement.marketMovements[0].question.substring(0, 35) + '...'
+                          : movement.marketMovements[0].question}
+                      </div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xs text-zinc-400">
+                          {(movement.marketMovements[0].prevPrice * 100).toFixed(0)}%
+                        </span>
+                        <span className="text-zinc-600 text-xs">→</span>
+                        <span className="text-lg font-bold text-zinc-100">
+                          {(movement.marketMovements[0].currPrice * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Single market: show YES price movement */
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-xs text-zinc-400">
+                        {movement.previousValue.toFixed(0)}%
+                      </span>
+                      <span className="text-zinc-600 text-xs">→</span>
+                      <span className="text-lg font-bold text-zinc-100">
+                        {movement.currentValue.toFixed(0)}%
+                      </span>
+                      <span className="text-[9px] text-zinc-500 ml-0.5">YES</span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-sm text-zinc-600">No significant movement</div>
