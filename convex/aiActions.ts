@@ -136,7 +136,7 @@ export const generateAnalysis: any = internalAction({
           },
         ],
         from_date: getDateDaysAgo(3), // Last 3 days - wider window for developing stories
-        max_search_results: 50, // Analyze more posts for comprehensive signal
+        max_search_results: 25, // Maximum allowed by Grok API
         return_citations: true,
       });
 
