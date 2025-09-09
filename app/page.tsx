@@ -4,17 +4,15 @@ import { Header } from '@/components/header';
 import { Sidebar } from '@/components/sidebar';
 import { TremorCard } from '@/components/tremor-card';
 import { TremorDetailPanel } from '@/components/tremor-detail-panel';
-import { AIAnalysisModal } from '@/components/ai-analysis-modal';
 import { useTremorData } from '@/hooks/use-tremor-data';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [windowSel, setWindowSel] = useState<'5m' | '60m' | '1440m'>('1440m'); // Default to daily
+  const [windowSel, setWindowSel] = useState<'5m' | '60m' | '1440m'>('1440m'); // Default to daily - more activity to see
   const [intensityFilter, setIntensityFilter] = useState<
     'all' | 'extreme' | 'high' | 'moderate' | 'low'
   >('all');
   const [selectedMovement, setSelectedMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
-  const [aiAnalysisMovement, setAIAnalysisMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isChangingWindow, setIsChangingWindow] = useState(false);
   const { movements, loading } = useTremorData(windowSel);
@@ -35,7 +33,6 @@ export default function Home() {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setSelectedMovement(null);
-        setAIAnalysisMovement(null);
       }
     };
     window.addEventListener('keydown', handleEsc);
@@ -61,12 +58,12 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground lg:fixed lg:inset-0 lg:overflow-hidden">
       <Header />
 
-      <div className="flex h-screen pt-14">
+      <div className="flex h-auto pt-14 lg:mt-14 lg:h-[calc(100vh-3.5rem)] lg:pt-0">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:block">
+        <div className="hidden h-full lg:block">
           <Sidebar
             selectedWindow={windowSel}
             onChangeWindow={handleWindowChange}
@@ -131,7 +128,7 @@ export default function Home() {
           </div>
         </div>
 
-        <main className="flex flex-1 flex-col overflow-hidden">
+        <main className="flex flex-1 flex-col overflow-auto lg:overflow-hidden">
           {loading && !isChangingWindow ? (
             <div className="flex h-64 items-center justify-center">
               <div className="space-y-4 text-center">
@@ -241,7 +238,10 @@ export default function Home() {
                           {filteredMovements[0].marketMovements &&
                             filteredMovements[0].marketMovements[0] && (
                               <div className="mb-3 text-sm font-medium text-zinc-100">
-                                {filteredMovements[0].marketMovements[0].question}
+                                {
+                                  filteredMovements[0].marketMovements[0]
+                                    .question
+                                }
                               </div>
                             )}
 
@@ -363,7 +363,7 @@ export default function Home() {
               </div>
 
               {/* Scrollable Cards Section */}
-              <div className="relative flex-1 overflow-y-auto overflow-x-visible px-4 pb-6 pt-4 md:px-6">
+              <div className="relative flex-1 overflow-visible px-4 pb-6 pt-4 md:px-6 lg:overflow-y-auto lg:overflow-x-visible">
                 {/* Loading overlay for window change */}
                 {isChangingWindow && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm">
@@ -391,9 +391,6 @@ export default function Home() {
                         setSelectedMovement(
                           selectedMovement?.id === move.id ? null : move
                         );
-                      }}
-                      onAIAnalysis={(movement: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-                        setAIAnalysisMovement(movement);
                       }}
                     />
                   ))}
@@ -428,12 +425,6 @@ export default function Home() {
       <TremorDetailPanel
         movement={selectedMovement}
         onClose={() => setSelectedMovement(null)}
-      />
-
-      {/* AI Analysis Modal */}
-      <AIAnalysisModal
-        movement={aiAnalysisMovement}
-        onClose={() => setAIAnalysisMovement(null)}
       />
     </div>
   );

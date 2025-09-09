@@ -7,7 +7,6 @@ interface TremorCardProps {
   movement: MarketMovement;
   isSelected?: boolean;
   onClick?: () => void;
-  onAIAnalysis?: (movement: MarketMovement) => void;
 }
 
 export const TremorCard = memo(
@@ -15,7 +14,6 @@ export const TremorCard = memo(
     movement,
     isSelected = false,
     onClick,
-    onAIAnalysis,
   }: TremorCardProps) {
     const formatTime = (date: Date) => {
       const now = new Date();
@@ -167,56 +165,71 @@ export const TremorCard = memo(
             </div>
 
             {/* Bottom actions bar */}
-            <div className="mt-3 flex items-center justify-end border-t border-zinc-800/50 pt-2">
+            <div className="mt-3 flex items-center justify-between border-t border-zinc-800/50 pt-2">
+              {/* Polymarket link - show if we have URL */}
+              {movement.url ? (
+                <a
+                  href={movement.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="group relative overflow-hidden rounded border border-zinc-700/30 bg-zinc-900/50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 transition-all hover:border-zinc-600 hover:text-zinc-200"
+                >
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span>Market</span>
+                  </span>
+                  <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-zinc-800/30 to-zinc-700/30 transition-transform group-hover:translate-x-0" />
+                </a>
+              ) : (
+                <div /> // Empty div to maintain spacing
+              )}
+
               {/* Action buttons */}
               <div className="flex items-center gap-2">
-                {/* Details button - always show */}
+                {/* Details button - glows when intelligence is available */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onClick?.();
                   }}
-                  className="flex items-center gap-1.5 rounded border border-zinc-700/30 bg-zinc-900/50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 transition-all hover:border-zinc-600/50 hover:bg-zinc-800/50 hover:text-zinc-200"
+                  className={`group relative overflow-hidden rounded border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider transition-all ${
+                    movement.seismoScore && movement.seismoScore >= 5
+                      ? 'border-tremor-pulse/30 bg-tremor-pulse/5 text-tremor-pulse hover:border-tremor-pulse hover:bg-tremor-pulse/10'
+                      : 'border-zinc-700/30 bg-zinc-900/50 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200'
+                  }`}
                 >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M4 6h16M4 12h16M4 18h7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span>Details</span>
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M4 6h16M4 12h16M4 18h16"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span>Details</span>
+                    {movement.seismoScore && movement.seismoScore >= 5 && (
+                      <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-tremor-pulse" />
+                    )}
+                  </span>
+                  <div
+                    className={`absolute inset-0 -translate-x-full transition-transform group-hover:translate-x-0 ${
+                      movement.seismoScore && movement.seismoScore >= 5
+                        ? 'bg-gradient-to-r from-tremor-pulse/10 to-tremor-pulse/5'
+                        : 'bg-gradient-to-r from-zinc-800/30 to-zinc-700/30'
+                    }`}
+                  />
                 </button>
-
-                {/* AI Analysis button for high-impact movements */}
-                {movement.seismoScore &&
-                  movement.seismoScore >= 5 &&
-                  onAIAnalysis && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onAIAnalysis(movement);
-                      }}
-                      className="flex items-center gap-1.5 rounded border border-tremor-pulse/30 bg-tremor-pulse/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-tremor-pulse transition-all hover:border-tremor-pulse/50 hover:bg-tremor-pulse/10"
-                    >
-                      <svg
-                        width="10"
-                        height="10"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span>Intelligence</span>
-                    </button>
-                  )}
               </div>
             </div>
           </div>

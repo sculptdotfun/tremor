@@ -48,8 +48,8 @@ export function Sidebar({
   ];
 
   return (
-    <aside className="from-zinc-950/98 flex h-full w-64 flex-col border-r border-zinc-800/50 bg-gradient-to-b to-black/95">
-      <div className="px-5 pt-5">
+    <aside className="from-zinc-950/98 flex h-full w-64 flex-col overflow-hidden border-r border-zinc-800/50 bg-gradient-to-b to-black/95">
+      <div className="flex-shrink-0 px-5 pt-5">
         <h3 className="mb-4 text-xs font-bold tracking-wider text-zinc-600">
           FILTER BY INTENSITY
         </h3>
@@ -112,11 +112,11 @@ export function Sidebar({
                       <span
                         className={`text-[10px] uppercase ${
                           filter.id === 'extreme'
-                            ? 'text-seismo-extreme'
+                            ? 'text-tremor-extreme'
                             : filter.id === 'high'
-                              ? 'text-seismo-high'
+                              ? 'text-tremor-high'
                               : filter.id === 'moderate'
-                                ? 'text-seismo-moderate'
+                                ? 'text-tremor-moderate'
                                 : 'text-zinc-500'
                         }`}
                       >
@@ -136,7 +136,7 @@ export function Sidebar({
                     </div>
                   </div>
                   {internalIntensity === filter.id && (
-                    <div className="h-2 w-2 animate-pulse rounded-full bg-seismo-pulse"></div>
+                    <div className="h-2 w-2 animate-pulse rounded-full bg-tremor-pulse"></div>
                   )}
                 </div>
               </div>
@@ -145,7 +145,7 @@ export function Sidebar({
         </div>
       </div>
 
-      <div className="mt-6 px-5">
+      <div className="mt-6 flex-shrink-0 px-5">
         <h3 className="mb-4 text-xs font-bold tracking-wider text-zinc-600">
           TIME WINDOW
         </h3>
@@ -160,7 +160,7 @@ export function Sidebar({
               }}
               className={`block w-full text-left transition-all ${
                 internalWindow === window.id
-                  ? 'border border-seismo-pulse/50 bg-zinc-950 shadow-lg'
+                  ? 'border border-tremor-pulse/50 bg-zinc-950 shadow-lg'
                   : 'border border-zinc-800/50 bg-zinc-950 hover:border-zinc-700'
               }`}
               style={{
@@ -181,7 +181,7 @@ export function Sidebar({
                     </div>
                   </div>
                   {internalWindow === window.id && (
-                    <div className="h-2 w-2 animate-pulse rounded-full bg-seismo-pulse"></div>
+                    <div className="h-2 w-2 animate-pulse rounded-full bg-tremor-pulse"></div>
                   )}
                 </div>
               </div>
@@ -193,8 +193,11 @@ export function Sidebar({
       {/* Market Summary - in the normal flow */}
       <MarketSummary />
 
+      {/* Spacer to push powered by to bottom */}
+      <div className="flex-1" />
+
       {/* Powered by - pushed to bottom */}
-      <div className="mt-auto border-t border-zinc-800/50 p-5">
+      <div className="flex-shrink-0 border-t border-zinc-800/50 p-5">
         <div className="mb-1 text-center text-[9px] uppercase tracking-wider text-zinc-600">
           Powered by
         </div>

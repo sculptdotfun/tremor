@@ -139,18 +139,8 @@ export function AIAnalysisModal({ movement, onClose }: AIAnalysisModalProps) {
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between border-t border-zinc-800/50 bg-zinc-950/50 px-5 py-3">
+          <div className="flex items-center justify-center border-t border-zinc-800/50 bg-zinc-950/50 px-5 py-3">
             <span className="text-xs text-zinc-500">Press ESC to close</span>
-            {movement.url && (
-              <a
-                href={movement.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-medium text-zinc-400 transition-colors hover:text-tremor-pulse"
-              >
-                View on Polymarket →
-              </a>
-            )}
           </div>
         </div>
       </div>
