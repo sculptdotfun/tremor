@@ -252,25 +252,33 @@ export function TremorDetailPanel({
                             Sources from X
                           </div>
                           <div className="flex flex-wrap gap-2">
-                            {aiAnalysis.sources.map((source, idx) => (
-                              <a
-                                key={idx}
-                                href={source}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 rounded border border-zinc-800/50 bg-zinc-900/50 px-2 py-1 text-[10px] text-zinc-400 transition-all hover:border-tremor-pulse/30 hover:text-tremor-pulse"
-                              >
-                                <svg
-                                  width="10"
-                                  height="10"
-                                  viewBox="0 0 24 24"
-                                  fill="currentColor"
+                            {aiAnalysis.sources.map((source, idx) => {
+                              // Extract username from X URL (format: https://x.com/username/status/...)
+                              const match = source.match(/x\.com\/([^\/]+)/);
+                              const username = match
+                                ? `@${match[1]}`
+                                : `Post ${idx + 1}`;
+
+                              return (
+                                <a
+                                  key={idx}
+                                  href={source}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 rounded border border-zinc-800/50 bg-zinc-900/50 px-2 py-1 text-[10px] text-zinc-400 transition-all hover:border-tremor-pulse/30 hover:text-tremor-pulse"
                                 >
-                                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                </svg>
-                                <span>Post {idx + 1}</span>
-                              </a>
-                            ))}
+                                  <svg
+                                    width="10"
+                                    height="10"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                  </svg>
+                                  <span>{username}</span>
+                                </a>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
