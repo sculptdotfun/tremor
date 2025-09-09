@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { internalAction, internalQuery, internalMutation } from './_generated/server';
+import { internalAction, internalQuery } from './_generated/server';
 import { internal } from './_generated/api';
 
 // xAI Grok API configuration
@@ -44,15 +44,16 @@ export const getCachedAnalysis = internalQuery({
       .withIndex('by_movement', (q) => q.eq('movementId', args.movementId))
       .order('desc')
       .first();
-    
+
     if (!analysis) return null;
-    
+
     const isValid = analysis.expiresAt > now;
     return isValid ? analysis : null;
   },
 });
 
 // Internal action to generate AI analysis (can use fetch)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const generateAnalysis: any = internalAction({
   args: {
     movementId: v.string(),
@@ -73,9 +74,12 @@ export const generateAnalysis: any = internalAction({
 
     try {
       // Check if we already have a valid cached analysis
-      const existingAnalysis = await ctx.runQuery(internal.aiActions.getCachedAnalysis, {
-        movementId: args.movementId,
-      });
+      const existingAnalysis = await ctx.runQuery(
+        internal.aiActions.getCachedAnalysis,
+        {
+          movementId: args.movementId,
+        }
+      );
 
       if (existingAnalysis) {
         console.log(`Using cached analysis for movement ${args.movementId}`);
@@ -83,6 +87,15 @@ export const generateAnalysis: any = internalAction({
       }
 
       console.log(`Generating new AI analysis for movement ${args.movementId}`);
+
+      // Extract key terms for better search targeting
+      const titleKeywords = args.title
+        .toLowerCase()
+        .replace(/will|the|be|in|at|on|to|for|of|and|or/gi, '') // Remove common words
+        .split(/\s+/)
+        .filter((word) => word.length > 3)
+        .slice(0, 3)
+        .join(' ');
 
       // Prompt focused on what smart money is anticipating
       const analysisPrompt = `
@@ -94,12 +107,14 @@ export const generateAnalysis: any = internalAction({
         Movement: ${args.previousValue}% → ${args.currentValue}% (${Math.abs(args.currentValue - args.previousValue).toFixed(1)}% shift)
         Intensity Score: ${args.seismoScore.toFixed(1)}/10 (indicating ${args.seismoScore >= 7.5 ? 'extreme' : args.seismoScore >= 5 ? 'high' : 'moderate'} trading activity)
         
+        Search keywords: ${titleKeywords}
+        
         Remember: Prediction markets move BEFORE news breaks. Smart money is betting on what WILL happen.
         
-        Search for and analyze:
-        1. What insider circles, whale wallets, or informed traders might be anticipating
-        2. Early signals, rumors, or patterns that haven't hit mainstream media yet
-        3. What event or announcement traders are positioning for AHEAD of time
+        Search X/Twitter for:
+        1. Recent posts about "${titleKeywords}" from traders, analysts, or news sources
+        2. Early signals, rumors, or leaks that haven't hit mainstream media yet
+        3. What insiders or informed accounts are saying about upcoming announcements
         
         Provide a clear 2-3 sentence explanation of what traders appear to be anticipating:
         - Focus on what smart money might know that others don't yet
@@ -116,11 +131,12 @@ export const generateAnalysis: any = internalAction({
         sources: [
           {
             type: 'x',
-            post_favorite_count: 10, // Very low threshold to catch earliest chatter
+            post_favorite_count: 5, // Lower threshold to catch earliest signals
+            post_reply_count: 2, // At least some engagement
           },
         ],
-        from_date: getDateDaysAgo(1), // Very recent - last 24 hours only
-        max_search_results: 20, // More X posts to analyze
+        from_date: getDateDaysAgo(3), // Last 3 days - wider window for developing stories
+        max_search_results: 50, // Analyze more posts for comprehensive signal
         return_citations: true,
       });
 
@@ -141,8 +157,10 @@ export const generateAnalysis: any = internalAction({
         )
       );
 
-      // Collect citations
-      const allCitations = (response.citations || []).slice(0, 5);
+      // Collect all citations from X/Twitter
+      const allCitations = (response.citations || []).filter(
+        (url) => url.includes('x.com') || url.includes('twitter.com')
+      );
 
       // Store the analysis in the database
       const now = Date.now();
