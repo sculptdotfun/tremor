@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 export interface PolymarketMarket {
   id: string;
   question: string;
@@ -53,7 +55,7 @@ class PolymarketAPI {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching markets:', error);
+      logger.error('Error fetching markets:', error);
       return [];
     }
   }
@@ -65,7 +67,7 @@ class PolymarketAPI {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching events:', error);
+      logger.error('Error fetching events:', error);
       return [];
     }
   }
@@ -77,21 +79,21 @@ class PolymarketAPI {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching market:', error);
+      logger.error('Error fetching market:', error);
       return null;
     }
   }
 
   connectWebSocket(onMessage: (data: any) => void, onConnect?: () => void) { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (this.ws) {
-      console.log('WebSocket already connected');
+      logger.info('WebSocket already connected');
       return;
     }
 
     this.ws = new WebSocket(this.wsUrl);
 
     this.ws.onopen = () => {
-      console.log('WebSocket connected');
+      logger.info('WebSocket connected');
       if (onConnect) onConnect();
       
       // Subscribe to activity (trades)
@@ -112,16 +114,16 @@ class PolymarketAPI {
         const data = JSON.parse(event.data);
         onMessage(data);
       } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
+        logger.error('Error parsing WebSocket message:', error);
       }
     };
 
     this.ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      logger.error('WebSocket error:', error);
     };
 
     this.ws.onclose = () => {
-      console.log('WebSocket disconnected');
+      logger.info('WebSocket disconnected');
       this.ws = null;
       // Attempt to reconnect after 5 seconds
       setTimeout(() => this.connectWebSocket(onMessage, onConnect), 5000);

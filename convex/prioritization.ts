@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
-import { internalMutation, internalAction, query } from './_generated/server';
+import { internalMutation, query } from './_generated/server';
 import { internal } from './_generated/api';
+import logger from '../lib/logger';
 
 // MARKET PRIORITIZATION ALGORITHM
 // Determines which markets to sync most frequently based on activity
@@ -202,7 +203,7 @@ export const updateAllPriorities = internalMutation({
       if (updated >= 100) break;
     }
 
-    console.log(`Updated priority for ${updated} markets`);
+    logger.info(`Updated priority for ${updated} markets`);
     return updated;
   },
 });

@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { internalMutation, query } from "./_generated/server";
-import { Doc } from "./_generated/dataModel";
 
 // Upsert markets from Gamma API
 export const upsertMarkets = internalMutation({

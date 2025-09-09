@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery, useAction } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { logger } from '@/lib/logger';
 
 interface MovementExplainerProps {
   movement: {
@@ -70,7 +71,7 @@ export function MovementExplainer({ movement }: MovementExplainerProps) {
             hasRequestedRef.current = false; // Allow retry on error
           }
         } catch (err) {
-          console.error('Failed to request analysis:', err);
+          logger.error('Failed to request analysis:', err);
           setError('Failed to connect to AI service');
           hasRequestedRef.current = false; // Allow retry on error
         } finally {

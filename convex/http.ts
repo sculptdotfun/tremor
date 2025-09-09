@@ -1,6 +1,7 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
+import logger from '../lib/logger';
 
 const http = httpRouter();
 
@@ -56,7 +57,7 @@ http.route({
         headers: { "Content-Type": "application/json" },
       });
     } catch (error) {
-      console.error("Market sync error:", error);
+      logger.error("Market sync error:", error);
       return new Response(JSON.stringify({
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",
@@ -154,7 +155,7 @@ http.route({
         headers: { "Content-Type": "application/json" },
       });
     } catch (error) {
-      console.error("Trade sync error:", error);
+      logger.error("Trade sync error:", error);
       return new Response(JSON.stringify({
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",

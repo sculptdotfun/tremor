@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -17,7 +18,7 @@ export async function GET(request: Request) {
     if (clobResponse.ok) {
       const data = await clobResponse.json();
       const markets = Array.isArray(data) ? data : (data.data || data.markets || []);
-      console.log('CLOB API returned:', markets.length, 'markets');
+      logger.info('CLOB API returned:', markets.length, 'markets');
       
       // Filter and transform markets
       const activeMarkets = markets
@@ -50,11 +51,11 @@ export async function GET(request: Request) {
         })
         .sort((a: any, b: any) => b.volume24hr - a.volume24hr); // eslint-disable-line @typescript-eslint/no-explicit-any
       
-      console.log('Active markets found:', activeMarkets.length);
+      logger.info('Active markets found:', activeMarkets.length);
       return NextResponse.json(activeMarkets);
     }
   } catch (clobError) {
-    console.error('CLOB API failed:', clobError);
+    logger.error('CLOB API failed:', clobError);
   }
   
   // Fallback to Gamma API
@@ -69,7 +70,7 @@ export async function GET(request: Request) {
     
     if (gammaResponse.ok) {
       const events = await gammaResponse.json();
-      console.log('Gamma API returned:', events.length, 'events');
+      logger.info('Gamma API returned:', events.length, 'events');
       
       const allMarkets: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
       events.forEach((event: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -107,11 +108,11 @@ export async function GET(request: Request) {
       });
       
       allMarkets.sort((a, b) => b.volume24hr - a.volume24hr);
-      console.log('Active markets from Gamma:', allMarkets.length);
+      logger.info('Active markets from Gamma:', allMarkets.length);
       return NextResponse.json(allMarkets);
     }
   } catch (gammaError) {
-    console.error('Gamma API also failed:', gammaError);
+    logger.error('Gamma API also failed:', gammaError);
   }
   
   return NextResponse.json(

@@ -1,5 +1,6 @@
 import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
+import logger from '../lib/logger';
 
 // ONE-TIME MIGRATION SCRIPT
 // Run this ONCE after deploying schema changes to clear old data
@@ -17,7 +18,7 @@ export const migrateToNewSchema = internalMutation({
       };
     }
     
-    console.log("Starting migration to new schema...");
+    logger.info("Starting migration to new schema...");
     
     // Clear tables that have schema changes
     const tablesToClear = [
@@ -44,13 +45,13 @@ export const migrateToNewSchema = internalMutation({
         
         // Safety limit
         if (deleted > 5000) {
-          console.log(`Cleared ${deleted} docs from ${table} (stopped at limit)`);
+          logger.info(`Cleared ${deleted} docs from ${table} (stopped at limit)`);
           break;
         }
       }
       
       results[table] = deleted;
-      console.log(`Cleared ${deleted} documents from ${table}`);
+      logger.info(`Cleared ${deleted} documents from ${table}`);
     }
     
     // Reset sync states to force fresh data pull
@@ -61,9 +62,9 @@ export const migrateToNewSchema = internalMutation({
       });
     }
     
-    console.log("Migration complete!");
-    console.log("Cleared:", results);
-    console.log("Reset", syncStates.length, "sync states");
+    logger.info("Migration complete!");
+    logger.info("Cleared:", results);
+    logger.info("Reset", syncStates.length, "sync states");
     
     return {
       success: true,

@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
 import { query, action, mutation, internalAction } from './_generated/server';
 import { api, internal } from './_generated/api';
+import logger from '../lib/logger';
 
 // Query to get cached market summary
 export const getSummary = query({
@@ -35,12 +36,12 @@ export const generateSummary: any = internalAction({
   handler: async (ctx) => {
     const apiKey = process.env.XAI_API_KEY;
     if (!apiKey) {
-      console.error('XAI_API_KEY not configured for market summary');
+      logger.error('XAI_API_KEY not configured for market summary');
       return { success: false, error: 'API key not configured' };
     }
 
     try {
-      console.log('Generating market summary...');
+      logger.info('Generating market summary...');
 
       // Get recent high-impact movements (last 24 hours)
       const recentMovements = await ctx.runQuery(
@@ -48,7 +49,7 @@ export const generateSummary: any = internalAction({
       );
 
       if (!recentMovements || recentMovements.length === 0) {
-        console.log('No recent movements to summarize');
+        logger.info('No recent movements to summarize');
         return { success: false, error: 'No recent market activity' };
       }
 
@@ -95,8 +96,8 @@ Summary:`;
       const data = await response.json();
 
       // Debug logging
-      console.log('Grok API response status:', response.status);
-      console.log('Grok API response data:', {
+      logger.debug('Grok API response status:', response.status);
+      logger.debug('Grok API response data:', {
         model: data.model,
         finish_reason: data.choices?.[0]?.finish_reason,
         content_length: data.choices?.[0]?.message?.content?.length || 0,
@@ -106,8 +107,8 @@ Summary:`;
       const summary = data.choices?.[0]?.message?.content || '';
 
       if (!summary || summary.trim() === '') {
-        console.error('Empty summary content');
-        console.error(
+        logger.error('Empty summary content');
+        logger.error(
           'Full response structure:',
           JSON.stringify(data, null, 2)
         );
@@ -161,7 +162,7 @@ Summary:`;
         },
       };
     } catch (error) {
-      console.error('Failed to generate market summary:', error);
+      logger.error('Failed to generate market summary:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -188,9 +189,9 @@ export const storeSummary = mutation({
 export const generateSummaryCron: any = internalAction({
   args: {},
   handler: async (ctx) => {
-    console.log('[Cron] Generating market summary...');
+    logger.info('[Cron] Generating market summary...');
     const result = await ctx.runAction((internal as any).marketSummary.generateSummary);
-    console.log('[Cron] Market summary generation result:', result.success ? 'success' : 'failed');
+    logger.info('[Cron] Market summary generation result:', result.success ? 'success' : 'failed');
     return result;
   },
 });

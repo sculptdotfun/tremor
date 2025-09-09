@@ -1,6 +1,7 @@
 import { internalAction, internalMutation } from './_generated/server';
 import { v } from 'convex/values';
 import { internal } from './_generated/api';
+import logger from '../lib/logger';
 
 // CONSOLIDATED CLEANUP MODULE - Single source of truth for data retention
 // Retention policies:
@@ -49,7 +50,7 @@ export const cleanupOldData = internalAction({
       }
     );
 
-    console.log(
+    logger.info(
       `Cleanup completed: ${snapshotDeleted} snapshots, ${scoreDeleted} scores, ${baselineDeleted} baselines`
     );
     return { snapshotDeleted, scoreDeleted, baselineDeleted };
@@ -76,7 +77,7 @@ export const deleteOldSnapshots = internalMutation({
     }
 
     if (deleted > 0) {
-      console.log(`Deleted ${deleted} old price snapshots`);
+      logger.info(`Deleted ${deleted} old price snapshots`);
     }
     return deleted;
   },
@@ -102,7 +103,7 @@ export const deleteOldScores = internalMutation({
     }
 
     if (deleted > 0) {
-      console.log(`Deleted ${deleted} old scores`);
+      logger.info(`Deleted ${deleted} old scores`);
     }
     return deleted;
   },
@@ -128,7 +129,7 @@ export const deleteOldBaselines = internalMutation({
     }
 
     if (deleted > 0) {
-      console.log(`Deleted ${deleted} old baselines`);
+      logger.info(`Deleted ${deleted} old baselines`);
     }
     return deleted;
   },
@@ -169,7 +170,7 @@ export const clearAllData = internalMutation({
 
         // Safety limit
         if (deleted > 10000) {
-          console.warn(`Stopped deleting ${table} at 10000 docs`);
+          logger.warn(`Stopped deleting ${table} at 10000 docs`);
           break;
         }
       }
@@ -177,7 +178,7 @@ export const clearAllData = internalMutation({
       results[table] = deleted;
     }
 
-    console.log('All data cleared:', results);
+    logger.info('All data cleared:', results);
     return results;
   },
 });

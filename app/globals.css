@@ -74,38 +74,6 @@ body {
   color: #000000;
 }
 
-/* Scrolling ticker animation */
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-scroll {
-  animation: scroll 25s linear infinite;
-}
-
-.animate-scroll:hover {
-  animation-play-state: paused;
-}
-
-/* Vertical scrolling for activity feed */
-@keyframes scroll-vertical {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-50%);
-  }
-}
-
-.animate-scroll-vertical {
-  animation: scroll-vertical 20s linear infinite;
-}
-
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -122,8 +90,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #808080;
-}
-
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
 }
