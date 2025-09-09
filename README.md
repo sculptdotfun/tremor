@@ -7,7 +7,7 @@ A real-time seismic monitor for prediction markets. When probabilities shift dra
 <div align="center">
   
 [![Live Demo](https://img.shields.io/badge/🔴_LIVE-tremor.live-red?style=for-the-badge)](https://tremor.live)
-[![Status](https://img.shields.io/badge/Version-v0.1--alpha-yellow?style=for-the-badge)](https://github.com/yourusername/seismo)
+[![Status](https://img.shields.io/badge/Version-v0.1--alpha-yellow?style=for-the-badge)](https://github.com/sculptdotfun/tremor)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 </div>
@@ -36,8 +36,8 @@ TREMOR helps you catch these signals as they happen, not hours later.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/seismo.git
-cd seismo
+git clone https://github.com/sculptdotfun/tremor.git
+cd tremor
 
 # Install dependencies
 pnpm install
