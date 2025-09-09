@@ -1,5 +1,6 @@
 import { internalAction } from "./_generated/server";
 import { internal, api } from "./_generated/api";
+import { logger } from "../lib/logger";
 
 // Sync events and their markets from Gamma API
 export const syncEvents = internalAction({
@@ -77,9 +78,9 @@ export const syncEvents = internalAction({
         }
       }
       
-      console.log(`Synced ${totalEvents} events with ${totalMarkets} markets`);
+      logger.info(`Synced ${totalEvents} events with ${totalMarkets} markets`);
     } catch (error) {
-      console.error("Event sync error:", error);
+      logger.error("Event sync error:", error);
     }
   },
 });
@@ -154,12 +155,12 @@ export const syncHotTrades = internalAction({
               lastTradeFetchMs: Date.now(),
             });
             
-            console.log(`Processed ${transformed.length} trades → ${insertResult.inserted} snapshots for ${market.market.question}`);
+            logger.debug(`Processed ${transformed.length} trades → ${insertResult.inserted} snapshots for ${market.market.question}`);
           }
         }
       }
     } catch (error) {
-      console.error("Hot trade sync error:", error);
+      logger.error("Hot trade sync error:", error);
     }
   },
 });
@@ -232,7 +233,7 @@ export const syncWarmTrades = internalAction({
         }
       }
     } catch (error) {
-      console.error("Warm trade sync error:", error);
+      logger.error("Warm trade sync error:", error);
     }
   },
 });
@@ -256,14 +257,14 @@ export const computeAllScores = internalAction({
               windowMinutes,
             });
           } catch (error) {
-            console.error(`Score computation failed for event ${event.eventId}:`, error);
+            logger.error(`Score computation failed for event ${event.eventId}:`, error);
           }
         }
       }
       
-      console.log(`Computed scores for ${events.length} events`);
+      logger.info(`Computed scores for ${events.length} events`);
     } catch (error) {
-      console.error("Score computation error:", error);
+      logger.error("Score computation error:", error);
     }
   },
 });
@@ -284,13 +285,13 @@ export const computeAllBaselines = internalAction({
             lookbackDays: 14,
           });
         } catch (error) {
-          console.error(`Baseline computation failed for ${market.conditionId}:`, error);
+          logger.error(`Baseline computation failed for ${market.conditionId}:`, error);
         }
       }
       
-      console.log(`Computed baselines for ${markets.length} markets`);
+      logger.info(`Computed baselines for ${markets.length} markets`);
     } catch (error) {
-      console.error("Baseline computation error:", error);
+      logger.error("Baseline computation error:", error);
     }
   },
 });

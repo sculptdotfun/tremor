@@ -1,7 +1,29 @@
 {
-  "name": "tremor-app",
+  "name": "tremor-live",
   "version": "0.1.0",
-  "private": true,
+  "description": "Real-time prediction market tremor monitoring dashboard",
+  "author": "TREMOR.LIVE Contributors",
+  "license": "MIT",
+  "homepage": "https://tremor.live",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sculptdotfun/tremor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sculptdotfun/tremor/issues"
+  },
+  "keywords": [
+    "prediction-markets",
+    "polymarket",
+    "real-time",
+    "dashboard",
+    "market-analysis",
+    "trading",
+    "nextjs",
+    "convex",
+    "typescript"
+  ],
+  "private": false,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",

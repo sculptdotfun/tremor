@@ -59,7 +59,7 @@ export function TremorDetailPanel({
           })
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .catch((error: any) => {
-            console.error('Failed to get AI analysis:', error);
+            // Silently handle AI analysis errors - non-critical feature
           })
           .finally(() => {
             setIsLoadingAI(false);

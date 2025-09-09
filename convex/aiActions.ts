@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
 import { internalAction, internalQuery } from './_generated/server';
 import { internal } from './_generated/api';
+import { logger } from '../lib/logger';
 
 // xAI Grok API configuration
 const GROK_API_URL = 'https://api.x.ai/v1/chat/completions';
@@ -68,7 +69,7 @@ export const generateAnalysis: any = internalAction({
   handler: async (ctx, args) => {
     const apiKey = process.env.XAI_API_KEY;
     if (!apiKey) {
-      console.error('XAI_API_KEY not configured');
+      logger.error('XAI_API_KEY not configured');
       return { success: false, error: 'API key not configured' };
     }
 
@@ -82,11 +83,11 @@ export const generateAnalysis: any = internalAction({
       );
 
       if (existingAnalysis) {
-        console.log(`Using cached analysis for movement ${args.movementId}`);
+        logger.debug(`Using cached analysis for movement ${args.movementId}`);
         return { success: true, cached: true, analysis: existingAnalysis };
       }
 
-      console.log(`Generating new AI analysis for movement ${args.movementId}`);
+      logger.debug(`Generating new AI analysis for movement ${args.movementId}`);
 
       // Extract key terms for better search targeting
       const titleKeywords = args.title
@@ -142,7 +143,7 @@ export const generateAnalysis: any = internalAction({
 
       // Check if we got a valid response
       if (!response.content || response.content.trim() === '') {
-        console.error('Empty response from Grok API');
+        logger.error('Empty response from Grok API');
         throw new Error('AI service returned empty response');
       }
 
@@ -188,7 +189,7 @@ export const generateAnalysis: any = internalAction({
         },
       };
     } catch (error) {
-      console.error('Failed to generate AI analysis:', error);
+      logger.error('Failed to generate AI analysis:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -240,11 +241,11 @@ async function makeGrokRequest(
   const data: GrokResponse = await response.json();
 
   // Debug logging
-  console.log('Grok API response:', JSON.stringify(data, null, 2));
+  logger.debug('Grok API response:', JSON.stringify(data, null, 2));
 
   const content = data.choices?.[0]?.message?.content || '';
   if (!content) {
-    console.error('No content in Grok response:', data);
+    logger.error('No content in Grok response:', data);
   }
 
   return {

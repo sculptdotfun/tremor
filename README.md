@@ -1,6 +1,13 @@
 # TREMOR.LIVE
 
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![Convex](https://img.shields.io/badge/Convex-Realtime-orange)](https://convex.dev/)
+
 Real-time prediction market tremor monitoring dashboard that tracks and visualizes market movements with intensity scoring.
+
+<!-- ![TREMOR.LIVE Dashboard](https://github.com/sculptdotfun/tremor/assets/tremor-preview.png) -->
 
 ## Overview
 
@@ -129,12 +136,12 @@ pnpm convex deploy # Deploy to Convex production
 ## Project Structure
 
 ```
-seismo-app/
+tremor-live/
 ├── app/              # Next.js App Router
 ├── components/       # React components
 │   ├── header.tsx   # Main navigation
 │   ├── sidebar.tsx  # Filters and controls
-│   └── seismo-card.tsx # Market movement cards
+│   └── tremor-card.tsx # Market movement cards
 ├── convex/          # Backend functions
 │   ├── actions.ts   # API sync actions
 │   ├── scoring.ts   # Intensity calculations
@@ -151,10 +158,37 @@ seismo-app/
 - Computes ~1.4k intensity scores/day
 - Automatic data cleanup prevents unbounded growth
 
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started.
+
+### Quick Start for Contributors
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+## Security
+
+For security vulnerabilities, please review our [Security Policy](SECURITY.md) and report issues privately.
+
 ## License
 
-Proprietary - All rights reserved
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Polymarket](https://polymarket.com) for providing market data APIs
+- [Convex](https://convex.dev) for real-time backend infrastructure
+- [Vercel](https://vercel.com) for hosting and deployment
+- All contributors who help improve TREMOR.LIVE
 
 ## Support
 
-For issues or questions, contact the development team.
+- **Issues**: [GitHub Issues](https://github.com/sculptdotfun/tremor/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/sculptdotfun/tremor/discussions)
+- **Documentation**: [Wiki](https://github.com/sculptdotfun/tremor/wiki)
