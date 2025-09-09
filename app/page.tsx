@@ -301,11 +301,11 @@ export default function Home() {
                           <span className="text-base font-semibold text-white md:text-lg">
                             Money talks before headlines drop.
                           </span>{' '}
-                          Polymarket gave Trump 58% odds while polls showed a
-                          coin flip. Smart money moved days before the networks
-                          caught up. When millions flow into positions, the
-                          probability shifts happen in real-time — not after the
-                          fact.
+                          Polymarket had Trump at 61% while polls implied just
+                          48% — a 13-point gap. Smart money moved days before
+                          the networks caught up. When millions flow into
+                          positions, the probability shifts happen in real-time
+                          — not after the fact.
                         </p>
                         <p className="text-sm leading-relaxed text-zinc-400 md:text-base">
                           This dashboard monitors all active market movements in
