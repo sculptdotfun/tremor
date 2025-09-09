@@ -16,7 +16,10 @@ export function TremorDetailPanel({
 }: TremorDetailPanelProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [showAll, setShowAll] = useState(false);
-  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+  const [aiAnalysis, setAiAnalysis] = useState<{
+    explanation: string;
+    sources?: string[];
+  } | null>(null);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const requestAnalysis = useAction((api.aiAnalysis as any).requestAnalysis);
@@ -44,14 +47,13 @@ export function TremorDetailPanel({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .then((response: any) => {
             if (response.success) {
-              // Extract the explanation text from the response
+              // Extract the explanation and sources from the response
               if (response.analysis) {
-                // The analysis object contains explanation, sources, confidence, etc.
-                const explanation =
-                  typeof response.analysis === 'object'
-                    ? response.analysis.explanation
-                    : response.analysis;
-                setAiAnalysis(explanation);
+                setAiAnalysis({
+                  explanation:
+                    response.analysis.explanation || response.analysis,
+                  sources: response.analysis.sources || [],
+                });
               }
             }
           })
@@ -219,7 +221,7 @@ export function TremorDetailPanel({
                       />
                     </svg>
                     <span className="text-xs font-semibold uppercase tracking-wider text-tremor-pulse">
-                      AI Intelligence
+                      Real-Time Social Intelligence
                     </span>
                   </div>
                   {isLoadingAI ? (
@@ -234,14 +236,44 @@ export function TremorDetailPanel({
                         ))}
                       </div>
                       <span className="text-xs text-zinc-400">
-                        Analyzing market dynamics...
+                        Analyzing social signals...
                       </span>
                     </div>
                   ) : aiAnalysis ? (
-                    <div className="rounded border border-tremor-pulse/20 bg-tremor-pulse/5 p-4">
-                      <p className="text-sm leading-relaxed text-zinc-200">
-                        {aiAnalysis}
-                      </p>
+                    <div className="space-y-3">
+                      <div className="rounded border border-tremor-pulse/20 bg-tremor-pulse/5 p-4">
+                        <p className="text-sm leading-relaxed text-zinc-200">
+                          {aiAnalysis.explanation}
+                        </p>
+                      </div>
+                      {aiAnalysis.sources && aiAnalysis.sources.length > 0 && (
+                        <div className="space-y-1">
+                          <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                            Sources from X
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {aiAnalysis.sources.map((source, idx) => (
+                              <a
+                                key={idx}
+                                href={source}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded border border-zinc-800/50 bg-zinc-900/50 px-2 py-1 text-[10px] text-zinc-400 transition-all hover:border-tremor-pulse/30 hover:text-tremor-pulse"
+                              >
+                                <svg
+                                  width="10"
+                                  height="10"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                >
+                                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                </svg>
+                                <span>Post {idx + 1}</span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : null}
                 </div>

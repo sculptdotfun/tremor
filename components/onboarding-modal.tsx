@@ -228,12 +228,13 @@ export function OnboardingModal({
                 />
               </svg>
               <span className="text-xs font-semibold uppercase tracking-wider text-tremor-pulse">
-                AI ANALYSIS
+                SOCIAL INTELLIGENCE
               </span>
             </div>
             <p className="text-xs leading-relaxed text-zinc-400">
-              For high-intensity movements (5.0+), click &quot;Analyze&quot; to
-              get AI-powered analysis of what traders might be anticipating.
+              For high-intensity movements (5.0+), we automatically analyze
+              real-time social signals from X to understand what traders are
+              anticipating.
             </p>
           </div>
           <div className="rounded border border-zinc-800/50 bg-zinc-900/30 p-3">
