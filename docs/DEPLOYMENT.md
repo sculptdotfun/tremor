@@ -16,8 +16,8 @@ Before deploying, ensure you have:
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/yourusername/seismo.git
-cd seismo
+git clone https://github.com/sculptdotfun/tremor.git
+cd tremor
 pnpm install
 ```
 
@@ -263,7 +263,7 @@ pnpm audit fix
 
 Running into issues?
 
-- Check [GitHub Issues](https://github.com/yourusername/seismo/issues)
+- Check [GitHub Issues](https://github.com/sculptdotfun/tremor/issues)
 - Join our [Discord](https://discord.gg/tremor)
 - Email: support@tremor.live
 

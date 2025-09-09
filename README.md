@@ -116,7 +116,7 @@ With smart volume filtering:
 ## 📁 Project Structure
 
 ```
-seismo/
+tremor/
 ├── app/                    # Next.js app router
 │   ├── components/        # React components
 │   │   ├── Header.tsx    # Navigation
