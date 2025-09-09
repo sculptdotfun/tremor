@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState, memo } from 'react';
+import { OnboardingModal } from './onboarding-modal';
 
 export const Header = memo(function Header() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isLive] = useState(true);
   const [showAbout, setShowAbout] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -57,10 +59,14 @@ export const Header = memo(function Header() {
 
         <div className="flex items-center gap-2 text-xs md:gap-4">
           <button
-            onClick={() => setShowAbout(!showAbout)}
-            className="border border-zinc-800 px-2 py-1 text-[10px] uppercase tracking-wider text-zinc-500 transition-colors hover:border-zinc-700 hover:text-zinc-300"
+            onClick={() => {
+              // Show onboarding modal instead of old about modal
+              setShowOnboarding(true);
+            }}
+            className="group relative overflow-hidden rounded border border-zinc-800 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 transition-all hover:border-tremor-high/50 hover:text-white"
           >
-            How
+            <span className="relative z-10">How</span>
+            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-tremor-high/20 to-tremor-extreme/20 transition-transform group-hover:translate-x-0" />
           </button>
           {isLive && (
             <span className="flex items-center gap-1 rounded border border-tremor-pulse/50 bg-tremor-pulse/10 px-2 py-0.5">
@@ -73,8 +79,15 @@ export const Header = memo(function Header() {
         </div>
       </header>
 
-      {/* About Modal */}
-      {showAbout && (
+      {/* Onboarding Modal - controlled by button and auto-shows on first visit */}
+      <OnboardingModal 
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        autoShow={true}
+      />
+
+      {/* Legacy About Modal - hidden now */}
+      {false && showAbout && (
         <>
           <div
             className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
