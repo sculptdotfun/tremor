@@ -29,6 +29,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+# local dev logs
+.next-dev.log
+.next-dev.pid
+.convex-dev.log
+.convex-dev.pid
 
 # env files (can opt-in for committing if needed)
 .env*
