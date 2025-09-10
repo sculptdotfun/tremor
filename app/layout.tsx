@@ -47,7 +47,8 @@ export const metadata: Metadata = {
     title: 'Tremor - Where Money Talks First',
     description:
       'Track sudden market movements before news breaks. Real-time prediction market tremors.',
-    site: '@tremorlive',
+    site: '@tremordotlive',
+    creator: '@tremordotlive',
     images: ['https://tremor.live/og-image.png'],
   },
   robots: {
