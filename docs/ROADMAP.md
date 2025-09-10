@@ -1,6 +1,6 @@
 # 🗺️ TREMOR Roadmap
 
-> From v0 proof-of-concept to production platform
+> Open-source, community-driven prediction market monitoring
 
 ## 📍 Current Status: v0.1-alpha
 
@@ -21,23 +21,12 @@
 - Limited historical analysis
 - No mobile app
 - Basic alerting capabilities
-- Manual deployment process
 
-## 🚀 Next Steps (v0.2 - Q1 2025)
+## 🚀 Planned Improvements
 
 ### 🎲 Kalshi Integration
 
-**Timeline**: 2-3 weeks
-
-```mermaid
-graph LR
-    A[Polymarket] --> C[Unified API]
-    B[Kalshi] --> C
-    C --> D[TREMOR Engine]
-    D --> E[Cross-Market Analysis]
-```
-
-**Features**:
+Add support for Kalshi markets alongside Polymarket:
 
 - Dual-market monitoring
 - Price divergence detection
@@ -45,284 +34,122 @@ graph LR
 - Unified intensity scoring
 - Market correlation analysis
 
-**Technical Tasks**:
-
-- [ ] Kalshi API integration
-- [ ] Unified market model
-- [ ] Cross-platform price normalization
-- [ ] Arbitrage detection algorithm
-- [ ] UI for multi-source display
-
 ### 📊 Enhanced Data Sync
 
-**Timeline**: 3-4 weeks
-
-**Improvements**:
+Improve real-time capabilities:
 
 - WebSocket connections for instant updates
 - Reduced latency to <100ms
-- Historical data backfill (90 days)
-- Custom sync schedules per user
+- Historical data backfill
 - Failover data sources
 
-**Technical Tasks**:
+### 🏆 Scoring Refinements
 
-- [ ] WebSocket infrastructure
-- [ ] Message queue implementation
-- [ ] Historical data pipeline
-- [ ] Redundancy system
-- [ ] Performance monitoring
+Continue improving the algorithm:
 
-### 🏆 Scoring Algorithm v3
+- Better volume weighting
+- Improved time window calculations
+- More accurate baseline normalization
+- Reduced false positives
 
-**Timeline**: 4-5 weeks
+### 🔔 Notifications
 
-**New Capabilities**:
-
-- ML-based intensity prediction
-- Pattern recognition
-- Sentiment correlation
-- Social signal integration
-- Custom scoring profiles
-
-**Technical Tasks**:
-
-- [ ] Training data collection
-- [ ] Model development
-- [ ] A/B testing framework
-- [ ] Performance benchmarking
-- [ ] User feedback integration
-
-## 🎯 Medium Term (v0.5 - Q2 2025)
-
-### 🔔 Smart Notifications
-
-**Push Alerts**:
-
-- Extreme tremors (7.5+)
-- Watched markets
-- Custom thresholds
-- Pattern matches
-
-**Delivery Channels**:
+Alert users about significant movements:
 
 - Browser notifications
-- Email digests
-- SMS (premium)
+- Email alerts
 - Telegram bot
 - Discord integration
-- Webhook API
-
-### 👤 User Accounts
-
-**Features**:
-
-- Watchlists
-- Custom alerts
-- Historical tracking
-- Performance analytics
-- Saved filters
-- API access
+- Webhook API for developers
 
 ### 📱 Mobile Experience
 
-**Native Apps**:
-
-- iOS app (React Native)
-- Android app
+- Progressive Web App (PWA)
+- Mobile-optimized UI
 - Push notifications
 - Offline support
-- Widget support
 
-### 🤖 Advanced AI
+## 🌟 Long-Term Vision
 
-**Capabilities**:
+### Community Platform
 
-- Natural language queries
-- Predictive analytics
-- Anomaly detection
-- Trend forecasting
-- Automated insights
+TREMOR aims to be the open-source standard for prediction market monitoring:
 
-## 🌟 Long Term Vision (v1.0 - Q3/Q4 2025)
+- **Open Data**: All market data accessible via public API
+- **Community Contributions**: Accept PRs for new features and integrations
+- **Transparent Algorithms**: All scoring and analysis code open source
+- **Multiple Markets**: Support for Polymarket, Kalshi, Manifold, and others
+- **Self-Hostable**: Run your own instance with your own configurations
 
-### 🌐 Multi-Platform Expansion
+### Developer Ecosystem
 
-**Additional Sources**:
-
-- Metaculus integration
-- Manifold Markets
-- PredictIt
-- Sports betting markets
-- Financial derivatives
-
-### 💼 TREMOR Pro
-
-**Premium Features**:
-
-- Advanced analytics
-- Custom algorithms
-- API access
-- Priority data
-- Team collaboration
-- White-label options
-
-### 🛠️ Developer Platform
-
-**API & Tools**:
+Enable developers to build on top of TREMOR:
 
 - RESTful API
 - WebSocket streams
-- SDKs (Python, JS, Go)
-- Webhooks
-- Custom indicators
-- Backtesting tools
+- Client libraries (JavaScript, Python)
+- Webhook support
+- Custom plugins
 
-### 📊 Analytics Suite
+## 🏗️ Technical Priorities
 
-**Deep Insights**:
+### Code Quality
 
-- Market maker analysis
-- Whale tracking
-- Correlation matrices
-- Volatility indicators
-- Prediction accuracy
-- ROI tracking
+- [ ] Increase test coverage
+- [ ] Improve TypeScript types
+- [ ] Better error handling
+- [ ] Performance optimization
 
-## 🔬 Experimental Features
+### Infrastructure
 
-### Under Consideration
-
-**🎮 Gamification**
-
-- Prediction tournaments
-- Accuracy leaderboards
-- Achievement system
-
-**🔗 Blockchain Integration**
-
-- On-chain verification
-- Decentralized data
-- NFT alerts
-
-**🧠 Advanced ML**
-
-- GPT-powered analysis
-- Computer vision for charts
-- Audio market updates
-
-## 📈 Success Metrics
-
-### v0.2 Targets
-
-- 1,000+ daily active users
-- <1s page load time
-- 99.9% uptime
-- 1,000+ markets tracked
-- 5-star Chrome extension
-
-### v0.5 Targets
-
-- 10,000+ registered users
-- 100+ premium subscribers
-- 1M+ API calls/month
-- 5+ data sources
-- Mobile app ratings 4.5+
-
-### v1.0 Goals
-
-- 100,000+ users
-- 1,000+ premium subscribers
-- $10k+ MRR
-- Industry recognition
-- Acquisition interest
-
-## 🏗️ Technical Debt & Refactoring
-
-### Priority Improvements
-
-**Performance**:
-
-- [ ] Query optimization
+- [ ] CI/CD pipeline improvements
+- [ ] Monitoring and alerting
+- [ ] Database optimizations
 - [ ] Caching layer
-- [ ] CDN implementation
-- [ ] Database sharding
 
-**Code Quality**:
+### Documentation
 
-- [ ] Test coverage >80%
-- [ ] TypeScript strict mode
-- [ ] Error tracking
-- [ ] Performance monitoring
-
-**DevOps**:
-
-- [ ] CI/CD pipeline
-- [ ] Automated testing
-- [ ] Blue-green deployments
-- [ ] Infrastructure as code
+- [ ] API documentation
+- [ ] Self-hosting guide
+- [ ] Contributing guidelines
+- [ ] Architecture decisions
 
 ## 🤝 Community & Open Source
 
-### Planned Initiatives
+### How to Contribute
 
-**Open Source Components**:
+1. **Report bugs** - GitHub issues
+2. **Request features** - GitHub discussions
+3. **Submit PRs** - Check CONTRIBUTING.md
+4. **Share feedback** - Open an issue
+5. **Help others** - Answer questions in discussions
 
-- Scoring algorithm library
-- Market data normalizer
-- Visualization components
-- Example integrations
+### Principles
 
-**Community Building**:
+- **Open Source First**: All core functionality remains open source
+- **Community Driven**: Features prioritized by community needs
+- **Transparent Development**: All planning and decisions in public
+- **No Vendor Lock-in**: Self-hostable with no proprietary dependencies
+- **Privacy Focused**: No unnecessary data collection
 
-- Discord server
-- Developer forum
-- Bug bounty program
-- Contributor rewards
-- Educational content
+## 💡 Feature Ideas from Community
 
-## 💡 Feature Requests & Ideas
-
-We're actively collecting feedback! Current user requests:
+Current suggestions being considered:
 
 1. **CSV export** for historical data
 2. **Dark/light theme** toggle
 3. **Embedding widgets** for blogs
 4. **RSS feeds** for tremors
-5. **Slack integration** for teams
-6. **Custom time ranges** beyond 24h
-7. **Market categories** filtering
-8. **Saved searches** and filters
-9. **Multi-language** support
-10. **Accessibility** improvements
-
-## 📅 Release Schedule
-
-| Version | Target Date | Focus                    |
-| ------- | ----------- | ------------------------ |
-| v0.1    | ✅ Jan 2025 | MVP Launch               |
-| v0.2    | Feb 2025    | Kalshi + Better Sync     |
-| v0.3    | Mar 2025    | Notifications + Accounts |
-| v0.4    | Apr 2025    | Mobile Web + AI          |
-| v0.5    | May 2025    | Native Apps              |
-| v0.6    | Jun 2025    | Pro Features             |
-| v0.7    | Jul 2025    | API Platform             |
-| v0.8    | Aug 2025    | Multi-source             |
-| v0.9    | Sep 2025    | Analytics Suite          |
-| v1.0    | Oct 2025    | Production Ready         |
-
-## 🚦 How to Contribute
-
-1. **Report bugs** - GitHub issues
-2. **Request features** - Discord community
-3. **Submit PRs** - Check CONTRIBUTING.md
-4. **Share feedback** - feedback@tremor.live
-5. **Spread the word** - Tell your friends!
+5. **Multi-language** support
+6. **Accessibility** improvements
+7. **Custom alerting rules**
+8. **Market categories** filtering
+9. **Data visualization** improvements
+10. **Performance metrics** dashboard
 
 ---
 
-_This roadmap is a living document. Priorities may shift based on user feedback and market conditions._
+_This roadmap is community-driven. Priorities may shift based on contributions and feedback._
 
-**Last Updated**: January 2025  
-**Status**: Actively Maintained  
-**Feedback**: roadmap@tremor.live
+**Contributing**: See [CONTRIBUTING.md](../CONTRIBUTING.md)  
+**Discussions**: [GitHub Discussions](https://github.com/sculptdotfun/tremor/discussions)

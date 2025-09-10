@@ -1,8 +1,8 @@
 # 🌊 TREMOR.LIVE
 
-> **"Money talks before headlines drop."**
+> **Open-source prediction market monitoring**
 
-A real-time seismic monitor for prediction markets. When probabilities shift dramatically, TREMOR detects the movement—surfacing market earthquakes before they become mainstream news.
+Real-time detection of significant market movements across prediction markets. Community-maintained, transparent, and self-hostable.
 
 <div align="center">
   
@@ -14,23 +14,20 @@ A real-time seismic monitor for prediction markets. When probabilities shift dra
 
 ## 🎯 What is TREMOR?
 
-Imagine a seismograph, but for prediction markets. TREMOR continuously monitors ~500 active markets on Polymarket, detecting when significant price movements occur. Each "tremor" is scored on a 0-10 intensity scale—just like earthquakes:
+TREMOR monitors ~500 active prediction markets on Polymarket, detecting significant price movements in real-time. Each movement is scored on a 0-10 intensity scale:
 
-- 🔴 **EXTREME (7.5+)**: Market-shaking events. The equivalent of a major earthquake.
-- 🟠 **HIGH (5.0-7.5)**: Significant movements that demand attention.
-- 🟡 **MODERATE (2.5-5.0)**: Notable activity worth monitoring.
-- ⚪ **LOW (0-2.5)**: Minor fluctuations in the market landscape.
+- 🔴 **EXTREME (7.5+)**: Major market movements
+- 🟠 **HIGH (5.0-7.5)**: Significant activity
+- 🟡 **MODERATE (2.5-5.0)**: Notable changes
+- ⚪ **LOW (0-2.5)**: Minor fluctuations
 
-### Why It Matters
+### Features
 
-Prediction markets aggregate collective intelligence. When smart money moves, it often signals:
-
-- Breaking news before it breaks
-- Shifting consensus on future events
-- Emerging risks or opportunities
-- Real-time probability updates on world events
-
-TREMOR helps you catch these signals as they happen, not hours later.
+- Real-time monitoring of prediction markets
+- Intensity scoring based on price movement and volume
+- Multi-timeframe analysis (5min/1hr/24hr)
+- Open-source and self-hostable
+- Community-driven development
 
 ## 🚀 Quick Start
 
@@ -143,45 +140,12 @@ This is an early alpha release. We're live and processing real data, but expect:
 - UI polish opportunities
 - Feature gaps we're actively filling
 
-### Coming Soon (v0.2)
+### Next Steps (v0.2)
 
-#### 🎲 **Kalshi Integration**
-
-- Dual-market monitoring (Polymarket + Kalshi)
-- Arbitrage opportunity detection
-- Cross-market tremor correlation
-
-#### 📊 **Enhanced Data Sync**
-
-- WebSocket connections for instant updates
-- Historical data analysis
-- Custom alert thresholds
-
-#### 🏆 **Scoring Evolution (v3)**
-
-- Machine learning-based intensity prediction
-- Sentiment analysis from order flow
-- Social signal integration
-
-#### 🔔 **Notifications & Alerts**
-
-- Push notifications for extreme tremors
-- Custom watchlists
-- Telegram/Discord bot integration
-
-#### 📈 **Analytics Dashboard**
-
-- Personal tremor history
-- Market performance tracking
-- Accuracy metrics for predictions
-
-### Future Vision (v1.0)
-
-- Multiple prediction market sources
-- Advanced filtering and search
-- API for developers
-- Mobile app
-- Premium features for power users
+- **Kalshi Integration** - Monitor both Polymarket and Kalshi
+- **Better Sync** - Reduce latency with WebSocket connections
+- **Notifications** - Get alerts for major movements
+- **API Access** - Developer endpoints for market data
 
 ## 🤝 Contributing
 

@@ -187,12 +187,11 @@ Event Score: 6.5 🟠 (Maximum of all markets)
 - Graduated volume multiplier
 - Better handling of edge cases
 
-### v3 (Planned)
+### v3 (Future)
 
-- Machine learning-based prediction
-- Sentiment analysis integration
-- Cross-market correlation
-- Predictive tremor alerts
+- Refined thresholds based on historical data
+- Market-specific adjustments
+- Improved baseline calculations
 
 ## 🎯 Calibration Examples
 
@@ -245,26 +244,12 @@ async function computeScores() {
 }
 ```
 
-## 📈 Future Enhancements
+## 📈 Future Improvements
 
-### Planned for v3
-
-1. **AI-Powered Predictions**
-   - Predict which markets will tremor next
-   - Pattern recognition from historical data
-
-2. **Social Signal Integration**
-   - Twitter/X sentiment spikes
-   - News volume correlation
-
-3. **Custom Scoring Profiles**
-   - Political events emphasis
-   - Sports betting focus
-   - Financial markets priority
-
-4. **Tremor Forecasting**
-   - "Aftershock" probability
-   - Cascade effect detection
+- More accurate volume weighting
+- Better handling of market-specific patterns
+- Improved normalization for different market types
+- Refined time window calculations
 
 ## 🎓 Understanding the Numbers
 
