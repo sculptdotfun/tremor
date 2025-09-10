@@ -94,3 +94,4 @@ export const backfillAllActiveMarkets = internalAction({
     return { markets: markets.length, completed };
   },
 });
+/* eslint-disable @typescript-eslint/no-explicit-any */

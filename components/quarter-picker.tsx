@@ -7,12 +7,11 @@ export type TremorWindow = '5m' | '60m' | '1440m' | '7d' | '30d' | '1Q' | '1y' |
 export function QuarterPicker({ onSelect }: { onSelect: (w: TremorWindow) => void }) {
   const [open, setOpen] = useState(false);
 
-  const { thisQuarterId, lastQuarterId, recentQuarters } = useMemo(() => {
+  const { lastQuarterId, recentQuarters } = useMemo(() => {
     const now = new Date();
     const month = now.getUTCMonth();
     const q = Math.floor(month / 3) + 1 as 1|2|3|4;
     const y = now.getUTCFullYear();
-    const thisId = `q:${y}-Q${q}` as const;
     const prevQ = q === 1 ? 4 : ((q - 1) as 1|2|3|4);
     const prevY = q === 1 ? y - 1 : y;
     const lastId = `q:${prevY}-Q${prevQ}` as const;
@@ -24,7 +23,7 @@ export function QuarterPicker({ onSelect }: { onSelect: (w: TremorWindow) => voi
       cq = (cq === 1 ? 4 : ((cq - 1) as 1|2|3|4));
       if (cq === 4) cy -= 1;
     }
-    return { thisQuarterId: thisId, lastQuarterId: lastId, recentQuarters: list };
+    return { lastQuarterId: lastId, recentQuarters: list };
   }, []);
 
   return (

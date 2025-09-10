@@ -77,3 +77,4 @@ crons.interval(
 );
 
 export default crons;
+/* eslint-disable @typescript-eslint/no-explicit-any */

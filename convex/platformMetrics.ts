@@ -186,3 +186,4 @@ export const getPlatformMetricsPublic = query({
     return latest || null;
   },
 });
+/* eslint-disable @typescript-eslint/no-explicit-any */

@@ -143,3 +143,4 @@ export const clearAllAnalyses = mutation({
     return { deleted };
   },
 });
+/* eslint-disable @typescript-eslint/no-explicit-any */

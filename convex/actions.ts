@@ -145,7 +145,7 @@ export const syncHotTrades = internalAction({
               });
             
             // Store trades (now directly aggregates into buckets)
-            const insertResult = await ctx.runMutation(internal.trades.insertTrades, {
+            const _insertResult = await ctx.runMutation(internal.trades.insertTrades, {
               trades: transformed,
             });
             
@@ -308,3 +308,4 @@ export const computeAllBaselines = internalAction({
     }
   },
 });
+/* eslint-disable @typescript-eslint/no-explicit-any */
