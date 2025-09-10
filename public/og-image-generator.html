@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, height=630">
+    <title>TREMOR OG Image</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Seismic wave background effect */
+        .wave-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+        }
+        
+        .wave {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ef4444, transparent);
+            animation: wave 3s infinite;
+        }
+        
+        .wave:nth-child(1) { top: 20%; animation-delay: 0s; }
+        .wave:nth-child(2) { top: 30%; animation-delay: 0.5s; }
+        .wave:nth-child(3) { top: 40%; animation-delay: 1s; }
+        .wave:nth-child(4) { top: 50%; animation-delay: 1.5s; }
+        .wave:nth-child(5) { top: 60%; animation-delay: 2s; }
+        .wave:nth-child(6) { top: 70%; animation-delay: 2.5s; }
+        .wave:nth-child(7) { top: 80%; animation-delay: 3s; }
+        
+        @keyframes wave {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        /* Seismograph line */
+        .seismograph {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 200px;
+            transform: translateY(-50%);
+            opacity: 0.15;
+        }
+        
+        .seismo-line {
+            stroke: #ef4444;
+            stroke-width: 2;
+            fill: none;
+            filter: drop-shadow(0 0 10px #ef4444);
+        }
+        
+        /* Content */
+        .content {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.3);
+        }
+        
+        .title {
+            font-size: 90px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #ffffff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+        }
+        
+        .tagline {
+            font-size: 32px;
+            color: #ef4444;
+            margin-bottom: 40px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .description {
+            font-size: 24px;
+            color: #a1a1aa;
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.5;
+            margin-bottom: 50px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 60px;
+            padding: 30px 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #71717a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Intensity indicators */
+        .intensity-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            display: flex;
+        }
+        
+        .intensity-segment {
+            flex: 1;
+            opacity: 0.8;
+        }
+        
+        .intensity-segment:nth-child(1) { background: #27272a; }
+        .intensity-segment:nth-child(2) { background: #fbbf24; }
+        .intensity-segment:nth-child(3) { background: #fb923c; }
+        .intensity-segment:nth-child(4) { background: #ef4444; }
+        
+        /* Live badge */
+        .live-badge {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: #ef4444;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .url {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-size: 18px;
+            color: #71717a;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated wave background -->
+    <div class="wave-container">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    
+    <!-- Seismograph visualization -->
+    <svg class="seismograph" viewBox="0 0 1200 200">
+        <path class="seismo-line" d="M0,100 L50,100 L100,100 L150,95 L200,105 L250,90 L300,110 L350,85 L400,115 L450,80 L500,120 L550,50 L600,150 L650,30 L700,170 L750,100 L800,100 L850,100 L900,100 L950,100 L1000,100 L1050,100 L1100,100 L1150,100 L1200,100" />
+    </svg>
+    
+    <!-- Main content -->
+    <div class="content">
+        <div class="logo-area">
+            <div class="logo">🌊</div>
+            <div class="title">TREMOR</div>
+        </div>
+        
+        <div class="tagline">Where Money Talks First</div>
+        
+        <div class="description">
+            Real-time seismic monitoring for prediction markets. 
+            When probabilities shift dramatically, we detect the tremor.
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">~500</div>
+                <div class="stat-label">Markets Tracked</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">15s</div>
+                <div class="stat-label">Update Speed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">0-10</div>
+                <div class="stat-label">Intensity Scale</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Monitoring</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Intensity bar -->
+    <div class="intensity-bar">
+        <div class="intensity-segment"></div>
+        <div class="intensity-segment"></div>
+        <div class="intensity-segment"></div>
+        <div class="intensity-segment"></div>
+    </div>
+    
+    <!-- Live indicator -->
+    <div class="live-badge">
+        <div class="live-dot"></div>
+        LIVE
+    </div>
+    
+    <!-- URL -->
+    <div class="url">tremor.live</div>
+</body>
+</html>

@@ -33,6 +33,14 @@ export const metadata: Metadata = {
     siteName: 'Tremor',
     type: 'website',
     locale: 'en_US',
+    images: [
+      {
+        url: 'https://tremor.live/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'TREMOR - Real-time seismic monitoring for prediction markets',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -40,6 +48,7 @@ export const metadata: Metadata = {
     description:
       'Track sudden market movements before news breaks. Real-time prediction market tremors.',
     site: '@tremorlive',
+    images: ['https://tremor.live/og-image.png'],
   },
   robots: {
     index: true,
