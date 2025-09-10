@@ -57,6 +57,18 @@ export const getActiveEvents = query({
   },
 });
 
+// Get event by eventId
+export const getEventById = query({
+  args: { eventId: v.string() },
+  handler: async (ctx, args) => {
+    const event = await ctx.db
+      .query('events')
+      .withIndex('by_event', (q) => q.eq('eventId', args.eventId))
+      .first();
+    return event;
+  },
+});
+
 // Get events that need trade syncing
 export const getEventsToSync = query({
   args: {
@@ -111,5 +123,26 @@ export const getEventsToSync = query({
     return results
       .sort((a, b) => a.oldestSyncMs - b.oldestSyncMs)
       .slice(0, limit);
+  },
+});
+
+// Simple search by title/slug/category (case-insensitive contains)
+export const searchEvents = query({
+  args: { query: v.string(), limit: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    const limit = args.limit || 20;
+    const q = args.query.toLowerCase();
+    // Scan recent active events first by volume
+    const events = await ctx.db
+      .query('events')
+      .withIndex('by_active_volume', (qq) => qq.eq('active', true))
+      .order('desc')
+      .take(200);
+    const results = events.filter((e) =>
+      (e.title?.toLowerCase().includes(q)) ||
+      (e.slug?.toLowerCase().includes(q)) ||
+      (e.category?.toLowerCase().includes(q))
+    ).slice(0, limit);
+    return results;
   },
 });

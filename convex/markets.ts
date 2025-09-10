@@ -108,6 +108,18 @@ export const getMarketByConditionId = query({
   },
 });
 
+// Get all markets for an event
+export const getMarketsByEventId = query({
+  args: { eventId: v.string() },
+  handler: async (ctx, args) => {
+    const markets = await ctx.db
+      .query('markets')
+      .withIndex('by_event', (q) => q.eq('eventId', args.eventId))
+      .collect();
+    return markets;
+  },
+});
+
 // Get markets that need trade updates
 export const getMarketsToSync = query({
   args: {

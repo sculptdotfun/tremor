@@ -17,7 +17,7 @@ TREMOR.LIVE monitors prediction markets from Polymarket in real-time, calculatin
 
 - **Real-time Market Monitoring** - Tracks prediction markets every 15-60 seconds
 - **Tremor Intensity Scoring** - 0-10 scale quantifying market movement significance
-- **Multi-timeframe Analysis** - 5-minute, 1-hour, and 24-hour windows
+- **Multi-timeframe Analysis** - 5-minute, 1-hour, 24-hour, 7-day, 30-day, Quarter-to-Date (1Q), 1-year, plus specific named quarters (e.g., 2025 Q1)
 - **Smart Data Prioritization** - Hot/warm/cold market classification for efficient syncing
 - **Intensity Filtering** - Filter movements by intensity levels (Extreme, High, Moderate, Low)
 - **Visual Indicators** - Color-coded intensity bars and category badges
@@ -55,6 +55,7 @@ Create a `.env.local` file:
 ```env
 NEXT_PUBLIC_CONVEX_URL=your_convex_deployment_url
 CONVEX_DEPLOYMENT=your_convex_deployment_name
+XAI_API_KEY=your_xai_api_key
 ```
 
 ### Development
@@ -132,6 +133,13 @@ pnpm typecheck    # Run TypeScript checking
 pnpm convex dev   # Start Convex dev server
 pnpm convex deploy # Deploy to Convex production
 ```
+
+## Public API (v1)
+
+- `GET /api/v1/events/top?window=1440m&limit=20` — Top events with tremor stats for a window (`5m,60m,1440m,7d,30d,1Q,1y,q:YYYY-QN`)
+- `GET /api/v1/events/:eventId?window=1440m&include=markets,scores` — Full event metadata with markets and latest scores
+- `GET /api/v1/search?query=...&window=1440m` — Search events and include a lightweight score for the window
+- `GET /api/v1/windows` — Supported windows plus current/last quarter IDs
 
 ## Project Structure
 

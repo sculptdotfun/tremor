@@ -9,7 +9,9 @@ import {
   MarketSource,
 } from '@/lib/types';
 
-export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
+export type TremorWindow = '5m' | '60m' | '1440m' | '7d' | '30d' | '1Q' | '1y' | string;
+
+export function useTremorData(window: TremorWindow = '60m') {
   // Get top tremors from Convex
   const topTremors = useQuery(api.scoring.getTopTremors, {
     window,

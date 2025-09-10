@@ -252,6 +252,93 @@ export function OnboardingModal({
         </div>
       ),
     },
+    {
+      title: '05. PUBLIC API',
+      content: (
+        <div className="space-y-4">
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Build with Tremor. Our unauthenticated JSON API exposes top events, event
+            details, search, and supported windows. Copy the Markdown below into Claude (or
+            any tool) to keep the docs handy.
+          </p>
+          <div className="rounded border border-zinc-800/50 bg-zinc-950">
+            <div className="border-b border-zinc-800/50 px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              API Docs (Markdown)
+            </div>
+            <pre className="max-h-64 overflow-auto px-3 py-3 text-[11px] leading-relaxed text-zinc-300">
+{`# Tremor Public API (v1)
+
+Base URL: http://localhost:3000 (or your deployment)
+
+## Windows
+
+Supported windows (ids):
+- 5m, 60m, 1440m (24h), 7d, 30d, 1Q (quarter-to-date), 1y
+- Named quarters: q:YYYY-QN (e.g., q:2025-Q1)
+
+### GET /api/v1/windows
+Returns supported windows and current/last quarter ids.
+
+Response:
+{
+  "windows": [ { "id": "1440m", "label": "24 HOUR" }, ... ],
+  "currentQuarter": "q:2025-Q3",
+  "lastQuarter": "q:2025-Q2"
+}
+
+## Top Events
+
+### GET /api/v1/events/top?window=1440m&limit=20
+Returns the highest-scoring events for the given window.
+
+Response item fields:
+- eventId, title, slug, category, image, active, volume24hr, volumeUsd24hr
+- window, generatedAt, seismoScore, priceChangePp
+- topMarket: { conditionId, question, prevPrice01, currPrice01 }
+- totalVolume, activeMarkets
+- volumeShare (when available): { r, rLo, rHi }
+
+Example:
+curl -s "http://localhost:3000/api/v1/events/top?window=7d&limit=10" | jq
+
+## Event Detail
+
+### GET /api/v1/events/:eventId?window=1440m&include=markets,scores
+Returns complete event metadata with optional markets and multi-window scores.
+
+Query params:
+- window: one of the supported ids
+- include: comma-separated subset of [markets, scores]
+
+Response:
+{
+  "event": { ... },
+  "window": "1440m",
+  "markets": [ { conditionId, question, lastTradePrice, volume24hr, ... } ],
+  "scores": { "60m": {...}, "1440m": {...}, "7d": {...}, ... },
+  "topMovement": { conditionId, question, prevPrice01, currPrice01, changePp },
+  "volumeShare": { rLo, rHi }
+}
+
+Example:
+curl -s "http://localhost:3000/api/v1/events/EVT123?window=1Q&include=markets,scores" | jq
+
+## Search
+
+### GET /api/v1/search?query=...&window=1440m
+Finds events by title/slug/category and returns a lightweight score for the window.
+
+Example:
+curl -s "http://localhost:3000/api/v1/search?query=trump&window=30d" | jq
+`}
+            </pre>
+          </div>
+          <p className="text-[11px] text-zinc-500">
+            Tip: On production, replace localhost with your deployed URL.
+          </p>
+        </div>
+      ),
+    },
   ];
 
   if (!isOpen) return null;

@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuery, useAction } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
+type TremorWindow = '5m' | '60m' | '1440m' | '7d' | '30d' | '1Q' | '1y' | string;
+
 interface MovementExplainerProps {
   movement: {
     id?: string;
@@ -22,9 +24,10 @@ interface MovementExplainerProps {
       volume: number;
     }>;
   };
+  timeframeWindow?: TremorWindow;
 }
 
-export function MovementExplainer({ movement }: MovementExplainerProps) {
+export function MovementExplainer({ movement, timeframeWindow }: MovementExplainerProps) {
   const [isRequesting, setIsRequesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const hasRequestedRef = useRef(false); // Prevent duplicate requests
@@ -63,6 +66,7 @@ export function MovementExplainer({ movement }: MovementExplainerProps) {
             previousValue: movement.previousValue,
             seismoScore: movement.seismoScore,
             marketQuestion: movement.marketMovements?.[0]?.question || '',
+            timeframeWindow,
           });
 
           if (!result.success) {

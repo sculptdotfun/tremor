@@ -8,7 +8,7 @@ import { useTremorData } from '@/hooks/use-tremor-data';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [windowSel, setWindowSel] = useState<'5m' | '60m' | '1440m'>('1440m'); // Default to daily - more activity to see
+  const [windowSel, setWindowSel] = useState<'5m' | '60m' | '1440m' | '7d' | '30d' | '1Q' | '1y' | string>('1440m'); // Default to daily - more activity to see
   const [intensityFilter, setIntensityFilter] = useState<
     'all' | 'extreme' | 'high' | 'moderate' | 'low'
   >('all');
@@ -40,7 +40,7 @@ export default function Home() {
   }, []);
 
   // Handle window change with loading state
-  const handleWindowChange = (newWindow: '5m' | '60m' | '1440m') => {
+  const handleWindowChange = (newWindow: '5m' | '60m' | '1440m' | '7d' | '30d' | '1Q' | '1y' | string) => {
     setIsChangingWindow(true);
     setWindowSel(newWindow);
     setTimeout(() => setIsChangingWindow(false), 300);
@@ -53,6 +53,16 @@ export default function Home() {
       case '60m':
         return '1 HOUR';
       case '1440m':
+        return '24 HOUR';
+      case '7d':
+        return '7 DAY';
+      case '30d':
+        return '30 DAY';
+      case '1Q':
+        return 'THIS QUARTER';
+      case '1y':
+        return '1 YEAR';
+      default:
         return '24 HOUR';
     }
   };
@@ -421,11 +431,12 @@ export default function Home() {
         </main>
       </div>
 
-      {/* Bottom HUD Panel */}
-      <TremorDetailPanel
-        movement={selectedMovement}
-        onClose={() => setSelectedMovement(null)}
-      />
+  {/* Bottom HUD Panel */}
+  <TremorDetailPanel
+    movement={selectedMovement}
+    onClose={() => setSelectedMovement(null)}
+    timeframeWindow={windowSel}
+  />
     </div>
   );
 }

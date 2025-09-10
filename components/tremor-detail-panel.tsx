@@ -5,14 +5,18 @@ import { useEffect, useState } from 'react';
 import { useAction } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
+type TremorWindow = '5m' | '60m' | '1440m' | '7d' | '30d' | '1Q' | '1y' | string;
+
 interface TremorDetailPanelProps {
   movement: MarketMovement | null;
   onClose: () => void;
+  timeframeWindow?: TremorWindow;
 }
 
 export function TremorDetailPanel({
   movement,
   onClose,
+  timeframeWindow,
 }: TremorDetailPanelProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [showAll, setShowAll] = useState(false);
@@ -43,6 +47,7 @@ export function TremorDetailPanel({
           previousValue: movement.previousValue || 0,
           seismoScore: movement.seismoScore || 0,
           marketQuestion: movement.marketMovements?.[0]?.question,
+          timeframeWindow,
         })
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .then((response: any) => {

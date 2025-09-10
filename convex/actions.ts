@@ -249,7 +249,7 @@ export const computeAllScores = internalAction({
       });
       
       for (const event of events) {
-        // Compute 5m, 60m, and 1d scores
+        // Compute 5m, 60m, and 1d scores (existing)
         for (const windowMinutes of [5, 60, 1440]) {
           try {
             await ctx.runMutation(internal.scoring.computeEventScore, {
@@ -258,6 +258,19 @@ export const computeAllScores = internalAction({
             });
           } catch (error) {
             logger.error(`Score computation failed for event ${event.eventId}:`, error);
+          }
+        }
+
+        // Compute extended windows using unified scoring
+        for (const window of ['10080m','43200m','525600m','1Q']) {
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            await ctx.runMutation((internal as any).scoring.computeEventScoreWindow, {
+              eventId: event.eventId,
+              window,
+            });
+          } catch (error) {
+            logger.error(`Extended score failed for event ${event.eventId} window ${window}:`, error);
           }
         }
       }

@@ -191,3 +191,11 @@ const calculatePriority = (market) => {
 6. No cross-market correlation analysis
 7. No pattern detection across time
 8. Score history deleted after 48 hours
+
+## Updates (Long Horizons & API)
+
+- Added aggregated bars table `aggPriceSnapshots` for 1h/1d OHLCV per market to support 7d/30d/1Q/1y windows efficiently.
+- Added `platformMetrics` cache with platform-wide USD volume and dynamic volume-share thresholds per window (P40/P90 with EMA smoothing).
+- Extended baselines with hourly/daily return stats to normalize long-horizon movements.
+- Unified scoring across windows with dynamic volume weighting and reversal bonus; quarters treated as first-class windows (1Q and named `q:YYYY-QN`).
+- New public API endpoints under `/api/v1` for top events, event details, search, and window metadata.

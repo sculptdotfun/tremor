@@ -59,12 +59,35 @@ export default defineSchema({
     .index('by_event_time', ['eventId', 'timestampMs'])
     .index('by_time', ['timestampMs']), // For cleanup queries
 
+  // Aggregated price snapshots for longer horizons (hourly/daily bars)
+  aggPriceSnapshots: defineTable({
+    conditionId: v.string(),
+    eventId: v.string(),
+    granularity: v.string(), // '1h' | '1d'
+    startMs: v.number(), // inclusive UTC boundary
+    endMs: v.number(), // exclusive
+    open01: v.float64(),
+    high01: v.float64(),
+    low01: v.float64(),
+    close01: v.float64(),
+    volumeSince: v.float64(),
+    volumeUsdSince: v.optional(v.float64()),
+  })
+    .index('by_market_granularity_time', ['conditionId', 'granularity', 'startMs'])
+    .index('by_event_granularity_time', ['eventId', 'granularity', 'startMs'])
+    .index('by_granularity_time', ['granularity', 'startMs']),
+
   // Nightly baselines for normalization
   baselines: defineTable({
     conditionId: v.string(),
     computedAt: v.number(),
     meanRet1m: v.float64(),
     stdRet1m: v.float64(),
+    // Extended baselines for longer horizons
+    meanRet1h: v.optional(v.float64()),
+    stdRet1h: v.optional(v.float64()),
+    meanRet1d: v.optional(v.float64()),
+    stdRet1d: v.optional(v.float64()),
     p95TradeSize: v.float64(),
     avgVol1m: v.float64(),
     dayCount: v.number(), // Days of data used
@@ -117,6 +140,19 @@ export default defineSchema({
   })
     .index('by_condition', ['conditionId'])
     .index('by_priority', ['priority', 'lastTradeFetchMs']),
+
+  // Platform volume metrics cache per window (for dynamic thresholds)
+  platformMetrics: defineTable({
+    window: v.string(), // '5m' | '60m' | '24h' | '7d' | '30d' | '1Q' | '1y' | 'q:YYYY-QN'
+    computedAt: v.number(),
+    platformUsd: v.float64(),
+    rLo: v.float64(),
+    rHi: v.float64(),
+    rLoEma: v.optional(v.float64()),
+    rHiEma: v.optional(v.float64()),
+  })
+    .index('by_window_time', ['window', 'computedAt'])
+    .index('by_time', ['computedAt']),
 
   // AI-generated movement explanations
   aiAnalysis: defineTable({

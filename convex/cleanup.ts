@@ -4,7 +4,9 @@ import { internal } from './_generated/api';
 
 // CONSOLIDATED CLEANUP MODULE - Single source of truth for data retention
 // Retention policies:
-// - Price snapshots: 26 hours (for 24h scoring window + buffer)
+// - Price snapshots: 72 hours (for 24h scoring + buffer)
+// - 1h aggregated bars: 180 days
+// - 1d aggregated bars: 540 days
 // - Scores: 48 hours (for historical comparison)
 // - Baselines: 30 days (computed nightly)
 
@@ -19,14 +21,26 @@ export const cleanupOldData = internalAction({
   }> => {
     const now = Date.now();
 
-    // Clean up price snapshots older than 26 hours
-    const snapshotCutoff = now - 26 * 60 * 60 * 1000;
+    // Clean up price snapshots older than 72 hours
+    const snapshotCutoff = now - 72 * 60 * 60 * 1000;
     const snapshotDeleted = await ctx.runMutation(
       internal.cleanup.deleteOldSnapshots,
       {
         cutoff: snapshotCutoff,
         batchSize: 500, // Increased batch size for efficiency
       }
+    );
+
+    // Clean up aggregated bars
+    const oneHourAggCutoff = now - 180 * 24 * 60 * 60 * 1000; // 180 days
+    const oneDayAggCutoff = now - 540 * 24 * 60 * 60 * 1000;  // 540 days
+    const agg1hDeleted = await ctx.runMutation(
+      internal.cleanup.deleteOldAggSnapshots,
+      { granularity: '1h', cutoff: oneHourAggCutoff, batchSize: 500 }
+    );
+    const agg1dDeleted = await ctx.runMutation(
+      internal.cleanup.deleteOldAggSnapshots,
+      { granularity: '1d', cutoff: oneDayAggCutoff, batchSize: 500 }
     );
 
     // Clean up scores older than 48 hours
@@ -50,7 +64,7 @@ export const cleanupOldData = internalAction({
     );
 
     console.log(
-      `Cleanup completed: ${snapshotDeleted} snapshots, ${scoreDeleted} scores, ${baselineDeleted} baselines`
+      `Cleanup completed: ${snapshotDeleted} snapshots, ${agg1hDeleted}+${agg1dDeleted} agg bars, ${scoreDeleted} scores, ${baselineDeleted} baselines`
     );
     return { snapshotDeleted, scoreDeleted, baselineDeleted };
   },
@@ -103,6 +117,31 @@ export const deleteOldScores = internalMutation({
 
     if (deleted > 0) {
       console.log(`Deleted ${deleted} old scores`);
+    }
+    return deleted;
+  },
+});
+
+export const deleteOldAggSnapshots = internalMutation({
+  args: {
+    granularity: v.string(),
+    cutoff: v.number(),
+    batchSize: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const batchSize = args.batchSize || 200;
+    const old = await ctx.db
+      .query('aggPriceSnapshots')
+      .withIndex('by_granularity_time', (q) => q.eq('granularity', args.granularity))
+      .filter((q) => q.lt(q.field('endMs'), args.cutoff))
+      .take(batchSize);
+    let deleted = 0;
+    for (const doc of old) {
+      await ctx.db.delete(doc._id);
+      deleted++;
+    }
+    if (deleted > 0) {
+      console.log(`Deleted ${deleted} old agg ${args.granularity} bars`);
     }
     return deleted;
   },

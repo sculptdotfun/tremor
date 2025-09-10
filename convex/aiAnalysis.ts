@@ -13,6 +13,7 @@ export const requestAnalysis: any = action({
     previousValue: v.number(),
     seismoScore: v.number(),
     marketQuestion: v.optional(v.string()),
+    timeframeWindow: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     // Check if score is high enough for AI analysis

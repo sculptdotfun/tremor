@@ -31,6 +31,30 @@ crons.interval(
   internal.actions.computeAllScores
 );
 
+// Aggregate hourly bars every 10 minutes (last 3 hours)
+crons.interval(
+  "aggregate hourly",
+  { minutes: 10 },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (internal as any).aggregation.aggregateSnapshotsHourly
+);
+
+// Aggregate daily bars once a day
+crons.daily(
+  "aggregate daily",
+  { hourUTC: 0, minuteUTC: 10 },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (internal as any).aggregation.aggregateSnapshotsDaily
+);
+
+// Platform metrics: compute for all windows periodically
+crons.interval(
+  "platform metrics all",
+  { minutes: 5 },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (internal as any).platformMetrics.computeAllPlatformMetrics
+);
+
 // Compute baselines nightly at 2 AM UTC
 crons.daily(
   "compute baselines",

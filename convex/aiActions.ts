@@ -14,6 +14,7 @@ interface SearchParameters {
     excluded_websites?: string[];
     included_x_handles?: string[];
     post_favorite_count?: number;
+    post_reply_count?: number;
   }>;
   from_date?: string;
   to_date?: string;
@@ -65,6 +66,7 @@ export const generateAnalysis: any = internalAction({
     previousValue: v.number(),
     seismoScore: v.number(),
     marketQuestion: v.optional(v.string()),
+    timeframeWindow: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const apiKey = process.env.XAI_API_KEY;
@@ -98,6 +100,25 @@ export const generateAnalysis: any = internalAction({
         .slice(0, 3)
         .join(' ');
 
+      // Resolve timeframe for prompt tailoring
+      const w = args.timeframeWindow || '1440m';
+      let horizonDays = 3;
+      let favMin = 5;
+      let replyMin = 2;
+      if (w === '5m' || w === '60m') {
+        horizonDays = 2;
+        favMin = 5; replyMin = 2;
+      } else if (w === '1440m' || w === '24h' || w === '7d') {
+        horizonDays = 7;
+        favMin = 10; replyMin = 3;
+      } else if (w === '30d' || w === '1Q' || (w as string).startsWith('q:')) {
+        horizonDays = 90;
+        favMin = 25; replyMin = 10;
+      } else {
+        horizonDays = 180; // 1y and others
+        favMin = 50; replyMin = 10;
+      }
+
       // Prompt focused on what smart money is anticipating
       const analysisPrompt = `
         A prediction market just moved BEFORE mainstream news:
@@ -107,6 +128,7 @@ export const generateAnalysis: any = internalAction({
         Category: ${args.category || 'general'}
         Movement: ${args.previousValue}% → ${args.currentValue}% (${Math.abs(args.currentValue - args.previousValue).toFixed(1)}% shift)
         Intensity Score: ${args.seismoScore.toFixed(1)}/10 (indicating ${args.seismoScore >= 7.5 ? 'extreme' : args.seismoScore >= 5 ? 'high' : 'moderate'} trading activity)
+        Timeframe: ${w}
         
         Search keywords: ${titleKeywords}
         
@@ -132,11 +154,11 @@ export const generateAnalysis: any = internalAction({
         sources: [
           {
             type: 'x',
-            post_favorite_count: 5, // Lower threshold to catch earliest signals
-            post_reply_count: 2, // At least some engagement
+            post_favorite_count: favMin,
+            post_reply_count: replyMin,
           },
         ],
-        from_date: getDateDaysAgo(3), // Last 3 days - wider window for developing stories
+        from_date: getDateDaysAgo(horizonDays),
         max_search_results: 25, // Maximum allowed by Grok API
         return_citations: true,
       });
@@ -166,6 +188,8 @@ export const generateAnalysis: any = internalAction({
       // Store the analysis in the database
       const now = Date.now();
       const ONE_HOUR = 60 * 60 * 1000;
+      const TWELVE_HOURS = 12 * ONE_HOUR;
+      const ttl = (w === '30d' || w === '1Q' || (w as string).startsWith('q:') || w === '1y') ? TWELVE_HOURS : ONE_HOUR;
 
       await ctx.runMutation(internal.aiService.storeAnalysis, {
         movementId: args.movementId,
@@ -175,7 +199,7 @@ export const generateAnalysis: any = internalAction({
         confidence: Math.round(baseConfidence),
         category: args.category,
         generatedAt: now,
-        expiresAt: now + ONE_HOUR,
+        expiresAt: now + ttl,
         sourcesUsed: sourcesUsed,
       });
 
