@@ -4,7 +4,7 @@ import { useEffect, useState, memo } from 'react';
 import { OnboardingModal } from './onboarding-modal';
 
 export const Header = memo(function Header() {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [, setCurrentTime] = useState(new Date());
   const [isLive] = useState(true);
   const [showAbout, setShowAbout] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -80,7 +80,7 @@ export const Header = memo(function Header() {
       </header>
 
       {/* Onboarding Modal - controlled by button and auto-shows on first visit */}
-      <OnboardingModal 
+      <OnboardingModal
         isOpen={showOnboarding}
         onClose={() => setShowOnboarding(false)}
         autoShow={true}

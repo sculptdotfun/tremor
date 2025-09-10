@@ -57,8 +57,7 @@ export function TremorDetailPanel({
               }
             }
           })
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .catch((error: any) => {
+          .catch(() => {
             // Silently handle AI analysis errors - non-critical feature
           })
           .finally(() => {

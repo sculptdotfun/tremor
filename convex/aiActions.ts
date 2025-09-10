@@ -87,7 +87,9 @@ export const generateAnalysis: any = internalAction({
         return { success: true, cached: true, analysis: existingAnalysis };
       }
 
-      logger.debug(`Generating new AI analysis for movement ${args.movementId}`);
+      logger.debug(
+        `Generating new AI analysis for movement ${args.movementId}`
+      );
 
       // Extract key terms for better search targeting
       const titleKeywords = args.title
@@ -133,7 +135,6 @@ export const generateAnalysis: any = internalAction({
           {
             type: 'x',
             post_favorite_count: 5, // Lower threshold to catch earliest signals
-            post_reply_count: 2, // At least some engagement
           },
         ],
         from_date: getDateDaysAgo(3), // Last 3 days - wider window for developing stories
