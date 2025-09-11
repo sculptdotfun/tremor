@@ -153,11 +153,22 @@ We're building in public! Contributions welcome:
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+3. **TEST YOUR CODE LOCALLY** (mandatory - see below)
+4. Commit changes (`git commit -m 'Add AmazingFeature'`)
+5. Push to branch (`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
 
-See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for details.
+### ⚠️ Important: Test Before You Submit
+
+**We do not accept untested code.** AI-assisted coding is fine, but:
+
+- ✅ Test everything locally first
+- ✅ Ensure `pnpm build` passes
+- ✅ Verify the app works
+- ❌ Don't submit AI-generated code without testing
+- ❌ Don't assume it works because "it looks right"
+
+PRs with untested code will be closed immediately. See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
 
 ## 📖 Documentation
 

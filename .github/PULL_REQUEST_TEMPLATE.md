@@ -1,33 +1,40 @@
-## Description
+## PR Checklist
 
-Please include a summary of the changes and which issue is fixed. Include relevant motivation and context.
+**IMPORTANT: Do not submit untested code. AI-assisted coding is fine, but all code MUST be tested locally before submission.**
 
-Fixes # (issue)
+### Pre-submission Requirements
 
-## Type of change
+- [ ] I have tested this code locally and it works
+- [ ] `pnpm build` runs without errors
+- [ ] `pnpm dev` runs and the app loads correctly
+- [ ] I have manually tested the features I'm changing
+- [ ] No TypeScript errors (`pnpm typecheck`)
+- [ ] Code follows existing patterns in the codebase
 
-Please delete options that are not relevant.
+### What does this PR do?
 
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Documentation update
+<!-- Brief description of changes -->
 
-## Checklist
+### Testing performed
 
-- [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have tested my changes locally
-- [ ] I have checked my code with `pnpm lint` and `pnpm typecheck`
-- [ ] I have formatted my code with `pnpm format`
+<!-- Describe how you tested these changes -->
 
-## Screenshots (if applicable)
+- [ ] Tested feature X by...
+- [ ] Verified Y works by...
+- [ ] Checked Z doesn't break by...
 
-Please add screenshots to help reviewers understand the changes visually.
+### Screenshots (if UI changes)
 
-## Additional Notes
+<!-- Add screenshots here if applicable -->
 
-Add any additional notes or context for reviewers here.
+### Additional context
+
+<!-- Any other context about the PR -->
+
+---
+
+**By submitting this PR, I confirm that:**
+
+- This code has been tested and works
+- I didn't just copy-paste AI output without testing
+- I understand that untested PRs will be closed

@@ -1,6 +1,20 @@
-# Contributing to TREMOR.LIVE
+# Contributing to TREMOR
 
-Thank you for your interest in contributing to TREMOR.LIVE! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to TREMOR! This document provides guidelines and instructions for contributing to the project.
+
+## ⚠️ IMPORTANT: No Untested Code
+
+**We do not accept untested AI-generated code submissions.**
+
+Using AI tools (ChatGPT, Claude, Copilot, etc.) to help write code is perfectly fine and encouraged. However:
+
+- ❌ DO NOT submit code you haven't tested locally
+- ❌ DO NOT copy-paste AI output directly into a PR
+- ✅ DO test everything before submitting
+- ✅ DO understand the code you're submitting
+- ✅ DO verify the app builds and runs correctly
+
+PRs with untested code will be closed immediately.
 
 ## Table of Contents
 
@@ -41,22 +55,27 @@ Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a wel
 ### Installation
 
 1. **Install dependencies**:
+
    ```bash
    pnpm install
    ```
 
 2. **Set up environment variables**:
+
    ```bash
    cp .env.example .env.local
    ```
+
    Then edit `.env.local` with your Convex credentials.
 
 3. **Initialize Convex**:
+
    ```bash
    pnpm convex dev
    ```
 
 4. **Start the development server**:
+
    ```bash
    pnpm dev
    ```
@@ -91,6 +110,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 - `chore:` Maintenance tasks
 
 Examples:
+
 ```
 feat: add real-time social intelligence feature
 fix: resolve sorting issue in X sources display
@@ -102,12 +122,14 @@ docs: update README with new environment variables
 ### Before Submitting
 
 1. **Update your branch** with the latest upstream changes:
+
    ```bash
    git fetch upstream
    git rebase upstream/main
    ```
 
 2. **Run quality checks**:
+
    ```bash
    pnpm lint
    pnpm typecheck
@@ -123,6 +145,7 @@ docs: update README with new environment variables
 ### Pull Request Process
 
 1. **Push your branch** to your fork:
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -170,16 +193,92 @@ docs: update README with new environment variables
 - Use lazy loading where appropriate
 - Keep bundle size minimal
 
-## Testing
+## Testing Requirements
 
-While we don't have a full test suite yet, please:
+### Mandatory Testing Before PR Submission
 
-- Manually test all changes
+**Every PR must be tested locally. No exceptions.**
+
+#### Build Verification
+
+```bash
+# These commands MUST pass without errors:
+pnpm build
+pnpm typecheck
+pnpm lint
+```
+
+#### Functional Testing
+
+1. **Start the development server**:
+   ```bash
+   pnpm dev
+   ```
+2. **Verify your changes work**:
+   - Navigate to the features you modified
+   - Test all user interactions
+   - Check different time windows (5m, 1h, 24h)
+   - Test on both desktop and mobile viewports
+   - Verify Convex functions execute correctly
+   - Check browser console for errors
+
+3. **Test edge cases**:
+   - Empty states
+   - Loading states
+   - Error handling
+   - Network failures
+   - Large data sets
+
+#### Common Testing Mistakes to Avoid
+
+❌ **DON'T**:
+
+- Submit code that only "looks right" in your editor
+- Assume AI-generated code works without testing
+- Skip build verification because "it's a small change"
+- Test only the happy path
+- Ignore TypeScript errors
+- Submit with console.log statements
+
+✅ **DO**:
+
+- Run the full application locally
+- Click through your changes manually
+- Test with real data from Convex
 - Verify no regressions in existing features
-- Test edge cases and error states
 - Check performance impact
+- Test on different screen sizes
 
-Future contributions to add testing infrastructure are welcome!
+#### Evidence of Testing
+
+In your PR description, include:
+
+- Screenshots/recordings of the feature working
+- Description of testing steps performed
+- List of edge cases tested
+- Confirmation that build commands pass
+
+Example:
+
+```markdown
+## Testing Performed
+
+- ✅ pnpm build passes without errors
+- ✅ Tested new sorting feature with 100+ markets
+- ✅ Verified mobile responsiveness on iPhone/Android sizes
+- ✅ Tested with network throttling (slow 3G)
+- ✅ No console errors in development or production build
+```
+
+### Future Testing Infrastructure
+
+While we don't have automated tests yet, contributions to add:
+
+- Unit tests with Vitest
+- E2E tests with Playwright
+- Component tests with React Testing Library
+
+Are very welcome!
 
 ## Documentation
 
@@ -195,9 +294,26 @@ Future contributions to add testing infrastructure are welcome!
 - **Discussions**: Use GitHub Discussions for questions
 - **Discord**: Join our community (link in README)
 
+## Zero Tolerance for Untested Code
+
+We have a zero-tolerance policy for untested code submissions:
+
+1. **First offense**: PR will be closed with a request to test
+2. **Repeated offenses**: Contributor may be blocked from the repository
+
+This policy exists because:
+
+- Untested code wastes maintainer time
+- It introduces bugs that affect all users
+- It degrades the quality of the codebase
+- It creates technical debt
+
+Remember: **The 5 minutes you save by not testing costs hours of debugging later.**
+
 ## Recognition
 
 Contributors will be recognized in:
+
 - The project README
 - Release notes
 - Our website (coming soon)
