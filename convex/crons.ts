@@ -31,17 +31,10 @@ crons.interval(
   internal.actions.computeAllScores
 );
 
-// Compute baselines nightly at 2 AM UTC
-crons.daily(
-  "compute baselines",
-  { hourUTC: 2, minuteUTC: 0 },
-  internal.actions.computeAllBaselines
-);
-
-// Clean up old data daily at 3 AM UTC
+// Clean up old data daily at 2 AM UTC
 crons.daily(
   "cleanup old data",
-  { hourUTC: 3, minuteUTC: 0 },
+  { hourUTC: 2, minuteUTC: 0 },
   internal.cleanup.cleanupOldData
 );
 

@@ -24,7 +24,6 @@ export const migrateToNewSchema = internalMutation({
     const tablesToClear = [
       "priceSnapshots", // Old retention was wrong
       "scores",         // Old calculation was wrong
-      "baselines",      // Will be recalculated
     ];
     
     const results: Record<string, number> = {};

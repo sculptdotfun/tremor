@@ -59,17 +59,6 @@ export default defineSchema({
     .index('by_event_time', ['eventId', 'timestampMs'])
     .index('by_time', ['timestampMs']), // For cleanup queries
 
-  // Nightly baselines for normalization
-  baselines: defineTable({
-    conditionId: v.string(),
-    computedAt: v.number(),
-    meanRet1m: v.float64(),
-    stdRet1m: v.float64(),
-    p95TradeSize: v.float64(),
-    avgVol1m: v.float64(),
-    dayCount: v.number(), // Days of data used
-  }).index('by_condition', ['conditionId']),
-
   // Seismo scores PER EVENT (aggregated from all its markets)
   scores: defineTable({
     eventId: v.string(),

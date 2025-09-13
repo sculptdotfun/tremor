@@ -7,7 +7,6 @@ import { logger } from '../lib/logger';
 // Retention policies:
 // - Price snapshots: 26 hours (for 24h scoring window + buffer)
 // - Scores: 48 hours (for historical comparison)
-// - Baselines: 30 days (computed nightly)
 
 export const cleanupOldData = internalAction({
   args: {},
@@ -16,7 +15,6 @@ export const cleanupOldData = internalAction({
   ): Promise<{
     snapshotDeleted: number;
     scoreDeleted: number;
-    baselineDeleted: number;
   }> => {
     const now = Date.now();
 
@@ -40,20 +38,10 @@ export const cleanupOldData = internalAction({
       }
     );
 
-    // Clean up baselines older than 30 days
-    const baselineCutoff = now - 30 * 24 * 60 * 60 * 1000;
-    const baselineDeleted = await ctx.runMutation(
-      internal.cleanup.deleteOldBaselines,
-      {
-        cutoff: baselineCutoff,
-        batchSize: 100,
-      }
-    );
-
     logger.info(
-      `Cleanup completed: ${snapshotDeleted} snapshots, ${scoreDeleted} scores, ${baselineDeleted} baselines`
+      `Cleanup completed: ${snapshotDeleted} snapshots, ${scoreDeleted} scores`
     );
-    return { snapshotDeleted, scoreDeleted, baselineDeleted };
+    return { snapshotDeleted, scoreDeleted };
   },
 });
 
@@ -109,32 +97,6 @@ export const deleteOldScores = internalMutation({
   },
 });
 
-export const deleteOldBaselines = internalMutation({
-  args: {
-    cutoff: v.number(),
-    batchSize: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const batchSize = args.batchSize || 100;
-
-    const oldBaselines = await ctx.db
-      .query('baselines')
-      .filter((q) => q.lt(q.field('computedAt'), args.cutoff))
-      .take(batchSize);
-
-    let deleted = 0;
-    for (const baseline of oldBaselines) {
-      await ctx.db.delete(baseline._id);
-      deleted++;
-    }
-
-    if (deleted > 0) {
-      logger.info(`Deleted ${deleted} old baselines`);
-    }
-    return deleted;
-  },
-});
-
 // Emergency clear all data (use with caution)
 export const clearAllData = internalMutation({
   args: { confirmKey: v.string() },
@@ -148,7 +110,6 @@ export const clearAllData = internalMutation({
       'markets',
       'priceSnapshots',
       'scores',
-      'baselines',
       'marketSyncState',
     ];
     const results: Record<string, number> = {};

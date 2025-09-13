@@ -7,36 +7,70 @@ export const syncEvents = internalAction({
   args: {},
   handler: async (ctx) => {
     try {
-      const response = await fetch(
-        "https://gamma-api.polymarket.com/events?limit=500&active=true&closed=false",
-        {
+      // Event filtering thresholds
+      const MIN_DAILY_VOLUME = 1000;  // $1k+ daily volume
+      const MIN_TOTAL_VOLUME = 5000;  // $5k+ total volume
+      const MIN_LIQUIDITY = 2000;     // $2k+ liquidity
+
+      // Fetch ALL events using pagination
+      const allEvents: any[] = [];
+      let offset = 0;
+      const limit = 100;
+
+      logger.info("Starting event sync with pagination...");
+
+      while (true) {
+        const url = `https://gamma-api.polymarket.com/events/pagination?limit=${limit}&offset=${offset}&active=true&closed=false`;
+        const response = await fetch(url, {
           headers: {
             'Accept': 'application/json',
           },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Gamma API error: ${response.status}`);
         }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`Gamma API error: ${response.status}`);
+
+        const data = await response.json();
+        allEvents.push(...data.data);
+
+        // Check if we have more pages
+        if (!data.pagination?.hasMore) break;
+        offset += limit;
+
+        // Safety limit to avoid infinite loops
+        if (offset > 10000) {
+          logger.warn("Reached maximum pagination limit");
+          break;
+        }
       }
-      
-      const events = await response.json();
-      
+
+      logger.info(`Fetched ${allEvents.length} total events from API`);
+
       let totalEvents = 0;
       let totalMarkets = 0;
-      
-      for (const event of events) {
-        // Skip events without markets or volume
+      let filteredEvents = 0;
+
+      for (const event of allEvents) {
+        // Skip events without markets
         if (!event.markets || event.markets.length === 0) continue;
-        
+
         // Calculate total volume for the event
-        const eventVolume = event.markets.reduce((sum: number, m: any) => 
+        const eventVolume24hr = event.markets.reduce((sum: number, m: any) =>
           sum + parseFloat(m.volume24hr || "0"), 0
         );
-        
-        // Skip events with no volume
-        if (eventVolume === 0) continue;
-        
+
+        const totalVolume = parseFloat(event.volume || "0");
+        const liquidity = parseFloat(event.liquidity || "0");
+
+        // Apply minimum thresholds to filter out micro-events
+        if (eventVolume24hr < MIN_DAILY_VOLUME ||
+            totalVolume < MIN_TOTAL_VOLUME ||
+            liquidity < MIN_LIQUIDITY) {
+          filteredEvents++;
+          continue;
+        }
+
         // Store event
         await ctx.runMutation(internal.events.upsertEvent, {
           event: {
@@ -45,16 +79,16 @@ export const syncEvents = internalAction({
             title: event.title || event.question || "Unknown Event",
             description: event.description,
             category: event.category,
-            image: event.image || event.icon, // Add image from API
+            image: event.image || event.icon,
             active: event.active !== false,
             closed: event.closed === true,
-            liquidity: parseFloat(event.liquidity || "0"),
-            volume: parseFloat(event.volume || "0"),
-            volume24hr: eventVolume,
+            liquidity: liquidity,
+            volume: totalVolume,
+            volume24hr: eventVolume24hr,
           },
         });
         totalEvents++;
-        
+
         // Store markets within this event
         const validMarkets = event.markets
           .filter((m: any) => m.conditionId && m.conditionId.length > 10)
@@ -69,7 +103,7 @@ export const syncEvents = internalAction({
             bestAsk: m.bestAsk ? parseFloat(m.bestAsk) : undefined,
             volume24hr: parseFloat(m.volume24hr || "0"),
           }));
-        
+
         if (validMarkets.length > 0) {
           await ctx.runMutation(internal.markets.upsertMarkets, {
             markets: validMarkets,
@@ -77,8 +111,8 @@ export const syncEvents = internalAction({
           totalMarkets += validMarkets.length;
         }
       }
-      
-      logger.info(`Synced ${totalEvents} events with ${totalMarkets} markets`);
+
+      logger.info(`Synced ${totalEvents} events with ${totalMarkets} markets (filtered ${filteredEvents} low-volume events)`);
     } catch (error) {
       logger.error("Event sync error:", error);
     }
@@ -265,33 +299,6 @@ export const computeAllScores = internalAction({
       logger.info(`Computed scores for ${events.length} events`);
     } catch (error) {
       logger.error("Score computation error:", error);
-    }
-  },
-});
-
-// Compute baselines for all markets
-export const computeAllBaselines = internalAction({
-  args: {},
-  handler: async (ctx) => {
-    try {
-      const markets = await ctx.runQuery(api.markets.getActiveMarkets, {
-        limit: 500,
-      });
-      
-      for (const market of markets) {
-        try {
-          await ctx.runMutation(internal.scoring.computeBaselines, {
-            conditionId: market.conditionId,
-            lookbackDays: 14,
-          });
-        } catch (error) {
-          logger.error(`Baseline computation failed for ${market.conditionId}:`, error);
-        }
-      }
-      
-      logger.info(`Computed baselines for ${markets.length} markets`);
-    } catch (error) {
-      logger.error("Baseline computation error:", error);
     }
   },
 });
