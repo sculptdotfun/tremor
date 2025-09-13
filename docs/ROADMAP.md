@@ -38,7 +38,6 @@ Add support for Kalshi markets alongside Polymarket:
 
 Improve real-time capabilities:
 
-- WebSocket connections for instant updates
 - Reduced latency to <100ms
 - Historical data backfill
 - Failover data sources
@@ -86,7 +85,6 @@ TREMOR aims to be the open-source standard for prediction market monitoring:
 Enable developers to build on top of TREMOR:
 
 - RESTful API
-- WebSocket streams
 - Client libraries (JavaScript, Python)
 - Webhook support
 - Custom plugins

@@ -1,7 +1,7 @@
 import { v } from 'convex/values';
 import { mutation, query, action } from './_generated/server';
 import { api, internal } from './_generated/api';
-import logger from '../lib/logger';
+import { logger } from '../lib/logger';
 
 // Public action to request AI analysis (called when user clicks Intelligence button)
 export const requestAnalysis: any = action({

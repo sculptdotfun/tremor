@@ -1,7 +1,7 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { api, internal } from "./_generated/api";
-import logger from '../lib/logger';
+import { logger } from '../lib/logger';
 
 const http = httpRouter();
 

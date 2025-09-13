@@ -1,7 +1,7 @@
 import { v } from 'convex/values';
 import { query, action, mutation, internalAction } from './_generated/server';
 import { api, internal } from './_generated/api';
-import logger from '../lib/logger';
+import { logger } from '../lib/logger';
 
 // Query to get cached market summary
 export const getSummary = query({

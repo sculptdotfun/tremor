@@ -365,19 +365,6 @@ await addToWatchlist({
 });
 ```
 
-## 🚀 WebSocket Subscriptions
-
-Real-time updates are handled automatically by Convex:
-
-```typescript
-// Component automatically re-renders on data change
-function TremorDashboard() {
-  // This updates in real-time
-  const scores = useQuery(api.scores.getLatestScores);
-
-  return <TremorGrid tremors={scores} />;
-}
-```
 
 ## 📊 Rate Limits
 

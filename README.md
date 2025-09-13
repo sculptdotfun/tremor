@@ -143,7 +143,6 @@ This is an early alpha release. We're live and processing real data, but expect:
 ### Next Steps (v0.2)
 
 - **Kalshi Integration** - Monitor both Polymarket and Kalshi
-- **Better Sync** - Reduce latency with WebSocket connections
 - **Notifications** - Get alerts for major movements
 - **API Access** - Developer endpoints for market data
 

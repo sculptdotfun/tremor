@@ -1,6 +1,6 @@
 import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
-import logger from '../lib/logger';
+import { logger } from '../lib/logger';
 
 // ONE-TIME MIGRATION SCRIPT
 // Run this ONCE after deploying schema changes to clear old data

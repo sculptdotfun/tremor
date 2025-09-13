@@ -1,7 +1,7 @@
 import { internalAction, internalMutation } from './_generated/server';
 import { v } from 'convex/values';
 import { internal } from './_generated/api';
-import logger from '../lib/logger';
+import { logger } from '../lib/logger';
 
 // CONSOLIDATED CLEANUP MODULE - Single source of truth for data retention
 // Retention policies:
