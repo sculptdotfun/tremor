@@ -133,7 +133,7 @@ export const syncEvents = internalAction({
               event: {
                 eventId: event.id || event.slug,
                 slug: event.slug,
-                title: event.title || event.question || "Unknown Event",
+                title: event.title || "Unknown Event",
                 description: event.description,
                 category: event.category,
                 image: event.image || event.icon,
