@@ -38,7 +38,7 @@ export const getRecentActivity = query({
         .withIndex("by_event", (q) => q.eq("eventId", score.eventId))
         .first();
       
-      if (event && Math.abs(score.topMarketChange) > 1) {
+      if (event && score.topMarketChange && Math.abs(score.topMarketChange) > 1) {
         const severity = score.seismoScore >= 7.5 ? 'extreme' : 
                         score.seismoScore >= 5 ? 'high' :
                         score.seismoScore >= 2.5 ? 'moderate' : 'low';
