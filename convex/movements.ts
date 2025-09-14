@@ -8,13 +8,13 @@ export const getRecentHighImpact = query({
 
     // Get recent scores with high seismo values - focusing on 60m window for better data
     const scores = await ctx.db
-      .query('scores')
+      .query('scores_lite')
       .withIndex('by_window_score', (q) =>
         q
           .eq('window', '60m')
           .gte('seismoScore', 1.0)  // Lowered threshold for more data
       )
-      .filter((q) => q.gte(q.field('timestampMs'), oneDayAgo))
+      .filter((q) => q.gte(q.field('updatedAt'), oneDayAgo))
       .order('desc')
       .take(100);
 
@@ -42,7 +42,7 @@ export const getRecentHighImpact = query({
           currentValue: (score.topMarketCurrPrice01 || 0) * 100,
           seismoScore: score.seismoScore,
           category: event?.category,
-          timestamp: score.timestampMs,
+          timestamp: score.updatedAt,
         };
       })
     );

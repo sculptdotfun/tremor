@@ -58,13 +58,13 @@ export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
         // Calculate multi-market stats
         const marketMoves = tremor.marketMovements || [];
         const activeMarkets = marketMoves.filter(
-          (m) => Math.abs(m.change) > 0.1
+          (m: any) => Math.abs(m.change) > 0.1
         );
-        const marketsUp = marketMoves.filter((m) => m.change > 0).length;
-        const marketsDown = marketMoves.filter((m) => m.change < 0).length;
+        const marketsUp = marketMoves.filter((m: any) => m.change > 0).length;
+        const marketsDown = marketMoves.filter((m: any) => m.change < 0).length;
         const avgChange =
           marketMoves.length > 0
-            ? marketMoves.reduce((sum, m) => sum + Math.abs(m.change), 0) /
+            ? marketMoves.reduce((sum: number, m: any) => sum + Math.abs(m.change), 0) /
               marketMoves.length
             : 0;
         const correlatedMovement =

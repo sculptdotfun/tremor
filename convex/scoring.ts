@@ -1,6 +1,6 @@
 import { v } from 'convex/values';
 import { internalAction, internalMutation, query } from './_generated/server';
-import { internal } from './_generated/api';
+import { api, internal } from './_generated/api';
 
 // Compute Seismo score on read (no writes)
 export const computeEventScore = query({
@@ -24,7 +24,7 @@ export const computeEventScore = query({
     // For each market: get start/end 5m buckets via index lookups
     const marketSnapshots = new Map<
       string,
-      { start?: typeof end; end?: typeof end }
+      { start?: any; end?: any }
     >();
 
     for (const m of markets) {
@@ -245,17 +245,7 @@ export const getTopTremors = query({
     const items = cached.length > 0 ? cached : [];
 
     // Join with event/market if available
-    const results: Array<
-      typeof score & {
-        event: typeof event;
-        topMarket: typeof topMarket;
-        priceChange: number;
-        timestampMs: number;
-        marketMovements: typeof marketMovements;
-        totalVolume?: number;
-        activeMarkets?: number;
-      }
-    > = [];
+    const results: Array<any> = [];
     for (const score of items) {
       const event = await ctx.db
         .query('events')
@@ -367,7 +357,7 @@ export const upsertScoreLite = internalMutation({
 export const updateScoresLite = internalAction({
   args: {},
   handler: async (ctx) => {
-    const events = await ctx.runQuery(internal.events.getActiveEvents, {
+    const events = await ctx.runQuery(api.events.getActiveEvents, {
       limit: 500,
     });
     const windows = [5, 60, 1440];
@@ -379,7 +369,7 @@ export const updateScoresLite = internalAction({
         batch.map(async (event) => {
           for (const windowMinutes of windows) {
             const scoreData = await ctx.runQuery(
-              internal.scoring.computeEventScore,
+              api.scoring.computeEventScore,
               {
                 eventId: event.eventId,
                 windowMinutes,

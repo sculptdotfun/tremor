@@ -23,7 +23,7 @@ export const migrateToNewSchema = internalMutation({
     // Clear tables that have schema changes
     const tablesToClear = [
       "priceSnapshots", // Old retention was wrong
-      "scores",         // Old calculation was wrong
+      "scores_lite",    // Old calculation was wrong
     ];
     
     const results: Record<string, number> = {};
@@ -84,7 +84,7 @@ export const checkMigrationStatus = internalMutation({
       .first();
     
     const sampleScore = await ctx.db
-      .query("scores")
+      .query("scores_lite")
       .first();
     
     const needsMigration = 
@@ -93,7 +93,7 @@ export const checkMigrationStatus = internalMutation({
     
     const oldDataCount = {
       snapshots: await ctx.db.query("priceSnapshots").take(1000).then(r => r.length),
-      scores: await ctx.db.query("scores").take(1000).then(r => r.length),
+      scores: await ctx.db.query("scores_lite").take(1000).then(r => r.length),
     };
     
     return {

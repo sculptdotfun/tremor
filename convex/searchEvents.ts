@@ -16,7 +16,7 @@ export const searchEvents = query({
     if (args.slug) {
       const event = await ctx.db
         .query("events")
-        .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+        .withIndex("by_slug", (q) => q.eq("slug", args.slug!))
         .first();
       
       if (event) {
@@ -54,7 +54,7 @@ export const searchEvents = query({
     // Filter by category if provided
     if (args.category) {
       events = events.filter(event => 
-        event.category && event.category.toLowerCase() === args.category.toLowerCase()
+        event.category && event.category.toLowerCase() === args.category!.toLowerCase()
       );
     }
     
