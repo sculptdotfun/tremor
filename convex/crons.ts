@@ -24,11 +24,11 @@ crons.interval(
   internal.actions.syncWarmTrades
 );
 
-// Compute scores every minute
+// Update materialized scores every 30 seconds
 crons.interval(
-  "compute scores",
-  { minutes: 1 },
-  internal.actions.computeAllScores
+  "update scores_lite",
+  { seconds: 30 },
+  (internal as any).scoring.updateScoresLite
 );
 
 // Clean up old data daily at 2 AM UTC

@@ -88,38 +88,32 @@ http.route({
         });
       }
       
-      // Build query params
-      const params = new URLSearchParams({
-        market: conditionId,
-        limit: "1000",
-      });
-      
-      if (since) {
-        params.append("after", since.toString());
-      }
-      
-      // Fetch from Data API
-      const response = await fetch(
-        `https://data-api.polymarket.com/trades?${params}`,
-        {
-          headers: {
-            'Accept': 'application/json',
-          },
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`Data API error: ${response.status}`);
-      }
-      
-      const trades = await response.json();
+      const limit = 1000;
+      let offset = 0;
+      const uniq = new Set<string>();
+      const all: any[] = [];
 
-      // Lookup eventId for the conditionId (needed for aggregation by event)
+      while (true) {
+        const params = new URLSearchParams({ market: conditionId, limit: String(limit), offset: String(offset), takerOnly: "true" });
+        const response = await fetch(`https://data-api.polymarket.com/trades?${params}`, { headers: { 'Accept': 'application/json' } });
+        if (!response.ok) throw new Error(`Data API error: ${response.status}`);
+        const page = await response.json();
+        if (page.length === 0) break;
+        for (const t of page) {
+          const key = t.transactionHash || `${conditionId}_${t.timestamp}_${t.price}_${t.size}`;
+          if (!uniq.has(key)) {
+            uniq.add(key);
+            all.push(t);
+          }
+        }
+        offset += limit;
+        if (page.length < limit) break;
+      }
+
       const market = await ctx.runQuery(api.markets.getMarketByConditionId, { conditionId });
       const eventId = market?.eventId || conditionId;
-      
-      // Transform trades
-      const transformed = trades
+
+      const transformed = all
         .filter((t: any) => t.price && t.size && t.timestamp)
         .map((t: any) => ({
           conditionId,
@@ -130,30 +124,15 @@ http.route({
           side: t.side || "unknown",
           txHash: t.transactionHash,
         }));
-      
-      // Store trades (now directly aggregates into buckets)
-      const insertResult = await ctx.runMutation(internal.trades.insertTrades, {
-        trades: transformed,
-      });
-      
-      // Update sync state
+
+      const insertResult = await ctx.runMutation(internal.trades.insertTrades, { trades: transformed });
+
       if (transformed.length > 0) {
         const lastTrade = transformed[transformed.length - 1];
-        await ctx.runMutation(internal.markets.updateSyncState, {
-          conditionId,
-          lastTradeFetchMs: Date.now(),
-          lastTradeId: lastTrade.txHash,
-        });
+        await ctx.runMutation(internal.markets.updateSyncState, { conditionId, lastTradeFetchMs: Date.now(), lastTradeId: lastTrade.txHash });
       }
-      
-      return new Response(JSON.stringify({
-        success: true,
-        ...insertResult,
-        tradesFound: trades.length,
-      }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+
+      return new Response(JSON.stringify({ success: true, ...insertResult, tradesFound: all.length }), { status: 200, headers: { "Content-Type": "application/json" } });
     } catch (error) {
       logger.error("Trade sync error:", error);
       return new Response(JSON.stringify({

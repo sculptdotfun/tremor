@@ -20,6 +20,7 @@ import type * as aiAnalysis from "../aiAnalysis.js";
 import type * as aiService from "../aiService.js";
 import type * as cleanup from "../cleanup.js";
 import type * as crons from "../crons.js";
+import type * as debugMarket from "../debugMarket.js";
 import type * as events from "../events.js";
 import type * as http from "../http.js";
 import type * as marketSummary from "../marketSummary.js";
@@ -28,6 +29,7 @@ import type * as migrate from "../migrate.js";
 import type * as movements from "../movements.js";
 import type * as prioritization from "../prioritization.js";
 import type * as scoring from "../scoring.js";
+import type * as searchEvents from "../searchEvents.js";
 import type * as trades from "../trades.js";
 
 /**
@@ -46,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   aiService: typeof aiService;
   cleanup: typeof cleanup;
   crons: typeof crons;
+  debugMarket: typeof debugMarket;
   events: typeof events;
   http: typeof http;
   marketSummary: typeof marketSummary;
@@ -54,6 +57,7 @@ declare const fullApi: ApiFromModules<{
   movements: typeof movements;
   prioritization: typeof prioritization;
   scoring: typeof scoring;
+  searchEvents: typeof searchEvents;
   trades: typeof trades;
 }>;
 export declare const api: FilterApi<

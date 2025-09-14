@@ -33,84 +33,82 @@ export const insertTrades = internalMutation({
     }
     
     let snapshotsCreated = 0;
+
+    // 5-minute bucket size
+    const BUCKET_MS = 5 * 60 * 1000;
     
     for (const [conditionId, marketTrades] of tradesByMarket) {
       if (marketTrades.length === 0) continue;
-      
-      // Process trades in chunks to create periodic snapshots
-      let lastSnapshotTime = 0;
-      let lastSnapshotPrice = 0;
-      let accumulatedVolume = 0;
-      
-      // Get the most recent snapshot to continue from
-      const existingSnapshot = await ctx.db
-        .query("priceSnapshots")
-        .withIndex("by_market_time", (q) => q.eq("conditionId", conditionId))
-        .order("desc")
-        .first();
-      
-      if (existingSnapshot) {
-        lastSnapshotTime = existingSnapshot.timestampMs;
-        lastSnapshotPrice = existingSnapshot.price01;
-      }
-      
+
+      // Build 5m buckets: timestamp -> { closeTs, closePrice, volume, eventId }
+      const buckets = new Map<number, { closeTs: number; closePrice: number; volume: number; eventId: string }>();
+
       for (const trade of marketTrades) {
-        accumulatedVolume += trade.size;
-        
-        // Skip trades older than our last snapshot
-        if (trade.timestampMs <= lastSnapshotTime) continue;
-        
-        // Create snapshot if enough time passed or significant price change
-        const timeSinceLastSnapshot = trade.timestampMs - lastSnapshotTime;
-        const absolutePriceChange = Math.abs(trade.price01 - lastSnapshotPrice);
-        
-        const shouldCreateSnapshot = 
-          lastSnapshotTime === 0 || // First snapshot
-          timeSinceLastSnapshot >= 10 * 60000 || // 10 minutes minimum
-          (timeSinceLastSnapshot >= 5 * 60000 && absolutePriceChange >= 0.03) || // 3pp change after 5 min
-          absolutePriceChange >= 0.05; // 5pp change anytime is significant
-        
-        if (shouldCreateSnapshot) {
-          // Check for duplicate at this timestamp
-          const existing = await ctx.db
-            .query("priceSnapshots")
-            .withIndex("by_market_time", (q) => 
-              q.eq("conditionId", conditionId)
-               .eq("timestampMs", trade.timestampMs)
-            )
-            .first();
-          
-          if (!existing) {
+        const bucketTs = Math.floor(trade.timestampMs / BUCKET_MS) * BUCKET_MS;
+        const prev = buckets.get(bucketTs);
+        if (!prev) {
+          buckets.set(bucketTs, { closeTs: trade.timestampMs, closePrice: trade.price01, volume: trade.size, eventId: trade.eventId });
+        } else {
+          const closeTs = trade.timestampMs >= prev.closeTs ? trade.timestampMs : prev.closeTs;
+          const closePrice = trade.timestampMs >= prev.closeTs ? trade.price01 : prev.closePrice;
+          buckets.set(bucketTs, { closeTs, closePrice, volume: prev.volume + trade.size, eventId: prev.eventId });
+        }
+      }
+
+      // Upsert one snapshot per bucket
+      for (const [bucketTs, data] of buckets) {
+        // Optimistic upsert with retry-safe pattern
+        const existing = await ctx.db
+          .query("priceSnapshots")
+          .withIndex("by_market_time", (q) => q.eq("conditionId", conditionId).eq("timestampMs", bucketTs))
+          .first();
+
+        if (existing) {
+          try {
+            await ctx.db.patch(existing._id, {
+              price01: data.closePrice,
+              volumeSince: data.volume,
+            });
+          } catch (e) {
+            // HIGH PRIORITY FIX: Log error instead of silent failure
+            console.warn(`Failed to patch snapshot for ${conditionId} at ${bucketTs}:`, e);
+          }
+        } else {
+          try {
             await ctx.db.insert("priceSnapshots", {
               conditionId,
-              eventId: trade.eventId,
-              timestampMs: trade.timestampMs,
-              price01: trade.price01,
-              volumeSince: accumulatedVolume,
+              eventId: data.eventId,
+              timestampMs: bucketTs,
+              price01: data.closePrice,
+              volumeSince: data.volume,
             });
             snapshotsCreated++;
-            
-            // Reset for next snapshot
-            lastSnapshotTime = trade.timestampMs;
-            lastSnapshotPrice = trade.price01;
-            accumulatedVolume = 0;
+          } catch (e) {
+            // HIGH PRIORITY FIX: Better race condition handling
+            // Lost race; try to patch the document that was created by another process
+            const again = await ctx.db
+              .query("priceSnapshots")
+              .withIndex("by_market_time", (q) => q.eq("conditionId", conditionId).eq("timestampMs", bucketTs))
+              .first();
+            if (again) {
+              try {
+                await ctx.db.patch(again._id, { 
+                  price01: data.closePrice, 
+                  volumeSince: (again.volumeSince || 0) + data.volume // Accumulate volume
+                });
+                console.log(`Successfully handled race condition for ${conditionId} at ${bucketTs}`);
+              } catch (patchError) {
+                console.error(`Failed to handle race condition for ${conditionId} at ${bucketTs}:`, patchError);
+              }
+            } else {
+              console.warn(`Lost data for ${conditionId} at ${bucketTs} - snapshot disappeared`);
+            }
           }
         }
       }
     }
-    
-    // Clean up old snapshots (keep 26 hours for 24h scoring + buffer)
-    // We score on 5m, 60m, and 24h (1440m) windows
-    const cutoff = Date.now() - 26 * 60 * 60 * 1000; // 26 hours
-    const oldSnapshots = await ctx.db
-      .query("priceSnapshots")
-      .filter((q) => q.lt(q.field("timestampMs"), cutoff))
-      .take(100); // Limit deletions to avoid timeout
-    
-    for (const snapshot of oldSnapshots) {
-      await ctx.db.delete(snapshot._id);
-    }
-    
+
+
     return { inserted: snapshotsCreated, total: args.trades.length };
   },
 });
