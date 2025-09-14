@@ -45,8 +45,8 @@ export const getRecentActivity = query({
         
         activities.push({
           type: "movement",
-          message: event.title || score.topMarketQuestion,
-          timestamp: score.timestampMs,
+          message: event.title || score.topMarketQuestion || "Unknown Market",
+          timestamp: score.updatedAt,
           change: score.topMarketChange,
           seismoScore: score.seismoScore,
           volume: score.totalVolume,
