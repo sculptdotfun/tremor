@@ -1,7 +1,7 @@
 import { internalAction, internalMutation } from './_generated/server';
 import { v } from 'convex/values';
 import { internal } from './_generated/api';
-import { logger } from '../lib/logger';
+// Logger removed - not available in Convex runtime
 
 // CONSOLIDATED CLEANUP MODULE - Single source of truth for data retention
 // Retention policies:
@@ -14,7 +14,6 @@ export const cleanupOldData = internalAction({
     ctx
   ): Promise<{
     snapshotDeleted: number;
-    scoreDeleted: number;
   }> => {
     const now = Date.now();
 
@@ -28,20 +27,11 @@ export const cleanupOldData = internalAction({
       }
     );
 
-    // Clean up scores older than 48 hours
-    const scoreCutoff = now - 48 * 60 * 60 * 1000;
-    const scoreDeleted = await ctx.runMutation(
-      internal.cleanup.deleteOldScores,
-      {
-        cutoff: scoreCutoff,
-        batchSize: 200,
-      }
-    );
 
-    logger.info(
-      `Cleanup completed: ${snapshotDeleted} snapshots, ${scoreDeleted} scores`
+    console.log(
+      `Cleanup completed: ${snapshotDeleted} snapshots`
     );
-    return { snapshotDeleted, scoreDeleted };
+    return { snapshotDeleted };
   },
 });
 
@@ -65,37 +55,12 @@ export const deleteOldSnapshots = internalMutation({
     }
 
     if (deleted > 0) {
-      logger.info(`Deleted ${deleted} old price snapshots`);
+      console.log(`Deleted ${deleted} old price snapshots`);
     }
     return deleted;
   },
 });
 
-export const deleteOldScores = internalMutation({
-  args: {
-    cutoff: v.number(),
-    batchSize: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const batchSize = args.batchSize || 100;
-
-    const oldScores = await ctx.db
-      .query('scores')
-      .filter((q) => q.lt(q.field('timestampMs'), args.cutoff))
-      .take(batchSize);
-
-    let deleted = 0;
-    for (const score of oldScores) {
-      await ctx.db.delete(score._id);
-      deleted++;
-    }
-
-    if (deleted > 0) {
-      logger.info(`Deleted ${deleted} old scores`);
-    }
-    return deleted;
-  },
-});
 
 // Emergency clear all data (use with caution)
 export const clearAllData = internalMutation({
@@ -109,7 +74,7 @@ export const clearAllData = internalMutation({
       'events',
       'markets',
       'priceSnapshots',
-      'scores',
+      'scores_lite',
       'marketSyncState',
     ];
     const results: Record<string, number> = {};
@@ -131,7 +96,7 @@ export const clearAllData = internalMutation({
 
         // Safety limit
         if (deleted > 10000) {
-          logger.warn(`Stopped deleting ${table} at 10000 docs`);
+          console.warn(`Stopped deleting ${table} at 10000 docs`);
           break;
         }
       }
@@ -139,7 +104,7 @@ export const clearAllData = internalMutation({
       results[table] = deleted;
     }
 
-    logger.info('All data cleared:', results);
+    console.log('All data cleared:', results);
     return results;
   },
 });

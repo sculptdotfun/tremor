@@ -12,19 +12,48 @@ export default function Home() {
   const [intensityFilter, setIntensityFilter] = useState<
     'all' | 'extreme' | 'high' | 'moderate' | 'low'
   >('all');
+  const [volumeFilter, setVolumeFilter] = useState<
+    'all' | 'whale' | 'high' | 'medium' | 'low'
+  >('all');
   const [selectedMovement, setSelectedMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isChangingWindow, setIsChangingWindow] = useState(false);
-  const { movements, loading } = useTremorData(windowSel);
+  const [secondsSinceUpdate, setSecondsSinceUpdate] = useState(0);
+  const { movements, loading, lastUpdateTime, isPaused, togglePause } =
+    useTremorData(windowSel);
 
-  // Filter movements based on intensity
+  // Update seconds counter every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSecondsSinceUpdate(Math.floor((Date.now() - lastUpdateTime) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lastUpdateTime]);
+
+  // Filter movements based on intensity and volume
   const filteredMovements = movements.filter((m) => {
-    if (intensityFilter === 'all') return true;
-    const score = m.seismoScore || 0;
-    if (intensityFilter === 'extreme') return score >= 7.5;
-    if (intensityFilter === 'high') return score >= 5 && score < 7.5;
-    if (intensityFilter === 'moderate') return score >= 2.5 && score < 5;
-    if (intensityFilter === 'low') return score < 2.5;
+    // Intensity filter
+    if (intensityFilter !== 'all') {
+      const score = m.seismoScore || 0;
+      if (intensityFilter === 'extreme' && score < 7.5) return false;
+      if (intensityFilter === 'high' && (score < 5 || score >= 7.5))
+        return false;
+      if (intensityFilter === 'moderate' && (score < 2.5 || score >= 5))
+        return false;
+      if (intensityFilter === 'low' && score >= 2.5) return false;
+    }
+
+    // Volume filter
+    if (volumeFilter !== 'all') {
+      const volume = m.totalVolume || 0;
+      if (volumeFilter === 'whale' && volume < 500000) return false;
+      if (volumeFilter === 'high' && (volume < 100000 || volume >= 500000))
+        return false;
+      if (volumeFilter === 'medium' && (volume < 25000 || volume >= 100000))
+        return false;
+      if (volumeFilter === 'low' && volume >= 25000) return false;
+    }
+
     return true;
   });
 
@@ -69,6 +98,8 @@ export default function Home() {
             onChangeWindow={handleWindowChange}
             selectedIntensity={intensityFilter}
             onChangeIntensity={setIntensityFilter}
+            selectedVolume={volumeFilter}
+            onChangeVolume={setVolumeFilter}
           />
         </div>
 
@@ -121,6 +152,11 @@ export default function Home() {
                 selectedIntensity={intensityFilter}
                 onChangeIntensity={(intensity) => {
                   setIntensityFilter(intensity);
+                  setMobileMenuOpen(false);
+                }}
+                selectedVolume={volumeFilter}
+                onChangeVolume={(volume) => {
+                  setVolumeFilter(volume);
                   setMobileMenuOpen(false);
                 }}
               />
@@ -230,18 +266,27 @@ export default function Home() {
                           {/* Title - Event name */}
                           <div className="mb-1">
                             <h3 className="text-lg font-bold leading-tight text-white">
-                              {filteredMovements[0].title}
+                              {filteredMovements[0]?.title || 'Loading...'}
                             </h3>
                           </div>
 
-                          {/* Market Question - THIS is what the percentage refers to */}
-                          {filteredMovements[0].marketMovements &&
+                          {/* Market Question - Always show what the percentage refers to */}
+                          {filteredMovements[0]?.marketMovements &&
+                            filteredMovements[0].marketMovements.length > 0 &&
                             filteredMovements[0].marketMovements[0] && (
-                              <div className="mb-3 text-sm font-medium text-zinc-100">
-                                {
-                                  filteredMovements[0].marketMovements[0]
-                                    .question
-                                }
+                              <div className="mb-3">
+                                <div className="mb-1 text-[9px] uppercase tracking-wider text-zinc-400">
+                                  {filteredMovements[0].marketMovements.length >
+                                  1
+                                    ? `LEADING MARKET (OF ${filteredMovements[0].marketMovements.length})`
+                                    : 'MARKET'}
+                                </div>
+                                <div className="text-sm font-medium text-zinc-100">
+                                  {
+                                    filteredMovements[0].marketMovements[0]
+                                      .question
+                                  }
+                                </div>
                               </div>
                             )}
 
@@ -250,14 +295,16 @@ export default function Home() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-baseline gap-2">
                                 <span className="text-sm text-zinc-400">
-                                  {filteredMovements[0].previousValue.toFixed(
+                                  {filteredMovements[0]?.previousValue?.toFixed(
                                     0
-                                  )}
+                                  ) ?? 0}
                                   %
                                 </span>
                                 <span className="text-zinc-500">→</span>
                                 <span className="text-2xl font-bold text-white">
-                                  {filteredMovements[0].currentValue.toFixed(0)}
+                                  {filteredMovements[0]?.currentValue?.toFixed(
+                                    0
+                                  ) ?? 0}
                                   %
                                 </span>
                                 <span className="text-xs font-medium text-zinc-300">
@@ -322,9 +369,54 @@ export default function Home() {
                 {/* Time Window Indicator + Mobile Controls */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-bold tracking-[0.15em] text-muted-foreground md:tracking-[0.2em]">
-                      SEISMIC ACTIVITY • {getWindowLabel()} WINDOW
-                    </h2>
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-xs font-bold tracking-[0.15em] text-muted-foreground md:tracking-[0.2em]">
+                        SEISMIC ACTIVITY • {getWindowLabel()} WINDOW
+                      </h2>
+                      {/* Update controls */}
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={togglePause}
+                          className="flex items-center gap-1.5 rounded border border-zinc-800 bg-zinc-900/50 px-2 py-1 text-[10px] text-zinc-400 transition-all hover:border-zinc-700 hover:text-zinc-200"
+                        >
+                          {isPaused ? (
+                            <>
+                              <svg
+                                width="8"
+                                height="8"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                              <span>Resume</span>
+                            </>
+                          ) : (
+                            <>
+                              <svg
+                                width="8"
+                                height="8"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <rect x="6" y="4" width="4" height="16" />
+                                <rect x="14" y="4" width="4" height="16" />
+                              </svg>
+                              <span>Pause</span>
+                            </>
+                          )}
+                        </button>
+                        <div className="flex items-center gap-1.5">
+                          <div
+                            className={`h-1.5 w-1.5 rounded-full ${isPaused ? 'bg-yellow-500' : 'animate-pulse bg-green-500'}`}
+                          />
+                          <span className="text-[10px] text-zinc-500">
+                            {isPaused ? 'Paused' : 'Live • 30s'} • Updated{' '}
+                            {secondsSinceUpdate}s ago
+                          </span>
+                        </div>
+                      </div>
+                    </div>
 
                     {/* Mobile Menu Button */}
                     <button
@@ -379,20 +471,28 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Card Grid */}
-                <div className="grid grid-cols-1 gap-3 transition-all duration-300 ease-in-out md:grid-cols-2 md:gap-4">
-                  {filteredMovements.map((move) => (
-                    <TremorCard
+                {/* Card Grid with stable animations */}
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+                  {filteredMovements.map((move, index) => (
+                    <div
                       key={move.id}
-                      movement={move}
-                      isSelected={selectedMovement?.id === move.id}
-                      onClick={() => {
-                        // Toggle selection - clicking same card closes panel
-                        setSelectedMovement(
-                          selectedMovement?.id === move.id ? null : move
-                        );
+                      className="transition-all duration-500 ease-out"
+                      style={{
+                        animationDelay: `${index * 50}ms`,
+                        transform: 'translateZ(0)', // Force GPU acceleration
                       }}
-                    />
+                    >
+                      <TremorCard
+                        movement={move}
+                        isSelected={selectedMovement?.id === move.id}
+                        onClick={() => {
+                          // Toggle selection - clicking same card closes panel
+                          setSelectedMovement(
+                            selectedMovement?.id === move.id ? null : move
+                          );
+                        }}
+                      />
+                    </div>
                   ))}
                 </div>
 

@@ -94,49 +94,64 @@ export const TremorCard = memo(
           )}
 
           <div className="flex-1 p-4">
-            {/* Main title - make it bigger and more prominent */}
-            <div className="mb-2">
+            {/* MAIN TITLE - Could be event or market depending on context */}
+            <div className="mb-3">
               <h3 className="text-base font-bold leading-tight text-white">
                 {movement.title}
               </h3>
-            </div>
-
-            {/* Movement info - clear and prominent */}
-            <div className="mb-3 rounded border border-zinc-800/50 bg-zinc-900/50 p-2">
-              {/* Show market question - THIS is what the percentage refers to */}
-              {movement.marketMovements && movement.marketMovements[0] && (
-                <div className="mb-2 text-xs font-medium leading-tight text-zinc-100">
-                  {movement.marketMovements[0].question}
-                  {movement.marketMovements.length > 1 && (
-                    <span className="ml-2 text-[9px] uppercase text-zinc-500">
-                      (1 of {movement.marketMovements.length})
-                    </span>
-                  )}
+              
+              {/* Always show the market context for clarity */}
+              {movement.marketMovements && 
+               movement.marketMovements.length > 0 && 
+               movement.marketMovements[0] && (
+                <div className="mt-2 p-2 bg-zinc-900/30 rounded border border-zinc-800/50">
+                  <div className="text-[9px] uppercase tracking-wider text-zinc-500 mb-1">
+                    {movement.marketMovements.length > 1 
+                      ? `LEADING MARKET (${movement.marketMovements.length} TOTAL)`
+                      : 'MARKET'}
+                  </div>
+                  <p className="text-xs font-medium text-zinc-100">
+                    {movement.marketMovements[0].question}
+                  </p>
                 </div>
               )}
+            </div>
+
+            {/* MOVEMENT SECTION - The actual change */}
+            <div className="mb-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-zinc-400">
-                    {movement.previousValue.toFixed(0)}%
-                  </span>
-                  <span className="text-zinc-500">→</span>
-                  <span className="text-xl font-bold text-white">
-                    {movement.currentValue.toFixed(0)}%
-                  </span>
-                  <span className="text-xs font-medium text-zinc-400">YES</span>
+                <div>
+                  <div className="text-[9px] uppercase tracking-wider text-zinc-500 mb-1">
+                    PROBABILITY SHIFT
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm text-zinc-400">
+                      {movement.previousValue?.toFixed(0) ?? 0}%
+                    </span>
+                    <span className="text-zinc-500">→</span>
+                    <span className="text-xl font-bold text-white">
+                      {movement.currentValue?.toFixed(0) ?? 0}%
+                    </span>
+                    <span className="text-[10px] font-medium text-zinc-400">YES</span>
+                  </div>
                 </div>
-                <div
-                  className={`text-xl font-bold ${
-                    movement.seismoScore && movement.seismoScore >= 7.5
-                      ? 'text-tremor-extreme'
-                      : movement.seismoScore && movement.seismoScore >= 5
-                        ? 'text-tremor-high'
-                        : movement.seismoScore && movement.seismoScore >= 2.5
-                          ? 'text-tremor-moderate'
-                          : 'text-white'
-                  }`}
-                >
-                  {movement.seismoScore?.toFixed(1)}
+                <div className="text-right">
+                  <div className="text-[9px] uppercase tracking-wider text-zinc-500 mb-1">
+                    INTENSITY
+                  </div>
+                  <div
+                    className={`text-2xl font-bold ${
+                      movement.seismoScore && movement.seismoScore >= 7.5
+                        ? 'text-tremor-extreme'
+                        : movement.seismoScore && movement.seismoScore >= 5
+                          ? 'text-tremor-high'
+                          : movement.seismoScore && movement.seismoScore >= 2.5
+                            ? 'text-tremor-moderate'
+                            : 'text-white'
+                    }`}
+                  >
+                    {movement.seismoScore?.toFixed(1)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -144,24 +159,33 @@ export const TremorCard = memo(
             {/* Intensity Bar */}
             <div className="mb-3">{renderMagnitudeBar()}</div>
 
-            {/* Bottom row - clean metadata */}
-            <div className="flex items-center justify-between text-[9px] text-zinc-500">
-              <div className="flex items-center gap-2">
+            {/* Bottom metadata - Volume, Category, Time */}
+            <div className="grid grid-cols-3 gap-2 text-[9px] text-zinc-500">
+              <div>
                 {movement.category && (
-                  <span className="uppercase tracking-wider">
-                    {movement.category}
-                  </span>
+                  <>
+                    <div className="uppercase tracking-wider text-zinc-600">CATEGORY</div>
+                    <div className="text-zinc-400">{movement.category}</div>
+                  </>
                 )}
-                {movement.category &&
-                  (movement.totalVolume || movement.volume) && <span>•</span>}
+              </div>
+              <div>
                 {(() => {
                   const vol = formatVolume(
                     movement.totalVolume || movement.volume || 0
                   );
-                  return vol ? <span>{vol}</span> : null;
+                  return vol ? (
+                    <>
+                      <div className="uppercase tracking-wider text-zinc-600">VOLUME</div>
+                      <div className="text-zinc-400">{vol}</div>
+                    </>
+                  ) : null;
                 })()}
               </div>
-              <span>{formatTime(movement.timestamp)}</span>
+              <div className="text-right">
+                <div className="uppercase tracking-wider text-zinc-600">UPDATED</div>
+                <div className="text-zinc-400">{movement.timestamp ? formatTime(movement.timestamp) : 'now'}</div>
+              </div>
             </div>
 
             {/* Bottom actions bar */}

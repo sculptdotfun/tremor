@@ -126,12 +126,16 @@ export const getMarketsToSync = query({
     
     const interval = syncIntervals[args.priority as keyof typeof syncIntervals] || 60000;
     const cutoff = now - interval;
+    // HIGH PRIORITY FIX: Debounce must be longer than sync interval to prevent overlaps
+    // Use 2x the interval as debounce to ensure no concurrent syncs
+    const debounceMs = interval * 2;
     
     const markets = await ctx.db
       .query("marketSyncState")
       .withIndex("by_priority", (q) => 
         q.eq("priority", args.priority)
       )
+      .filter((q) => q.lt(q.field("lastTradeFetchMs"), now - debounceMs))
       .filter((q) => q.lt(q.field("lastTradeFetchMs"), cutoff))
       .take(limit);
     

@@ -59,43 +59,31 @@ export default defineSchema({
     .index('by_event_time', ['eventId', 'timestampMs'])
     .index('by_time', ['timestampMs']), // For cleanup queries
 
-  // Seismo scores PER EVENT (aggregated from all its markets)
-  scores: defineTable({
+  // Materialized lightweight scores for instant reads
+  scores_lite: defineTable({
     eventId: v.string(),
-    window: v.string(), // "5m", "60m", "1440m" (24h)
-    timestampMs: v.number(),
-    seismoScore: v.float64(), // 0-10 normalized score
-    // Track which market moved most
-    topMarketId: v.string(), // conditionId of biggest mover
-    topMarketChange: v.float64(), // its price change in pp
-    topMarketQuestion: v.string(), // for display
-    topMarketPrevPrice01: v.optional(v.float64()), // previous price (0-1)
-    topMarketCurrPrice01: v.optional(v.float64()), // current price (0-1)
-    isReversal: v.optional(v.boolean()), // Did it cross 50%?
-    // ALL market movements in this event
-    marketMovements: v.optional(
-      v.array(
-        v.object({
-          conditionId: v.string(),
-          question: v.string(),
-          prevPrice: v.float64(),
-          currPrice: v.float64(),
-          change: v.float64(), // percentage points change (signed)
-          volume: v.float64(),
-          volumeUsd: v.optional(v.float64()),
-        })
-      )
-    ),
-    // Aggregate stats
-    totalVolume: v.float64(), // Total volume across all markets
-    totalVolumeUsd: v.optional(v.float64()), // Total USD volume
-    topMarketVolume: v.optional(v.float64()), // Volume of the top market
-    topMarketVolumeUsd: v.optional(v.float64()), // USD volume of top market
-    activeMarkets: v.number(), // Number of markets with activity
+    window: v.string(), // "5m", "60m", "1440m"
+    updatedAt: v.number(),
+    seismoScore: v.float64(), // 0-10
+    topMarketId: v.optional(v.string()),
+    topMarketChange: v.optional(v.float64()),
+    topMarketQuestion: v.optional(v.string()),
+    topMarketPrevPrice01: v.optional(v.float64()),
+    topMarketCurrPrice01: v.optional(v.float64()),
+    // Store full market movements array
+    marketMovements: v.optional(v.array(v.object({
+      conditionId: v.string(),
+      question: v.string(),
+      prevPrice: v.float64(),
+      currPrice: v.float64(),
+      change: v.float64(),
+      volume: v.float64(),
+    }))),
+    totalVolume: v.optional(v.float64()),
+    activeMarkets: v.optional(v.number()),
   })
-    .index('by_event_window_time', ['eventId', 'window', 'timestampMs'])
-    .index('by_time_score', ['timestampMs', 'seismoScore'])
-    .index('by_window_score', ['window', 'seismoScore', 'timestampMs']), // Better queries
+    .index('by_event_window', ['eventId', 'window'])
+    .index('by_window_score', ['window', 'seismoScore', 'updatedAt']),
 
   // Track last fetch time for each market
   marketSyncState: defineTable({
@@ -103,6 +91,7 @@ export default defineSchema({
     lastTradeFetchMs: v.number(),
     lastTradeId: v.optional(v.string()),
     priority: v.string(), // "hot", "warm", "cold"
+    lockedUntil: v.optional(v.number()),
   })
     .index('by_condition', ['conditionId'])
     .index('by_priority', ['priority', 'lastTradeFetchMs']),
