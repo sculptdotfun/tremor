@@ -10,6 +10,10 @@ interface SidebarProps {
   onChangeIntensity: (
     intensity: 'all' | 'extreme' | 'high' | 'moderate' | 'low'
   ) => void;
+  selectedVolume?: 'all' | 'whale' | 'high' | 'medium' | 'low';
+  onChangeVolume?: (
+    volume: 'all' | 'whale' | 'high' | 'medium' | 'low'
+  ) => void;
 }
 
 export function Sidebar({
@@ -17,11 +21,14 @@ export function Sidebar({
   onChangeWindow,
   selectedIntensity,
   onChangeIntensity,
+  selectedVolume = 'all',
+  onChangeVolume,
 }: SidebarProps) {
   const [internalWindow, setInternalWindow] = useState(selectedWindow);
   const [internalIntensity, setInternalIntensity] = useState(
     selectedIntensity || 'all'
   );
+  const [internalVolume, setInternalVolume] = useState(selectedVolume);
 
   const windows = [
     { id: '1440m', label: '24 HOUR', desc: 'Daily trends' },
@@ -47,9 +54,22 @@ export function Sidebar({
     { id: 'low', label: 'LOW', range: '<2.5', color: 'bg-zinc-700' },
   ];
 
+  const volumeFilters = [
+    { id: 'all', label: 'ALL', range: 'All volumes', desc: 'Show all' },
+    { id: 'whale', label: 'WHALE', range: '>$500K', desc: 'Mega markets' },
+    { id: 'high', label: 'HIGH', range: '$100K-$500K', desc: 'Major markets' },
+    {
+      id: 'medium',
+      label: 'MEDIUM',
+      range: '$25K-$100K',
+      desc: 'Active markets',
+    },
+    { id: 'low', label: 'LOW', range: '<$25K', desc: 'Small markets' },
+  ];
+
   return (
-    <aside className="from-zinc-950/98 flex h-full w-64 flex-col overflow-hidden border-r border-zinc-800/50 bg-gradient-to-b to-black/95">
-      <div className="flex-shrink-0 px-5 pt-5">
+    <aside className="from-zinc-950/98 flex h-full w-64 flex-col overflow-y-auto border-r border-zinc-800/50 bg-gradient-to-b to-black/95">
+      <div className="flex-shrink-0 px-5 pt-4">
         <h3 className="mb-4 text-xs font-bold tracking-wider text-zinc-600">
           FILTER BY INTENSITY
         </h3>
@@ -145,8 +165,63 @@ export function Sidebar({
         </div>
       </div>
 
-      <div className="mt-6 flex-shrink-0 px-5">
-        <h3 className="mb-4 text-xs font-bold tracking-wider text-zinc-600">
+      <div className="mt-5 flex-shrink-0 px-5">
+        <h3 className="mb-3 text-xs font-bold tracking-wider text-zinc-600">
+          VOLUME FILTER
+        </h3>
+        <div className="space-y-2">
+          {volumeFilters.map((filter) => (
+            <button
+              key={filter.id}
+              onClick={() => {
+                const volume = filter.id as
+                  | 'all'
+                  | 'whale'
+                  | 'high'
+                  | 'medium'
+                  | 'low';
+                setInternalVolume(volume);
+                onChangeVolume?.(volume);
+              }}
+              className={`block w-full text-left transition-all ${
+                internalVolume === filter.id
+                  ? 'border border-blue-500/50 bg-zinc-950 shadow-lg'
+                  : 'border border-zinc-800/50 bg-zinc-950 hover:border-zinc-700'
+              }`}
+              style={{
+                boxShadow:
+                  internalVolume === filter.id
+                    ? '0 0 0 1px rgba(59,130,246,0.1), 0 4px 12px rgba(0,0,0,0.5)'
+                    : '0 0 0 1px rgba(255,255,255,0.02), 0 2px 8px rgba(0,0,0,0.3)',
+              }}
+            >
+              <div className="p-2.5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs font-bold text-zinc-100">
+                        {filter.range}
+                      </span>
+                      <span className="text-[9px] uppercase text-zinc-500">
+                        {filter.label}
+                      </span>
+                    </div>
+                    <div className="text-[9px] text-zinc-500">
+                      {filter.desc}
+                    </div>
+                  </div>
+                  {internalVolume === filter.id && (
+                    <div className="h-2 w-2 animate-pulse rounded-full bg-blue-500"></div>
+                  )}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5 flex-shrink-0 px-5">
+        <h3 className="mb-3 text-xs font-bold tracking-wider text-zinc-600">
           TIME WINDOW
         </h3>
         <div className="space-y-2">
@@ -170,13 +245,13 @@ export function Sidebar({
                     : '0 0 0 1px rgba(255,255,255,0.02), 0 2px 8px rgba(0,0,0,0.3)',
               }}
             >
-              <div className="p-3">
+              <div className="p-2.5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-bold text-zinc-100">
+                    <div className="text-xs font-bold text-zinc-100">
                       {window.label}
                     </div>
-                    <div className="text-[10px] text-zinc-500">
+                    <div className="text-[9px] text-zinc-500">
                       {window.desc}
                     </div>
                   </div>

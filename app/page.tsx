@@ -12,6 +12,9 @@ export default function Home() {
   const [intensityFilter, setIntensityFilter] = useState<
     'all' | 'extreme' | 'high' | 'moderate' | 'low'
   >('all');
+  const [volumeFilter, setVolumeFilter] = useState<
+    'all' | 'whale' | 'high' | 'medium' | 'low'
+  >('all');
   const [selectedMovement, setSelectedMovement] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isChangingWindow, setIsChangingWindow] = useState(false);
@@ -27,14 +30,30 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [lastUpdateTime]);
 
-  // Filter movements based on intensity
+  // Filter movements based on intensity and volume
   const filteredMovements = movements.filter((m) => {
-    if (intensityFilter === 'all') return true;
-    const score = m.seismoScore || 0;
-    if (intensityFilter === 'extreme') return score >= 7.5;
-    if (intensityFilter === 'high') return score >= 5 && score < 7.5;
-    if (intensityFilter === 'moderate') return score >= 2.5 && score < 5;
-    if (intensityFilter === 'low') return score < 2.5;
+    // Intensity filter
+    if (intensityFilter !== 'all') {
+      const score = m.seismoScore || 0;
+      if (intensityFilter === 'extreme' && score < 7.5) return false;
+      if (intensityFilter === 'high' && (score < 5 || score >= 7.5))
+        return false;
+      if (intensityFilter === 'moderate' && (score < 2.5 || score >= 5))
+        return false;
+      if (intensityFilter === 'low' && score >= 2.5) return false;
+    }
+
+    // Volume filter
+    if (volumeFilter !== 'all') {
+      const volume = m.totalVolume || 0;
+      if (volumeFilter === 'whale' && volume < 500000) return false;
+      if (volumeFilter === 'high' && (volume < 100000 || volume >= 500000))
+        return false;
+      if (volumeFilter === 'medium' && (volume < 25000 || volume >= 100000))
+        return false;
+      if (volumeFilter === 'low' && volume >= 25000) return false;
+    }
+
     return true;
   });
 
@@ -79,6 +98,8 @@ export default function Home() {
             onChangeWindow={handleWindowChange}
             selectedIntensity={intensityFilter}
             onChangeIntensity={setIntensityFilter}
+            selectedVolume={volumeFilter}
+            onChangeVolume={setVolumeFilter}
           />
         </div>
 
@@ -131,6 +152,11 @@ export default function Home() {
                 selectedIntensity={intensityFilter}
                 onChangeIntensity={(intensity) => {
                   setIntensityFilter(intensity);
+                  setMobileMenuOpen(false);
+                }}
+                selectedVolume={volumeFilter}
+                onChangeVolume={(volume) => {
+                  setVolumeFilter(volume);
                   setMobileMenuOpen(false);
                 }}
               />
