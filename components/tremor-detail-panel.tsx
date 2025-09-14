@@ -295,10 +295,9 @@ export function TremorDetailPanel({
 
                       return (
                         <>
-                          {displayMarkets.map((market, idx) => {
+                          {displayMarkets.map((market) => {
                             const changeAbs = Math.abs(market.change);
                             const isSignificant = changeAbs >= 5;
-                            const isModerate = changeAbs >= 2.5 && changeAbs < 5;
                             
                             return (
                               <div key={market.conditionId} className={`group rounded border p-3 transition-all ${

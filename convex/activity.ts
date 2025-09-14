@@ -27,8 +27,8 @@ export const getRecentActivity = query({
     
     // Check recent high-intensity scores
     const recentScores = await ctx.db
-      .query("scores")
-      .withIndex("by_time_score", (q) => q.gte("timestampMs", cutoff))
+      .query("scores_lite")
+      .withIndex("by_window_score", (q) => q.eq("window", "60m"))
       .filter((q) => q.gte(q.field("seismoScore"), 2.5))
       .take(15);
     
