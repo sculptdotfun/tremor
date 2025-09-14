@@ -12,18 +12,19 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 
 export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
   // State for controlled updates
-  const [displayedMovements, setDisplayedMovements] = useState<MarketMovement[]>([]);
+  const [displayedMovements, setDisplayedMovements] = useState<
+    MarketMovement[]
+  >([]);
   const [lastUpdateTime, setLastUpdateTime] = useState(Date.now());
   const [isPaused, setIsPaused] = useState(false);
-  const updateTimer = useRef<NodeJS.Timeout>();
   const processedDataRef = useRef<MarketMovement[]>([]);
-  
+
   // Get top tremors from Convex (still reactive, but we control when to show)
   const topTremors = useQuery(api.scoring.getTopTremors, {
     window,
     limit: 100, // Increase limit to get more data
   });
-  
+
   // Get active markets
   const activeMarkets = useQuery(api.markets.getActiveMarkets, {
     limit: 100,
@@ -32,7 +33,11 @@ export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
   // Process and sort the raw data with stable sorting
   const processedMovements = useMemo(() => {
     if (!topTremors) return [];
-    
+
+    console.log(
+      `[useTremorData] Processing ${topTremors.length} tremors for window: ${window}`
+    );
+
     const movements = topTremors
       .map((tremor) => {
         // Prefer bucket-derived prices from score, fallback to market lastTradePrice
@@ -44,7 +49,7 @@ export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
         const prev =
           tremor.topMarketPrevPrice01 ??
           (tremor.topMarketChange !== undefined
-            ? curr - (tremor.topMarketChange / 100) // Convert percentage points to decimal
+            ? curr - tremor.topMarketChange / 100 // Convert percentage points to decimal
             : curr);
         const currentPrice = curr;
         const previousPrice = prev;
@@ -104,27 +109,38 @@ export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
       // CRITICAL FIX: Allow markets at 0%, only filter null/undefined
       .filter((m) => m.currentValue !== null && m.currentValue !== undefined)
       // Filter out zero intensity scores - no point showing markets with no movement
-      .filter((m) => m.seismoScore && m.seismoScore > 0)
+      .filter((m) => {
+        const pass = m.seismoScore && m.seismoScore > 0;
+        if (!pass) {
+          console.log(
+            `[useTremorData] Filtering out ${m.title} with score ${m.seismoScore}`
+          );
+        }
+        return pass;
+      })
       // Stable sorting: Sort by seismoScore DESC, then by eventId for stability
       .sort((a, b) => {
         // Primary sort by seismoScore (descending)
         const scoreDiff = (b.seismoScore || 0) - (a.seismoScore || 0);
         if (scoreDiff !== 0) return scoreDiff;
-        
-        // Secondary sort by absolute change (descending) 
+
+        // Secondary sort by absolute change (descending)
         const changeDiff = Math.abs(b.change || 0) - Math.abs(a.change || 0);
         if (changeDiff !== 0) return changeDiff;
-        
+
         // Tertiary sort by volume for more dynamic ordering
         const volumeDiff = (b.totalVolume || 0) - (a.totalVolume || 0);
         if (volumeDiff !== 0) return volumeDiff;
-        
+
         // Quaternary sort by eventId for final stability
         return a.eventId.localeCompare(b.eventId);
       });
 
+    console.log(
+      `[useTremorData] After filtering: ${movements.length} movements for window ${window}`
+    );
     return movements;
-  }, [topTremors]); // Only depend on topTremors data
+  }, [topTremors, window]); // Depend on both topTremors and window
 
   // Store latest processed data in ref
   useEffect(() => {
@@ -136,11 +152,14 @@ export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
     if (!isPaused && processedMovements.length > 0) {
       // Reduce debounce to 500ms for more responsive updates
       const timeoutId = setTimeout(() => {
-        console.log('Data changed, updating display...', new Date().toLocaleTimeString());
+        console.log(
+          'Data changed, updating display...',
+          new Date().toLocaleTimeString()
+        );
         setDisplayedMovements(processedMovements);
         setLastUpdateTime(Date.now());
       }, 500); // Reduced debounce for more responsive updates
-      
+
       return () => clearTimeout(timeoutId);
     }
   }, [processedMovements, isPaused]); // Simplified dependencies
@@ -156,25 +175,29 @@ export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
 
   // When window changes, update immediately with new data
   useEffect(() => {
-    console.log('Window changed to:', window, 'New data:', processedMovements.length, 'items');
-    if (processedMovements.length > 0) {
-      // Update immediately when window changes and we have data
-      setDisplayedMovements(processedMovements);
-      setLastUpdateTime(Date.now());
-    }
+    console.log(
+      'Window changed to:',
+      window,
+      'New data:',
+      processedMovements.length,
+      'items'
+    );
+    // ALWAYS update when window changes, even if empty (to show "no data" state)
+    setDisplayedMovements(processedMovements);
+    setLastUpdateTime(Date.now());
   }, [window, processedMovements]); // Trigger on window change AND new data
-  
-  // Add real 10-second refresh timer
+
+  // Add real 30-second refresh timer (matches backend scoring interval)
   useEffect(() => {
     if (!isPaused) {
       const interval = setInterval(() => {
-        console.log('10s refresh tick', new Date().toLocaleTimeString());
+        console.log('30s refresh tick', new Date().toLocaleTimeString());
         if (processedDataRef.current.length > 0) {
           setDisplayedMovements(processedDataRef.current);
           setLastUpdateTime(Date.now());
         }
-      }, 10000); // 10 seconds
-      
+      }, 30000); // 30 seconds to match backend scoring
+
       return () => clearInterval(interval);
     }
   }, [isPaused]); // Only depend on pause state
@@ -198,7 +221,7 @@ export function useTremorData(window: '5m' | '60m' | '1440m' = '60m') {
     lastUpdateTime, // So UI can show "Last updated: X seconds ago"
     isPaused,
     togglePause: () => {
-      setIsPaused(prev => {
+      setIsPaused((prev) => {
         const newPaused = !prev;
         if (!newPaused && processedDataRef.current.length > 0) {
           // If unpausing, update immediately with latest data

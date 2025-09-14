@@ -16,8 +16,9 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isChangingWindow, setIsChangingWindow] = useState(false);
   const [secondsSinceUpdate, setSecondsSinceUpdate] = useState(0);
-  const { movements, loading, lastUpdateTime, isPaused, togglePause, refresh } = useTremorData(windowSel);
-  
+  const { movements, loading, lastUpdateTime, isPaused, togglePause } =
+    useTremorData(windowSel);
+
   // Update seconds counter every second
   useEffect(() => {
     const interval = setInterval(() => {
@@ -248,13 +249,17 @@ export default function Home() {
                             filteredMovements[0].marketMovements.length > 0 &&
                             filteredMovements[0].marketMovements[0] && (
                               <div className="mb-3">
-                                <div className="text-[9px] uppercase tracking-wider text-zinc-400 mb-1">
-                                  {filteredMovements[0].marketMovements.length > 1 
+                                <div className="mb-1 text-[9px] uppercase tracking-wider text-zinc-400">
+                                  {filteredMovements[0].marketMovements.length >
+                                  1
                                     ? `LEADING MARKET (OF ${filteredMovements[0].marketMovements.length})`
                                     : 'MARKET'}
                                 </div>
                                 <div className="text-sm font-medium text-zinc-100">
-                                  {filteredMovements[0].marketMovements[0].question}
+                                  {
+                                    filteredMovements[0].marketMovements[0]
+                                      .question
+                                  }
                                 </div>
                               </div>
                             )}
@@ -271,7 +276,9 @@ export default function Home() {
                                 </span>
                                 <span className="text-zinc-500">→</span>
                                 <span className="text-2xl font-bold text-white">
-                                  {filteredMovements[0]?.currentValue?.toFixed(0) ?? 0}
+                                  {filteredMovements[0]?.currentValue?.toFixed(
+                                    0
+                                  ) ?? 0}
                                   %
                                 </span>
                                 <span className="text-xs font-medium text-zinc-300">
@@ -348,14 +355,24 @@ export default function Home() {
                         >
                           {isPaused ? (
                             <>
-                              <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor">
+                              <svg
+                                width="8"
+                                height="8"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
                                 <path d="M8 5v14l11-7z" />
                               </svg>
                               <span>Resume</span>
                             </>
                           ) : (
                             <>
-                              <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor">
+                              <svg
+                                width="8"
+                                height="8"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
                                 <rect x="6" y="4" width="4" height="16" />
                                 <rect x="14" y="4" width="4" height="16" />
                               </svg>
@@ -364,9 +381,12 @@ export default function Home() {
                           )}
                         </button>
                         <div className="flex items-center gap-1.5">
-                          <div className={`h-1.5 w-1.5 rounded-full ${isPaused ? 'bg-yellow-500' : 'animate-pulse bg-green-500'}`} />
+                          <div
+                            className={`h-1.5 w-1.5 rounded-full ${isPaused ? 'bg-yellow-500' : 'animate-pulse bg-green-500'}`}
+                          />
                           <span className="text-[10px] text-zinc-500">
-                            {isPaused ? 'Paused' : 'Live • 10s'} • Updated {secondsSinceUpdate}s ago
+                            {isPaused ? 'Paused' : 'Live • 30s'} • Updated{' '}
+                            {secondsSinceUpdate}s ago
                           </span>
                         </div>
                       </div>
